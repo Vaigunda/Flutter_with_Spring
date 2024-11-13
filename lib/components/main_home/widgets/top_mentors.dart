@@ -1,29 +1,30 @@
 // lib/screens/home/home_top_mentors.dart
 import 'package:flutter/material.dart';
-import 'package:mentor/shared/models/mentor.model.dart';
 import 'package:mentor/shared/models/top_mentor.model.dart';
 import 'package:mentor/shared/services/top_mentor.service.dart';
 
 class HomeTopMentors extends StatefulWidget {
-  const HomeTopMentors({super.key, required Iterable<MentorModel> mentors});
+  final Future<List<TopMentorModel>>? topMentors;
+  const HomeTopMentors({super.key, required this.topMentors});
 
   @override
-  _HomeTopMentorsState createState() => _HomeTopMentorsState();
+  State<HomeTopMentors> createState() => _HomeTopMentorsState();
 }
 
 class _HomeTopMentorsState extends State<HomeTopMentors> {
-  late Future<List<TopMentorModel>> _mentorsFuture;
+  late Future<List<TopMentorModel>> topMentors;
 
   @override
   void initState() {
     super.initState();
-    _mentorsFuture = TopMentorService().fetchTopMentors(); // API call to fetch top mentors
+    topMentors = widget.topMentors ??
+        TopMentorService().fetchTopMentors();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<TopMentorModel>>(
-      future: _mentorsFuture,
+      future: topMentors,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
