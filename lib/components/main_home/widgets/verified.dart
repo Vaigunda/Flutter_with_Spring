@@ -176,7 +176,7 @@ class _HomeVerifiedState extends State<HomeVerified> {
               scrollDirection: Axis.horizontal,
               child: Wrap(
                 spacing: 16,
-                children: mentors.map((mentor) => _customCard(mentor)).toList(),
+                children: mentors.map(_customCard).toList(),
               ),
             );
           },

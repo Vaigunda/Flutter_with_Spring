@@ -195,8 +195,12 @@ final appRouter = GoRouter(
         builder: (context, state) => const SettingsScreen()),
     GoRoute(
         path: '${AppRoutes.profileMentor}/:id',
-        builder: (context, state) =>
-            ProfileMentorScreen(profileId: state.pathParameters['id']!)),
+        builder: (context, state) {
+          // Convert the path parameter to an int
+          final profileId = int.tryParse(state.pathParameters['id']!) ?? 0; // Use 0 or some other default value if parsing fails
+          return ProfileMentorScreen(profileId: profileId);
+        },
+      ),
     GoRoute(
         path: '${AppRoutes.bookingMentor}/:id',
         builder: (context, state) =>

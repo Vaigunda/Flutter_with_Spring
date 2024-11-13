@@ -141,7 +141,6 @@ import 'package:mentor/shared/models/verified.model.dart';
 import 'package:mentor/shared/services/verified.service.dart';
 import '../../shared/services/top_rated_mentor.service.dart';
 import '../../shared/services/top_mentor.service.dart';
-import '../../shared/providers/mentors.provider.dart';
 import '../../shared/models/top_rated_mentor.model.dart';
 import '../../shared/models/top_mentor.model.dart';
 import '../../shared/views/brightness_toggle.dart';

@@ -1,5 +1,7 @@
 // lib/screens/home/home_top_mentors.dart
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mentor/navigation/router.dart';
 import 'package:mentor/shared/models/top_mentor.model.dart';
 import 'package:mentor/shared/services/top_mentor.service.dart';
 
@@ -61,7 +63,7 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
 
   Widget _customCard(BuildContext context, TopMentorModel mentor) {
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, '/mentor-profile/${mentor.id}'),
+      onTap: () => context.push('${AppRoutes.profileMentor}/${mentor.id}'),
       child: Container(
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
