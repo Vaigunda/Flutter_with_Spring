@@ -160,7 +160,7 @@ class Certificate {
 }
 
 class Category {
-  final int id;
+  final String id;
   final String name;
   final String icon;
 
@@ -172,7 +172,7 @@ class Category {
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
-      id: json['id'],
+      id: json['id'].toString(),
       name: json['name'],
       icon: json['icon'],
     );

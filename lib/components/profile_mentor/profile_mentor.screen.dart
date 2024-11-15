@@ -144,14 +144,14 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
-      if (mentor!.role != null) ...[
-        Text(
-          mentor!.role!,
-          style: context.bodyMedium,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        )
-      ],
+      ...[
+      Text(
+        mentor!.role,
+        style: context.bodyMedium,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      )
+    ],
       const SizedBox(height: 20),
       Wrap(spacing: 15, children: [
         Column(
@@ -161,9 +161,9 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
             Text(
                 mentor!.free == null
                     ? "No information"
-                    : mentor!.free?.price == 0
+                    : mentor!.free.price == 0
                         ? "Free"
-                        : "\$${mentor!.free!.price} / ${mentor!.free!.unit.name}",
+                        : "\$${mentor!.free.price} / ${mentor!.free.unit.name}",
                 style: const TextStyle(fontWeight: FontWeight.bold))
           ],
         ),
@@ -219,10 +219,10 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               bio(),
-              if (mentor!.experiences != null) ...[
-                const SizedBox(height: 10),
-                experiences()
-              ],
+              ...[
+              const SizedBox(height: 10),
+              experiences()
+            ],
               ...[
               const SizedBox(height: 10),
               skills()
@@ -250,7 +250,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text("Experiences", style: context.titleMedium),
       const SizedBox(height: 10),
-      for (var exp in mentor!.experiences!) itemExperience(exp),
+      for (var exp in mentor!.experiences) itemExperience(exp),
       const SizedBox(height: 10),
       divider()
     ]);
@@ -337,10 +337,10 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
     return SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.all(20),
-            child: mentor!.reviews == null || mentor!.reviews!.isEmpty
+            child: mentor!.reviews.isEmpty
                 ? Text("No review found", style: context.bodyMedium)
                 : Column(children: [
-                    for (var review in mentor!.reviews!) itemReview(review)
+                    for (var review in mentor!.reviews) itemReview(review)
                   ])));
   }
 
@@ -411,11 +411,11 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
     return SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.all(20),
-            child: mentor!.certificates == null || mentor!.certificates!.isEmpty
+            child: mentor!.certificates.isEmpty
                 ? Text("No certificate found", style: context.bodyMedium)
                 : Column(
                     children: [
-                      for (var certificate in mentor!.certificates!)
+                      for (var certificate in mentor!.certificates)
                         itemCertificate(certificate)
                     ],
                   )));

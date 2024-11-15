@@ -4,18 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:mentor/shared/models/category.model.dart';
 import 'package:mentor/shared/models/connect_method.model.dart';
+import 'package:mentor/shared/models/profile_mentor.model.dart';
 import 'package:mentor/shared/models/teaching_schedule.model.dart';
-import 'package:mentor/shared/providers/connect_method.provider.dart';
-import 'package:mentor/shared/providers/teaching_schedule.provider.dart';
 import 'package:mentor/shared/shared.dart';
 import 'package:mentor/shared/views/button.dart';
 import 'package:mentor/shared/views/calendar_booking.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../../shared/models/mentor.model.dart';
-import '../../shared/providers/mentors.provider.dart';
+
+import 'package:mentor/shared/services/teaching_schedule.service.dart'; 
+import 'package:mentor/shared/services/connect_method.service.dart'; 
+import 'package:mentor/shared/services/profile_mentor.service.dart'; 
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key, required this.profileId});
@@ -30,14 +30,12 @@ class _BookingScreenState extends State<BookingScreen> {
 
   late final kEvents;
   late final _kEventSource;
-  late MentorModel? mentor;
+  late ProfileMentor? mentor;
   int _index = 0;
   String _errorMessage = "";
   DateTime _selectedDay = DateTime.now();
-  final List<TeachingScheduleModel> teachSchedule =
-      TeachingScheduleProvider.shared.teachingSchedule;
-  final List<ConnectMethodModel> connectMethods =
-      ConnectMethodProvider.shared.connectMethods;
+  late List<TeachingScheduleModel> teachSchedule =[];
+  late List<ConnectMethodModel> connectMethods =[];
 
   List<Map<String, dynamic>> formData = [
     {"message": "Please choose a category", "value": null},
@@ -48,23 +46,63 @@ class _BookingScreenState extends State<BookingScreen> {
   @override
   void initState() {
     super.initState();
-    mentor = MentorsProvider.shared.getMentor(widget.profileId);
-    _kEventSource = {
-      for (var item in teachSchedule)
-        item.dateStart: teachSchedule
-            .where(((schedule) =>
-                schedule.timeStart.compareTo(item.dateStart) >= 0 &&
-                schedule.timeEnd.compareTo(
-                        item.dateStart.add(const Duration(hours: 24))) <=
-                    0))
-            .toList()
-    };
 
-    kEvents = LinkedHashMap<DateTime, List<TeachingScheduleModel>>(
-      equals: isSameDay,
-    )..addAll(_kEventSource);
+    TeachingScheduleService teachingScheduleService = TeachingScheduleService();
+    ConnectMethodService connectMethodService = ConnectMethodService();
+    // Fetch mentor, teaching schedule, and connect methods data asynchronously
+    Future.wait([
+      ProfileMentorService.fetchMentorById(int.parse(widget.profileId)),
+      teachingScheduleService.fetchTeachingSchedules(),
+      connectMethodService.fetchConnectMethods(),
+    ]).then((results) {
+      setState(() {
+        mentor = results[0] as ProfileMentor;
+        teachSchedule = results[1] as List<TeachingScheduleModel>;
+        connectMethods = results[2] as List<ConnectMethodModel>;
 
-    _selectedEvents = _getEventsForDay(_selectedDay);
+        print(teachSchedule); // Will print the entire list with each item formatted as per toString()
+
+  // Print each individual TeachingScheduleModel in the teachSchedule list
+        for (var schedule in teachSchedule) {
+          print(schedule);  // Will print individual schedule objects with values
+        }
+
+        // Prepare events for the calendar based on teaching schedules
+        // _kEventSource = {
+        //   for (var item in teachSchedule)
+        //     item.dateStart: teachSchedule
+        //         .where(((schedule) =>
+        //             schedule.timeStart.compareTo(item.dateStart) >= 0 &&
+        //             schedule.timeEnd.compareTo(
+        //                     item.dateStart.add(const Duration(hours: 24))) <=
+        //                 0))
+        //         .toList()
+                
+        // };
+
+        _kEventSource = {
+          for (var item in teachSchedule)
+            // Ensure we match only the date, not time
+            DateTime(item.dateStart.year, item.dateStart.month, item.dateStart.day): teachSchedule
+                .where((schedule) =>
+                    schedule.timeStart.isBefore(item.dateStart.add(const Duration(hours: 24))) &&
+                    schedule.timeEnd.isAfter(item.dateStart))
+                .toList(),
+        };
+
+        kEvents = LinkedHashMap<DateTime, List<TeachingScheduleModel>>(
+          equals: isSameDay,
+        )..addAll(_kEventSource);
+
+        _selectedEvents = _getEventsForDay(_selectedDay);
+      });
+    }).catchError((error) {
+      // Handle error if fetching fails
+      print('Error fetching data: $error');
+      setState(() {
+        _errorMessage = "Failed to fetch data.";
+      });
+    });
   }
 
   @override
@@ -166,7 +204,7 @@ class _BookingScreenState extends State<BookingScreen> {
       renderHeaderStep("Select a category"),
       for (var item in [
         ...mentor!.categories,
-        CategoryModel(
+        Category(
             id: 'other', name: "Other", icon: "circleQuestion") // changed icon: FontAwesomeIcons.circleQuestion to icon: "circleQuestion"
       ])
         ListTile(
@@ -343,8 +381,14 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   // get teaching schedule by day
+  // List<TeachingScheduleModel> _getEventsForDay(DateTime day) {
+  //   var utc = DateTime.utc(day.year, day.month, day.day);
+  //   return kEvents[utc] ?? [];
+  // }
+
   List<TeachingScheduleModel> _getEventsForDay(DateTime day) {
-    var utc = DateTime.utc(day.year, day.month, day.day);
-    return kEvents[utc] ?? [];
+  // Normalize the selected day to midnight (ignore the time)
+    var selectedDayNormalized = DateTime(day.year, day.month, day.day);
+    return kEvents[selectedDayNormalized] ?? [];
   }
 }
