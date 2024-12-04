@@ -62,4 +62,10 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/fonts/
+
+  fonts:
+    - family: Lobster
+      fonts:
+        - asset: assets/images/fonts/Lobster-Regular.ttf  
 #Generate launcher icons `flutter pub run flutter_launcher_icons`

@@ -18,11 +18,12 @@ class TeachingScheduleService {
 
         // Map the List of JSON data to a List of TeachingScheduleModel
         return data.map((item) => TeachingScheduleModel(
-          id: item['id'],
+          id: item['id'].toString(),
           dateStart: DateTime.parse(item['dateStart']),
           timeStart: DateTime.parse(item['timeStart']),
           timeEnd: DateTime.parse(item['timeEnd']),
           booked: item['booked'],
+          mentorId: item['mentorId'].toString(),
         )).toList();
       } else {
         throw Exception('Failed to load teaching schedules');

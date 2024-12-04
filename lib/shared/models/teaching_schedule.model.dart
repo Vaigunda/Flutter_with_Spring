@@ -4,6 +4,7 @@ class TeachingScheduleModel {
   final DateTime timeStart;
   final DateTime timeEnd;
   final bool booked;
+  final String? mentorId;
 
   // Constructor for the model
   const TeachingScheduleModel({
@@ -12,6 +13,7 @@ class TeachingScheduleModel {
     required this.timeStart,
     required this.timeEnd,
     required this.booked,
+    this.mentorId,
   });
 
   // Factory method to create an instance from JSON data
@@ -22,6 +24,7 @@ class TeachingScheduleModel {
       timeStart: DateTime.parse(json['timeStart']).toUtc(),
       timeEnd: DateTime.parse(json['timeEnd']).toUtc(),
       booked: json['booked'],
+      mentorId: json['mentorId'],
     );
   }
 
@@ -33,11 +36,12 @@ class TeachingScheduleModel {
       'timeStart': timeStart.toIso8601String(),
       'timeEnd': timeEnd.toIso8601String(),
       'booked': booked,
+      'mentorId': mentorId,
     };
   }
 
   @override
   String toString() {
-    return 'TeachingScheduleModel(dateStart: $dateStart, timeStart: $timeStart, timeEnd: $timeEnd)';
+    return 'TeachingScheduleModel(id: $id, dateStart: $dateStart, timeStart: $timeStart, timeEnd: $timeEnd, booked: $booked, mentorId: $mentorId)';
   }
 }

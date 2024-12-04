@@ -62,7 +62,10 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
   }
 
   Widget _customCard(BuildContext context, TopMentorModel mentor) {
-    return InkWell(
+    print('Mentor ID: ${mentor.id}');
+    print('Mentor ID: ${mentor.id}');
+      return InkWell(
+
       onTap: () => context.push('${AppRoutes.profileMentor}/${mentor.id}'),
       child: Container(
         padding: const EdgeInsets.all(16.0),

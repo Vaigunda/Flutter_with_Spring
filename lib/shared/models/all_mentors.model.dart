@@ -1,6 +1,6 @@
 // import 'dart:convert';
 
-class ProfileMentor {
+class AllMentors {
   final int id;
   final String name;
   final String role;
@@ -13,9 +13,10 @@ class ProfileMentor {
   final List<Review> reviews;
   final List<Certificate> certificates;
   final List<Category> categories;
+  final List<TeachingSchedule> teachingSchedules;
   final Free free;
 
-  ProfileMentor({
+  AllMentors({
     required this.id,
     required this.name,
     required this.role,
@@ -28,11 +29,11 @@ class ProfileMentor {
     required this.reviews,
     required this.certificates,
     required this.categories,
+    required this.teachingSchedules,
     required this.free,
   });
 
-  // CopyWith Method
-  ProfileMentor copyWith({
+  AllMentors copyWith({                                                                                               
     int? id,
     String? name,
     String? role,
@@ -45,9 +46,10 @@ class ProfileMentor {
     List<Review>? reviews,
     List<Certificate>? certificates,
     List<Category>? categories,
+    List<TeachingSchedule>? teachingSchedules, // Added this
     Free? free,
   }) {
-    return ProfileMentor(
+    return AllMentors(
       id: id ?? this.id,
       name: name ?? this.name,
       role: role ?? this.role,
@@ -60,13 +62,14 @@ class ProfileMentor {
       reviews: reviews ?? this.reviews,
       certificates: certificates ?? this.certificates,
       categories: categories ?? this.categories,
+      teachingSchedules: teachingSchedules ?? this.teachingSchedules, // Added this
       free: free ?? this.free,
     );
   }
 
   // Factory method to create a ProfileMentor object from a JSON map
-  factory ProfileMentor.fromJson(Map<String, dynamic> json) {
-    return ProfileMentor(
+  factory AllMentors.fromJson(Map<String, dynamic> json) {
+    return AllMentors(
       id: json['id'],
       name: json['name'],
       role: json['role'],
@@ -87,6 +90,9 @@ class ProfileMentor {
       categories: (json['categories'] as List)
           .map((e) => Category.fromJson(e))
           .toList(),
+      teachingSchedules: (json['teachingSchedules'] as List)
+          .map((e) => TeachingSchedule.fromJson(e))
+          .toList(),    
       free: Free.fromJson(json['free']),
     );
   }
@@ -106,18 +112,79 @@ class ProfileMentor {
       'reviews': reviews.map((e) => e.toJson()).toList(),
       'certificates': certificates.map((e) => e.toJson()).toList(),
       'categories': categories.map((e) => e.toJson()).toList(),
+      'teachingSchedules': teachingSchedules.map((e) => e.toJson()).toList(),
       'free': free.toJson(),
     };
   }
 
   // Method to retrieve mentor by ID from a list
-  static ProfileMentor? getMentorById(List<ProfileMentor> mentors, int mentorId) {
+  static AllMentors? getMentorById(List<AllMentors> mentors, int mentorId) {
   try {
     return mentors.firstWhere((mentor) => mentor.id == mentorId);
   } catch (e) {
     return null; // Return null if no mentor is found
   }
 }
+}
+
+
+class TeachingSchedule {
+  final int id;
+  final DateTime dateStart;
+  final DateTime timeStart;
+  final DateTime timeEnd;
+  final bool booked;
+  final int mentorId;
+
+  TeachingSchedule({
+    required this.id,
+    required this.dateStart,
+    required this.timeStart,
+    required this.timeEnd,
+    required this.booked,
+    required this.mentorId,
+  });
+
+  factory TeachingSchedule.fromJson(Map<String, dynamic> json) {
+    return TeachingSchedule(
+      id: json['id'],
+      dateStart: DateTime.parse(json['date_start']), // Convert string to DateTime
+      timeStart: DateTime.parse(json['time_start']), // Convert string to DateTime
+      timeEnd: DateTime.parse(json['time_end']),     // Convert string to DateTime
+      booked: json['booked'],
+      mentorId: json['mentor_id'],
+    );
+  }
+
+  // CopyWith Method
+  TeachingSchedule copyWith({
+    int? id,
+    DateTime? dateStart,
+    DateTime? timeStart,
+    DateTime? timeEnd,
+    bool? booked,
+    int? mentorId,
+  }) {
+    return TeachingSchedule(
+      id: id ?? this.id,
+      dateStart: dateStart ?? this.dateStart,
+      timeStart: timeStart ?? this.timeStart,
+      timeEnd: timeEnd ?? this.timeEnd,
+      booked: booked ?? this.booked,
+      mentorId: mentorId ?? this.mentorId,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'date_start': dateStart.toIso8601String(),  // Convert DateTime to string
+      'time_start': timeStart.toIso8601String(),  // Convert DateTime to string
+      'time_end': timeEnd.toIso8601String(),      // Convert DateTime to string
+      'booked': booked,
+      'mentor_id': mentorId,
+    };
+  }
 }
 
 class Experience {

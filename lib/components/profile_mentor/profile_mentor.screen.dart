@@ -25,7 +25,7 @@ class ProfileMentorScreen extends StatefulWidget {
 
 class _ProfileMentorScreenState extends State<ProfileMentorScreen>
     with SingleTickerProviderStateMixin {
-  late ProfileMentor? mentor;
+  ProfileMentor? mentor;
   late TabController _tabController;
   final ScrollController _scrollCtrl = ScrollController();
   List<String> tab = ["Overview", "Reviews", "Certificates"];
@@ -75,7 +75,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
   Future<void> _fetchMentorData() async {
     try {
       ProfileMentor? fetchedMentor = await ProfileMentorService.fetchMentorById(widget.profileId);
-
+      print("Fetched mentor data: $fetchedMentor");
       setState(() {
         mentor = fetchedMentor;
       });
@@ -87,38 +87,53 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (mentor == null) {
+      // Show loading state or an error state if mentor is not fetched
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Loading..."),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    // Mentor data is fetched, proceed with building the profile screen
     return Scaffold(
-        body: SafeArea(
-            child: NestedScrollView(
-      controller: _scrollCtrl,
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return [
-          SliverAppBar(
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            pinned: false,
-            flexibleSpace: FlexibleSpaceBar(
-                collapseMode: CollapseMode.parallax,
-                background: Column(children: [
-                  const SizedBox(height: 20),
-                  headerProfile(),
-                  const SizedBox(height: 15),
-                  actions()
-                ])),
-            forceElevated: innerBoxIsScrolled,
-            expandedHeight: 370.0,
-            bottom: PreferredSize(
-              preferredSize: _tabBar.preferredSize,
-              child: Material(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  child: _tabBar),
-            ),
-          )
-        ];
-      },
-      body: TabBarView(
-          controller: _tabController,
-          children: [overviewProfile(), reviewMentor(), certificates()]),
-    )));
+      body: SafeArea(
+        child: NestedScrollView(
+          controller: _scrollCtrl,
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                pinned: false,
+                flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.parallax,
+                    background: Column(children: [
+                      const SizedBox(height: 20),
+                      headerProfile(),
+                      const SizedBox(height: 15),
+                      actions()
+                    ])),
+                forceElevated: innerBoxIsScrolled,
+                expandedHeight: 370.0,
+                bottom: PreferredSize(
+                  preferredSize: _tabBar.preferredSize,
+                  child: Material(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      child: _tabBar),
+                ),
+              )
+            ];
+          },
+          body: TabBarView(
+              controller: _tabController,
+              children: [overviewProfile(), reviewMentor(), certificates()]),
+        ),
+      ),
+    );
   }
 
   Widget headerProfile() {
@@ -198,6 +213,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
         CustomButton(
           label: "Booking",
           onPressed: () {
+            print('Mentor ID: ${mentor!.id}');
             context.push('${AppRoutes.bookingMentor}/${mentor!.id}');
           },
         ),

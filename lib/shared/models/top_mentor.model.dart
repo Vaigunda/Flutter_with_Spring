@@ -20,7 +20,7 @@ class TopMentorModel {
   // Factory constructor to create a TopMentorModel from JSON
   factory TopMentorModel.fromJson(Map<String, dynamic> json) {
     return TopMentorModel(
-      id: json['id'] ?? '', // Assuming you have an 'id' or can generate it.
+      id: json['id'], // Assuming you have an 'id' or can generate it.
       name: json['name'],
       avatarUrl: json['avatar_url'],
       rate: json['rate'].toDouble(),

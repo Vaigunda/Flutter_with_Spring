@@ -18,6 +18,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   TextEditingController searchController = TextEditingController();
   late FocusNode focusNode = FocusNode();
+  bool showResults = false;
   List<PopularSearch> popularList = [
     PopularSearch(id: 1, totalResult: 980, title: "Figma"),
     PopularSearch(id: 2, totalResult: 489, title: "Webflow"),
@@ -31,65 +32,81 @@ class _SearchScreenState extends State<SearchScreen> {
     focusNode.dispose();
   }
 
+  void handleSearch() {
+    if (searchController.text.isNotEmpty) {
+      setState(() {
+        showResults = true; // Enable displaying results
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
-                TextField(
-                  focusNode: focusNode,
-                  controller: searchController,
-                  onChanged: (val) => {setState(() {})},
-                  decoration: InputDecoration(
-                    filled: focusNode.hasFocus,
-                    fillColor: focusNode.hasFocus
-                        ? Theme.of(context).colorScheme.onPrimary
-                        : null,
-                    prefixIcon: const Icon(FontAwesomeIcons.magnifyingGlass),
-                    suffixIcon: Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                              left: BorderSide(
-                                  color:
-                                      Theme.of(context).colorScheme.outline)),
-                        ),
-                        child: RotatedBox(
-                            quarterTurns: 1,
-                            child: IconButton(
-                                onPressed: () =>
-                                    {context.push(AppRoutes.filter)},
-                                icon: const Icon(FontAwesomeIcons.sliders)))),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8)),
-                        borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.primary)),
-                    isDense: true,
-                    border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    hintText: 'Enter a search term',
-                  ),
+  return SafeArea(
+      child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              TextField(
+                focusNode: focusNode,
+                controller: searchController,
+                decoration: InputDecoration(
+                  filled: focusNode.hasFocus,
+                  fillColor: focusNode.hasFocus
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : null,
+                  prefixIcon: const Icon(FontAwesomeIcons.magnifyingGlass),
+                  suffixIcon: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                            left: BorderSide(
+                                color: Theme.of(context).colorScheme.outline)),
+                      ),
+                      child: RotatedBox(
+                          quarterTurns: 1,
+                          child: IconButton(
+                              onPressed: () =>
+                                  {context.push(AppRoutes.filter)},
+                              icon: const Icon(FontAwesomeIcons.sliders)))),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(8)),
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary)),
+                  isDense: true,
+                  border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
+                  hintText: 'Enter a search term',
                 ),
-                Expanded(
-                    child: SingleChildScrollView(
-                        child: Column(
-                  children: [
-                    if (searchController.text == "") ...[
-                      const SizedBox(height: 32),
-                      renderPopularList(context),
-                      const SizedBox(height: 23),
-                      renderCategories(),
-                    ] else ...[
-                      const SizedBox(height: 24),
-                      SearchResult(keyword: searchController.text)
-                    ]
+              ),
+              const SizedBox(height: 8), // Space between the TextField and button
+              ElevatedButton(
+                onPressed: handleSearch,
+                child: const Text('Search'),
+              ),
+              Expanded(
+                  child: SingleChildScrollView(
+                      child: Column(
+                children: [
+                  if (!showResults) ...[
+                    // Show Popular List and Categories if not searching
+                    const SizedBox(height: 32),
+                    renderPopularList(context),
+                    const SizedBox(height: 23),
+                    renderCategories(),
+                  ] else ...[
+                    // Show search results when the Search button is pressed
+                    const SizedBox(height: 24),
+                    SearchResult(
+                      key: ValueKey(searchController.text), // Key forces widget rebuild
+                      keyword: searchController.text,
+                    ),
                   ],
-                )))
-              ],
-            )));
-  }
+                ],
+              )))
+            ],
+          )));
+}
 
   Widget renderPopularList(BuildContext context) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
