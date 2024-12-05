@@ -451,6 +451,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController avatarUrlController = TextEditingController();
   TextEditingController bioController = TextEditingController();
+  TextEditingController roleController = TextEditingController();
   TextEditingController rateController = TextEditingController();
   TextEditingController freePriceController = TextEditingController();
   TextEditingController freeUnitController = TextEditingController();
@@ -480,9 +481,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
 
   List<TextEditingController> categoryControllers = [];
 
-  // Date pickers
-  DateTime? startDate;
-  DateTime? endDate;
+  
 
   bool isVerified = false;
   bool isSubmitting = false;
@@ -493,21 +492,21 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
 
    // Method to handle form submission
   Future<void> submitMentor() async {
-    if (isSubmitting) return; // Prevent duplicate submissions
+    if (isSubmitting) return;  // Prevent duplicate submissions
 
     setState(() {
       isSubmitting = true;
     });
+    print("hai");
 
-    DateTime parsedStartDate = DateTime.parse(startDateController.text);
-    DateTime parsedEndDate = DateTime.parse(endDateController.text);
+    
 
     // Prepare the mentor data to be sent
     Map<String, dynamic> mentorData = {
       "name": nameController.text,
       "avatarUrl": avatarUrlController.text,
       "bio": bioController.text,
-      "role": "Software Development Mentor", // Hardcoded for now
+      "role": roleController.text, // Hardcoded for now
       "freePrice": double.parse(freePriceController.text),
       "freeUnit": freeUnitController.text,
       "verified": isVerified,
@@ -530,7 +529,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
           "description": experienceDescriptionControllers[index].text,
         };
       }),
-      "teachingSchedule": List.generate(teachingScheduleStartDateControllers.length, (index) {
+      "teachingSchedules": List.generate(teachingScheduleStartDateControllers.length, (index) {
         DateTime parsedTimeStart = DateTime.parse('${teachingScheduleStartDateControllers[index].text} ${teachingScheduleStartTimeControllers[index].text}:00');
         DateTime parsedTimeEnd = DateTime.parse('${teachingScheduleEndDateControllers[index].text} ${teachingScheduleEndTimeControllers[index].text}:00');
 
@@ -562,6 +561,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
       );
 
       if (response.statusCode == 201) {
+
         // Mentor created successfully
         showDialog(
           context: context,
@@ -611,6 +611,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     nameController.clear();
     avatarUrlController.clear();
     bioController.clear();
+    roleController.clear();
     rateController.clear();
     freePriceController.clear();
     freeUnitController.clear();
@@ -640,27 +641,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     });
   }
 
-  // Date picker for start and end dates
-  Future<void> selectDate(BuildContext context, bool isStartDate) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-
-    if (picked != null && picked != (isStartDate ? startDate : endDate)) {
-      setState(() {
-        if (isStartDate) {
-          startDate = picked;
-          startDateController.text = DateFormat('yyyy-MM-dd').format(startDate!);
-        } else {
-          endDate = picked;
-          endDateController.text = DateFormat('yyyy-MM-dd').format(endDate!);
-        }
-      });
-    }
-  }
+  
 
   // Add new certificate input fields
   void _addCertificate() {
@@ -726,6 +707,11 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                 controller: bioController,
                 decoration: const InputDecoration(labelText: "Bio"),
                 maxLines: 3,
+              ),
+              // Role field
+              TextField(
+                controller: roleController,
+                decoration: const InputDecoration(labelText: "Role"),
               ),
               // Rate Field
               TextField(
