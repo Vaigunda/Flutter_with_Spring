@@ -15,6 +15,8 @@ import 'package:mentor/shared/services/teaching_schedule.service.dart';
 import 'package:mentor/shared/services/connect_method.service.dart'; 
 import 'package:mentor/shared/services/profile_mentor.service.dart'; 
 
+
+
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key, required this.profileId});
   final String profileId;
@@ -26,8 +28,8 @@ class BookingScreen extends StatefulWidget {
 class _BookingScreenState extends State<BookingScreen> {
   late List<TeachingScheduleModel> _selectedEvents;
 
-  // late final kEvents;
-  // late final _kEventSource;
+  late final kEvents;
+  late final _kEventSource;
   ProfileMentor? mentor;  // Marked as nullable
   int _index = 0;
   String _errorMessage = "";
@@ -65,31 +67,7 @@ class _BookingScreenState extends State<BookingScreen> {
 
         print(mentor?.categories);
 
-        // // Filter the teaching schedule for the selected mentor
-        // var filteredTeachSchedule = teachSchedule
-        //     .where((schedule) => schedule.mentorId == mentor!.id.toString())
-        //     .toList();
-
-        // print(filteredTeachSchedule);    
-
-        // _kEventSource = {
-        //   for (var item in filteredTeachSchedule)
-        //     // Ensure we match only the date, not time
-        //     DateTime(item.dateStart.year, item.dateStart.month, item.dateStart.day): teachSchedule
-        //         .where((schedule) =>
-        //             schedule.timeStart.isBefore(item.dateStart.add(const Duration(hours: 24))) &&
-        //             schedule.timeEnd.isAfter(item.dateStart))
-        //         .toList(),
-        // };
-        // print(_kEventSource);
-
-        // kEvents = LinkedHashMap<DateTime, List<TeachingScheduleModel>>(
-        //   equals: isSameDay,
-        // )..addAll(_kEventSource);
-        // print(kEvents);
-
-        // _selectedEvents = _getEventsForDay(_selectedDay);
-        // print(_selectedEvents);
+        
       });
     } catch (error) {
       print('Error fetching data: $error');
@@ -239,24 +217,9 @@ class _BookingScreenState extends State<BookingScreen> {
 
   Widget renderSelectTime() {
     // Use filteredTeachSchedule to display time slots
-    print("rendering select time");
     var filteredTeachSchedule = teachSchedule
         .where((schedule) => schedule.mentorId == mentor!.id.toString())
         .toList();
-
-    print(filteredTeachSchedule);
-
-    // Find the days within the date range (dateStart to timeEnd)
-    Set<DateTime> daysInRange = {};
-    for (var schedule in filteredTeachSchedule) {
-      DateTime start = DateTime(schedule.dateStart.year, schedule.dateStart.month, schedule.dateStart.day);
-      DateTime end = DateTime(schedule.timeEnd.year, schedule.timeEnd.month, schedule.timeEnd.day);
-
-      for (DateTime date = start; !date.isAfter(end); date = date.add(const Duration(days: 1))) {
-        daysInRange.add(date);
-      }
-    }
-    print(daysInRange);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,48 +229,23 @@ class _BookingScreenState extends State<BookingScreen> {
           selectedDay: _selectedDay,
           onDaySelected: _onDaySelected,
           getEventsForDay: (day) {
-            // Normalize day to ensure proper comparisons
-            print(day);
-            print(_selectedDay);
-            DateTime normalizedDay = DateTime(day.year, day.month, day.day);
-            print("Selected day (normalized): $normalizedDay");
-
-            // Log days in range
-            print("Days in range: $daysInRange");
-
-            // Find the initial start date from the range (earliest date)
-            DateTime initialStartDate = daysInRange.reduce((a, b) => a.isBefore(b) ? a : b);
-            print("Initial start date: $initialStartDate");
-
-            if (daysInRange.contains(normalizedDay)) {
-              print("$normalizedDay is in daysInRange");
-
-              // Filter schedules for the initial start date
-              final eventsForDay = filteredTeachSchedule.where((schedule) {
-                DateTime scheduleDay = DateTime(
-                  schedule.dateStart.year,
-                  schedule.dateStart.month,
-                  schedule.dateStart.day,
-                );
-                return scheduleDay == initialStartDate;
-              }).toList();
-
-              print("Events for $initialStartDate: $eventsForDay");
-              return eventsForDay;
-            } else {
-              print("$normalizedDay is NOT in daysInRange");
-              // No events for this day, return an empty list or display a message
-              return [];
-            }
+            // Filter events for the selected day
+            return filteredTeachSchedule
+                .where((schedule) =>
+                    isSameDay(
+                        DateTime(schedule.dateStart.year, schedule.dateStart.month, schedule.dateStart.day), day))
+                .toList();
           },
         ),
         const SizedBox(height: 8.0),
-        // Rest of the code to display the time slots
         for (var value in filteredTeachSchedule
-            .where((schedule) =>
-                isSameDay(DateTime(schedule.dateStart.year, schedule.dateStart.month, schedule.dateStart.day), _selectedDay)))
+            .where((schedule) => isSameDay(
+                DateTime(schedule.dateStart.year, schedule.dateStart.month, schedule.dateStart.day), _selectedDay)))
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+            margin: const EdgeInsets.symmetric(
+              horizontal: 12.0,
+              vertical: 4.0,
+            ),
             decoration: BoxDecoration(
               border: Border.all(
                 color: value.booked ? context.colors.error : Colors.green,
@@ -317,26 +255,27 @@ class _BookingScreenState extends State<BookingScreen> {
             child: ListTile(
               selected: formData[_index]["value"] == value.id,
               selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
-              onTap: () {
-                if (!value.booked) {
-                  setState(() {
-                    formData[_index]["value"] =
-                        formData[_index]["value"] == value.id ? null : value.id;
-                  });
-                }
+              onTap: () => {
+                if (!value.booked)
+                  {
+                    setState(() {
+                      formData[_index]["value"] =
+                          formData[_index]["value"] == value.id ? null : value.id;
+                    })
+                  }
               },
               title: Text(
                   '${DateFormat.Hm().format(value.timeStart)} - ${DateFormat.Hm().format(value.timeEnd)}',
                   style: context.titleSmall),
               subtitle: Text(value.booked ? "Occupied" : "Available",
                   style: context.bodySmall!.copyWith(
-                      color: value.booked ? context.colors.error : Colors.green)),
+                      color:
+                          value.booked ? context.colors.error : Colors.green)),
             ),
           ),
       ],
     );
   }
-
 
   Widget renderSelectMethodConnect() {
     return Column(
@@ -431,22 +370,20 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
-    print("Raw selected day: $selectedDay");
-    
-    DateTime normalizedSelectedDay = DateTime(
-      selectedDay.year,
-      selectedDay.month,
-      selectedDay.day,
-    );
-
-    if (!isSameDay(_selectedDay, normalizedSelectedDay)) {
+    if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {
-        _selectedDay = normalizedSelectedDay;
+        _selectedDay = selectedDay;
+        // _focusedDay = focusedDay;
       });
-      print("Selected Day updated to (normalized): $_selectedDay");
+      _selectedEvents = _getEventsForDay(selectedDay);
     }
   }
 
+  List<TeachingScheduleModel> _getEventsForDay(DateTime day) {
+    // Normalize the selected day to midnight (ignore the time)
+    var selectedDayNormalized = DateTime(day.year, day.month, day.day);
+    return kEvents[selectedDayNormalized] ?? [];
+  } 
 
 
   // List<TeachingScheduleModel> _getEventsForDay(DateTime day) {

@@ -203,20 +203,20 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
           'description': experience.description,
         };
       }).toList(),
-      'teachingSchedule': mentorData.teachingSchedules.isNotEmpty
-        ? {
-            'dateStart': mentorData.teachingSchedules[0].dateStart != null
-                ? DateFormat('yyyy-MM-ddTHH:mm:ss').format(mentorData.teachingSchedules[0].dateStart)
-                : null,
-            'timeStart': mentorData.teachingSchedules[0].timeStart != null
-                ? DateFormat('yyy-MM-ddTHH:mm:ss').format(mentorData.teachingSchedules[0].timeStart)
-                : null,
-            'timeEnd': mentorData.teachingSchedules[0].timeEnd != null
-                ? DateFormat('yyyy-MM-ddTHH:mm:ss').format(mentorData.teachingSchedules[0].timeEnd)
-                : null,
-            'booked': mentorData.teachingSchedules[0].booked,
-          }
-        : null,
+      'teachingSchedules': mentorData.teachingSchedules.map((schedule) {
+        return {
+          'dateStart': schedule.dateStart != null
+              ? DateFormat('yyyy-MM-ddTHH:mm:ss').format(schedule.dateStart)
+              : null,
+          'timeStart': schedule.timeStart != null
+              ? DateFormat('yyyy-MM-ddTHH:mm:ss').format(schedule.timeStart)
+              : null,
+          'timeEnd': schedule.timeEnd != null
+              ? DateFormat('yyyy-MM-ddTHH:mm:ss').format(schedule.timeEnd)
+              : null,
+          'booked': schedule.booked,
+        };
+      }).toList(),
       'categories': mentorData.categories.map((category) {
         return {
           'name': category.name,

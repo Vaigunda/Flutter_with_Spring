@@ -10,6 +10,7 @@ class CategoriesService {
     final response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
+      print('API Response: ${response.body}');
       // Parse the JSON response and map it to CategoryModel objects
       List<dynamic> data = json.decode(response.body);
       return data.map((item) => CategoryModel.fromJson(item)).toList();
