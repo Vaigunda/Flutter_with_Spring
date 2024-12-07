@@ -134,8 +134,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mentor/components/main_home/widgets/verified.dart';
 import 'package:mentor/components/main_home/widgets/top_rated.dart';
+import 'package:mentor/components/main_home/widgets/verified.dart';
 import 'package:mentor/navigation/router.dart';
 import 'package:mentor/shared/models/verified.model.dart';
 import 'package:mentor/shared/services/verified.service.dart';
@@ -261,7 +261,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                   onPressed: () {
                     context.go(AppRoutes.adminPage); // Navigate to the Admin Page
                   },
-                  child: const Text('Admin'),
+                  child: const Text(''),
                 ),
                 const HomeCategories(),
                 const SizedBox(height: 30),
@@ -269,8 +269,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 const SizedBox(height: 30),
                 HomeVerified(verifiedMentors: verifiedMentors),
                 const SizedBox(height: 30),
+                HomeTopRated(topRatedMentors: topRatedMentors,)
                 // Pass the future data for top-rated mentors
-                HomeTopRated(topRatedMentors: topRatedMentors),
               ],
             ),
           ),

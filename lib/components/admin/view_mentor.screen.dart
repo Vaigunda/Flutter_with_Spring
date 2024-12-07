@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mentor/shared/models/all_mentors.model.dart';
+import 'package:mentor/shared/models/fixed_time_slot.model.dart';
 
 class ViewMentorScreen extends StatelessWidget {
   final AllMentors mentor;
@@ -77,21 +78,20 @@ class ViewMentorScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTeachingScheduleCard(TeachingSchedule schedule) {
+  Widget _buildTeachingScheduleCard(FixedTimeSlot schedule) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       elevation: 4,
       child: ListTile(
-        title: Text(
-          'Scheduled for: ${schedule.dateStart}',
-          style: const TextStyle(fontWeight: FontWeight.bold),
+        title: const Text(
+          'Time Slots',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Start Time: ${schedule.timeStart}'),
             Text('End Time: ${schedule.timeEnd}'),
-            Text('Booked: ${schedule.booked ? "Yes" : "No"}'),
           ],
         ),
       ),
@@ -208,11 +208,11 @@ class ViewMentorScreen extends StatelessWidget {
               ),
               // Teaching Schedules
               Text(
-                'Teaching Schedules',
+                'Time Slots',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 8),
-              ...mentor.teachingSchedules.map(_buildTeachingScheduleCard),
+              ...mentor.timeSlots.map(_buildTeachingScheduleCard),
             ],
           ),
         ),

@@ -13,7 +13,7 @@ class AllMentors {
   final List<Review> reviews;
   final List<Certificate> certificates;
   final List<Category> categories;
-  final List<TeachingSchedule> teachingSchedules;
+  final List<FixedTimeSlot> timeSlots;
   final Free free;
 
   AllMentors({
@@ -29,7 +29,7 @@ class AllMentors {
     required this.reviews,
     required this.certificates,
     required this.categories,
-    required this.teachingSchedules,
+    required this.timeSlots,
     required this.free,
   });
 
@@ -46,7 +46,7 @@ class AllMentors {
     List<Review>? reviews,
     List<Certificate>? certificates,
     List<Category>? categories,
-    List<TeachingSchedule>? teachingSchedules, // Added this
+    List<FixedTimeSlot>? timeSlots,  // Added this
     Free? free,
   }) {
     return AllMentors(
@@ -62,7 +62,7 @@ class AllMentors {
       reviews: reviews ?? this.reviews,
       certificates: certificates ?? this.certificates,
       categories: categories ?? this.categories,
-      teachingSchedules: teachingSchedules ?? this.teachingSchedules, // Added this
+      timeSlots: timeSlots ?? this.timeSlots, // Added this
       free: free ?? this.free,
     );
   }
@@ -90,8 +90,8 @@ class AllMentors {
       categories: (json['categories'] as List)
           .map((e) => Category.fromJson(e))
           .toList(),
-      teachingSchedules: (json['teachingSchedules'] as List)
-          .map((e) => TeachingSchedule.fromJson(e))
+      timeSlots: (json['timeSlots'] as List)
+          .map((e) => FixedTimeSlot.fromJson(e))
           .toList(),    
       free: Free.fromJson(json['free']),
     );
@@ -112,7 +112,7 @@ class AllMentors {
       'reviews': reviews.map((e) => e.toJson()).toList(),
       'certificates': certificates.map((e) => e.toJson()).toList(),
       'categories': categories.map((e) => e.toJson()).toList(),
-      'teachingSchedules': teachingSchedules.map((e) => e.toJson()).toList(),
+      'timeSlots': timeSlots.map((e) => e.toJson()).toList(),
       'free': free.toJson(),
     };
   }
@@ -128,64 +128,55 @@ class AllMentors {
 }
 
 
-class TeachingSchedule {
+class FixedTimeSlot {
   final int id;
-  final DateTime dateStart;
-  final DateTime timeStart;
-  final DateTime timeEnd;
-  final bool booked;
+  final String timeStart;
+  final String timeEnd;
   final int mentorId;
 
-  TeachingSchedule({
+  FixedTimeSlot({
     required this.id,
-    required this.dateStart,
     required this.timeStart,
     required this.timeEnd,
-    required this.booked,
     required this.mentorId,
   });
 
-  factory TeachingSchedule.fromJson(Map<String, dynamic> json) {
-    return TeachingSchedule(
+  // Factory method to create a FixedTimeSlot from JSON
+  factory FixedTimeSlot.fromJson(Map<String, dynamic> json) {
+    return FixedTimeSlot(
       id: json['id'],
-      dateStart: DateTime.parse(json['date_start']), // Convert string to DateTime
-      timeStart: DateTime.parse(json['time_start']), // Convert string to DateTime
-      timeEnd: DateTime.parse(json['time_end']),     // Convert string to DateTime
-      booked: json['booked'],
-      mentorId: json['mentor_id'],
+      timeStart: json['timeStart'], // Assuming these are strings
+      timeEnd: json['timeEnd'],     // Assuming these are strings
+      mentorId: json['mentorId'],
     );
   }
 
   // CopyWith Method
-  TeachingSchedule copyWith({
+  FixedTimeSlot copyWith({
     int? id,
-    DateTime? dateStart,
-    DateTime? timeStart,
-    DateTime? timeEnd,
-    bool? booked,
+    String? timeStart,
+    String? timeEnd,
     int? mentorId,
   }) {
-    return TeachingSchedule(
+    return FixedTimeSlot(
       id: id ?? this.id,
-      dateStart: dateStart ?? this.dateStart,
       timeStart: timeStart ?? this.timeStart,
       timeEnd: timeEnd ?? this.timeEnd,
-      booked: booked ?? this.booked,
       mentorId: mentorId ?? this.mentorId,
     );
   }
 
+  // Convert FixedTimeSlot to JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'date_start': dateStart.toIso8601String(),  // Convert DateTime to string
-      'time_start': timeStart.toIso8601String(),  // Convert DateTime to string
-      'time_end': timeEnd.toIso8601String(),      // Convert DateTime to string
-      'booked': booked,
+      'time_start': timeStart, // Assuming these are already formatted strings
+      'time_end': timeEnd,     // Assuming these are already formatted strings
       'mentor_id': mentorId,
     };
   }
 }
+
 
 class Experience {
   final int id;

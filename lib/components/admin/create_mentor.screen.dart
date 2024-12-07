@@ -437,7 +437,7 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // For date formatting
+// For date formatting
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -472,12 +472,10 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
   List<TextEditingController> experienceStartDateControllers = [];
   List<TextEditingController> experienceEndDateControllers = [];
 
-  //teaching schedules
-  List<TextEditingController> teachingScheduleStartDateControllers = [];
-  List<TextEditingController> teachingScheduleEndDateControllers = [];
-  List<TextEditingController> teachingScheduleStartTimeControllers = [];
-  List<TextEditingController> teachingScheduleEndTimeControllers = [];
-  List<bool> teachingScheduleIsBooked = [];
+  //Time Slots
+  List<TextEditingController> timeSlotsTimeStartControllers = [];
+  List<TextEditingController> timeSlotsTimeEndControllers = [];
+  
 
   List<TextEditingController> categoryControllers = [];
 
@@ -485,7 +483,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
 
   bool isVerified = false;
   bool isSubmitting = false;
-  bool isBooked = false; // Track booked status for teaching schedule
+  
 
   // API endpoint for creating a mentor
   final String apiUrl = "http://localhost:8080/api/mentors"; // Replace with your actual API URL
@@ -529,18 +527,12 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
           "description": experienceDescriptionControllers[index].text,
         };
       }),
-      "teachingSchedules": List.generate(teachingScheduleStartDateControllers.length, (index) {
-        DateTime parsedTimeStart = DateTime.parse('${teachingScheduleStartDateControllers[index].text} ${teachingScheduleStartTimeControllers[index].text}:00');
-        DateTime parsedTimeEnd = DateTime.parse('${teachingScheduleEndDateControllers[index].text} ${teachingScheduleEndTimeControllers[index].text}:00');
-
-        String formattedTimeStart = parsedTimeStart.toIso8601String().split(".")[0];
-        String formattedTimeEnd = parsedTimeEnd.toIso8601String().split(".")[0];
+      "timeSlots": List.generate(timeSlotsTimeStartControllers.length, (index) {
+        
 
         return {
-          "dateStart": "${parsedTimeStart.toIso8601String().split('T')[0]}T00:00:00",
-          "timeStart": formattedTimeStart,
-          "timeEnd": formattedTimeEnd,
-          "booked": teachingScheduleIsBooked[index],
+          "timeStart": timeSlotsTimeStartControllers[index].text,
+          "timeEnd": timeSlotsTimeEndControllers[index].text,
         };
       }),
       "categories": List.generate(categoryControllers.length, (index) {
@@ -629,15 +621,11 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     experienceStartDateControllers.clear();
     experienceEndDateControllers.clear();
     categoryControllers.clear();
-    teachingScheduleStartDateControllers.clear();
-    teachingScheduleEndDateControllers.clear();
-    teachingScheduleStartTimeControllers.clear();
-    teachingScheduleEndTimeControllers.clear();
-    teachingScheduleIsBooked.clear();
+    timeSlotsTimeStartControllers.clear();
+    timeSlotsTimeEndControllers.clear();
     setState(() {
       isVerified = false;
       isSubmitting = false;
-      isBooked = false; // Reset booked status
     });
   }
 
@@ -666,11 +654,8 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
    // Add new teaching schedule input fields
   void _addTeachingSchedule() {
     setState(() {
-      teachingScheduleStartDateControllers.add(TextEditingController());
-      teachingScheduleEndDateControllers.add(TextEditingController());
-      teachingScheduleStartTimeControllers.add(TextEditingController());
-      teachingScheduleEndTimeControllers.add(TextEditingController());
-      teachingScheduleIsBooked.add(false); // Default value for "booked" status
+      timeSlotsTimeStartControllers.add(TextEditingController());
+      timeSlotsTimeEndControllers.add(TextEditingController()); // Default value for "booked" status
     });
   }
 
@@ -782,7 +767,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                         ),
                         TextField(
                           controller: certificateDateControllers[index],
-                          decoration: const InputDecoration(labelText: "Certificate Date"),
+                          decoration: const InputDecoration(labelText: "Certificate Date YYYY-MM-DD"),
                         ),
                       ],
                     );
@@ -816,11 +801,11 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                         ),
                         TextField(
                           controller: experienceStartDateControllers[index],
-                          decoration: const InputDecoration(labelText: "Start Date"),
+                          decoration: const InputDecoration(labelText: "Start Date YYYY-MM-DD"),
                         ),
                         TextField(
                           controller: experienceEndDateControllers[index],
-                          decoration: const InputDecoration(labelText: "End Date"),
+                          decoration: const InputDecoration(labelText: "End Date YYYY-MM-DD"),
                         ),
                       ],
                     );
@@ -835,42 +820,25 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Teaching Schedules"),
-                  ...List.generate(teachingScheduleStartDateControllers.length, (index) {
+                  const Text("Time Slots"),
+                  ...List.generate(timeSlotsTimeStartControllers.length, (index) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextField(
-                          controller: teachingScheduleStartDateControllers[index],
-                          decoration: const InputDecoration(labelText: "Start Date (YYYY-MM-DD)"),
+                          controller: timeSlotsTimeStartControllers[index],
+                          decoration: const InputDecoration(labelText: "Start Time (HH:MM:SS)"),
                         ),
                         TextField(
-                          controller: teachingScheduleEndDateControllers[index],
-                          decoration: const InputDecoration(labelText: "End Date (YYYY-MM-DD)"),
-                        ),
-                        TextField(
-                          controller: teachingScheduleStartTimeControllers[index],
-                          decoration: const InputDecoration(labelText: "Start Time (HH:MM)"),
-                        ),
-                        TextField(
-                          controller: teachingScheduleEndTimeControllers[index],
-                          decoration: const InputDecoration(labelText: "End Time (HH:MM)"),
-                        ),
-                        CheckboxListTile(
-                          title: const Text("Is this time booked?"),
-                          value: teachingScheduleIsBooked[index],
-                          onChanged: (bool? value) {
-                            setState(() {
-                              teachingScheduleIsBooked[index] = value!;
-                            });
-                          },
+                          controller: timeSlotsTimeEndControllers[index],
+                          decoration: const InputDecoration(labelText: "End Time (HH:MM:SS)"),
                         ),
                       ],
                     );
                   }),
                   ElevatedButton(
                     onPressed: _addTeachingSchedule,
-                    child: const Text("Add Teaching Schedule"),
+                    child: const Text("Add TimeSlots"),
                   ),
                 ],
               ),

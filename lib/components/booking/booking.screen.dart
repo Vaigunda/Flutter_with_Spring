@@ -4,17 +4,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mentor/shared/models/connect_method.model.dart';
+import 'package:mentor/shared/models/fixed_time_slot.model.dart';
 import 'package:mentor/shared/models/profile_mentor.model.dart';
-import 'package:mentor/shared/models/teaching_schedule.model.dart';
 import 'package:mentor/shared/shared.dart';
 import 'package:mentor/shared/views/button.dart';
-import 'package:mentor/shared/views/calendar_booking.dart';
+import 'package:mentor/shared/services/connect_method.service.dart';
+import 'package:mentor/shared/services/profile_mentor.service.dart';
+import 'package:mentor/shared/services/time_slot.service.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-import 'package:mentor/shared/services/teaching_schedule.service.dart'; 
-import 'package:mentor/shared/services/connect_method.service.dart'; 
-import 'package:mentor/shared/services/profile_mentor.service.dart'; 
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 
 class BookingScreen extends StatefulWidget {
@@ -26,89 +25,64 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
-  late List<TeachingScheduleModel> _selectedEvents;
-
-  late final kEvents;
-  late final _kEventSource;
-  ProfileMentor? mentor;  // Marked as nullable
+  late ProfileMentor? mentor;
   int _index = 0;
   String _errorMessage = "";
+  DateTime _focusedDay = DateTime.now(); // Add this
+  bool isLoading = false; // Add this
   DateTime _selectedDay = DateTime.now();
-  late List<TeachingScheduleModel> teachSchedule =[];
-  late List<ConnectMethodModel> connectMethods =[];
+  late List<ConnectMethodModel> connectMethods = [];
+  late List<FixedTimeSlotModel> timeSlots = [];
 
   List<Map<String, dynamic>> formData = [
     {"message": "Please choose a category", "value": null},
-    {"message": "Please booking time", "value": null},
-    {"message": "Please select method connect", "value": null},
+    {"message": "Please select a date and time slot", "value": null},
+    {"message": "Please select a connection method", "value": null},
   ];
-
-  Future<void> fetchData() async {
-    TeachingScheduleService teachingScheduleService = TeachingScheduleService();
-    ConnectMethodService connectMethodService = ConnectMethodService();
-    try {
-      // Fetch mentor, teaching schedule, and connect methods data asynchronously
-      final results = await Future.wait([
-        ProfileMentorService.fetchMentorById(int.parse(widget.profileId)),
-        teachingScheduleService.fetchTeachingSchedules(),
-        connectMethodService.fetchConnectMethods(),
-      ]);
-
-      setState(() {
-        mentor = results[0] as ProfileMentor;
-        teachSchedule = results[1] as List<TeachingScheduleModel>;
-        connectMethods = results[2] as List<ConnectMethodModel>;
-
-        // print(teachSchedule); // Will print the entire list with each item formatted as per toString()
-
-        for (var schedule in teachSchedule) {
-          print(schedule);  // Will print individual schedule objects with values
-        }
-
-        print(mentor?.categories);
-
-        
-      });
-    } catch (error) {
-      print('Error fetching data: $error');
-      setState(() {
-        _errorMessage = "Failed to fetch data.";
-      });
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    fetchData();  // Fetch data asynchronously on init
+
+    ConnectMethodService connectMethodService = ConnectMethodService();
+
+    Future.wait([
+      ProfileMentorService.fetchMentorById(int.parse(widget.profileId)),
+      connectMethodService.fetchConnectMethods(),
+    ]).then((results) {
+      setState(() {
+        mentor = results[0] as ProfileMentor;
+        connectMethods = results[1] as List<ConnectMethodModel>;
+      });
+      // Fetch time slots for today's date
+      fetchTimeSlots();
+    }).catchError((error) {
+      print('Error fetching data: $error');
+      setState(() {
+        _errorMessage = "Failed to fetch data.";
+      });
+    });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  Future<void> fetchTimeSlots() async {
+    TimeSlotService timeSlotService = TimeSlotService();
+    try {
+      var slots = await timeSlotService.fetchAvailableTimeSlots(
+        widget.profileId,
+        _selectedDay,
+      );
+      setState(() {
+        timeSlots = slots; // List of time slots from API
+      });
+    } catch (error) {
+      print('Error fetching time slots: $error');
+      setState(() {
+        _errorMessage = "Failed to fetch time slots.";
+      });
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: mentor == null
-              ? const CircularProgressIndicator()  // Display loading indicator if mentor is not available
-              : Text("Booking ${mentor!.name}"),  // Display mentor name once fetched
-          leading: IconButton(
-            icon: const Icon(FontAwesomeIcons.chevronLeft),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
-        body: SafeArea(
-            child: mentor == null  // Show loading spinner if data is not available
-                ? const Center(child: CircularProgressIndicator())
-                : SingleChildScrollView(child: bookingStepperForm())));
-  }
-
-  onStepCancel() {
+  void onStepCancel() {
     if (_index > 0) {
       setState(() {
         _index -= 1;
@@ -116,7 +90,7 @@ class _BookingScreenState extends State<BookingScreen> {
     }
   }
 
-  onStepContinue() {
+  void onStepContinue() {
     if (formData[_index]["value"] == null) {
       setState(() {
         _errorMessage = formData[_index]["message"];
@@ -130,7 +104,7 @@ class _BookingScreenState extends State<BookingScreen> {
     });
   }
 
-  StepState stateStep(index) {
+  StepState stateStep(int index) {
     return _index > index
         ? StepState.complete
         : _index == index
@@ -138,59 +112,75 @@ class _BookingScreenState extends State<BookingScreen> {
             : StepState.disabled;
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Booking ${mentor?.name ?? ''}"),
+        leading: IconButton(
+          icon: const Icon(FontAwesomeIcons.chevronLeft),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(child: bookingStepperForm()),
+      ),
+    );
+  }
+
   Widget bookingStepperForm() {
     return Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (_index == 0)
-              renderSelectCategory()
-            else if (_index == 1)
-              renderSelectTime()
-            else if (_index == 2)
-              renderSelectMethodConnect()
-            else if (_index == 3)
-              renderSubmitBooking(),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                if (_index != 0)
-                  CustomButton(
-                    label: "Previous",
-                    onPressed: onStepCancel,
-                    type: EButtonType.outline,
-                  ),
-                const SizedBox(width: 10),
-                if (_index < 3)
-                  CustomButton(label: "Next", onPressed: onStepContinue),
-                if (_index == 3)
-                  CustomButton(
-                      label: "Booking",
-                      onPressed: () => {
-                            //TODO: submit booking here
-                            context.pop()
-                          }),
-              ],
-            ),
-          ],
-        ));
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (_index == 0)
+            renderSelectCategory()
+          else if (_index == 1)
+            renderSelectDateAndTimeSlot()
+          else if (_index == 2)
+            renderSelectMethodConnect()
+          else if (_index == 3)
+            renderSubmitBooking(),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              if (_index != 0)
+                CustomButton(
+                  label: "Previous",
+                  onPressed: onStepCancel,
+                  type: EButtonType.outline,
+                ),
+              const SizedBox(width: 10),
+              if (_index < 3)
+                CustomButton(label: "Next", onPressed: onStepContinue),
+              if (_index == 3)
+                CustomButton(
+                  label: "Booking",
+                  onPressed: () async {
+                    // TODO: Submit booking here
+                    await submitBooking();
+                    context.pop();
+                  },
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget renderSelectCategory() {
-    if (mentor!.categories.isEmpty) {
-      return const Text("No categories available for this mentor.");
-    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         renderHeaderStep("Select a category"),
         for (var item in [
           ...mentor!.categories,
-          Category(id: 'other', name: "Other", icon: "circleQuestion")
+          Category(id: 'other', name: "Other", icon: "circleQuestion"),
         ])
           ListTile(
             minLeadingWidth: 10,
@@ -198,8 +188,8 @@ class _BookingScreenState extends State<BookingScreen> {
             dense: true,
             tileColor: Colors.transparent,
             title: Text(item.name,
-                style: context.bodyMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface)),
+                style: context.bodyMedium!
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface)),
             leading: Radio<String>(
               value: item.id,
               groupValue: formData[_index]["value"],
@@ -214,68 +204,80 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-
-  Widget renderSelectTime() {
-    // Use filteredTeachSchedule to display time slots
-    var filteredTeachSchedule = teachSchedule
-        .where((schedule) => schedule.mentorId == mentor!.id.toString())
-        .toList();
-
+  Widget renderSelectDateAndTimeSlot() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        renderHeaderStep("Select day with available time slots"),
-        CalendarBooking(
-          selectedDay: _selectedDay,
-          onDaySelected: _onDaySelected,
-          getEventsForDay: (day) {
-            // Filter events for the selected day
-            return filteredTeachSchedule
-                .where((schedule) =>
-                    isSameDay(
-                        DateTime(schedule.dateStart.year, schedule.dateStart.month, schedule.dateStart.day), day))
-                .toList();
+        renderHeaderStep("Select a date and time slot"),
+        TableCalendar(
+          focusedDay: _selectedDay, // This will be updated
+          firstDay: DateTime.now(),
+          lastDay: DateTime.now().add(const Duration(days: 30)),
+          calendarFormat: CalendarFormat.month,
+          selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
+          onDaySelected: (selectedDay, focusedDay) {
+            setState(() {
+              _selectedDay = selectedDay; // Update selected day
+              _focusedDay = focusedDay; // Update focused day
+              isLoading = true; // Set loading state to true
+            });
+
+            fetchTimeSlots().then((_) {
+              // After fetching, set loading state to false
+              setState(() {
+                isLoading = false;
+              });
+            }).catchError((error) {
+              // Handle any errors
+              setState(() {
+                isLoading = false;
+              });
+              // Show error feedback if needed
+              print("Error fetching time slots: $error");
+            });
+          },
+          enabledDayPredicate: (day) {
+            // Disable Sundays (day.weekday == 7 represents Sunday in Dart)
+            return day.weekday != DateTime.sunday;
           },
         ),
-        const SizedBox(height: 8.0),
-        for (var value in filteredTeachSchedule
-            .where((schedule) => isSameDay(
-                DateTime(schedule.dateStart.year, schedule.dateStart.month, schedule.dateStart.day), _selectedDay)))
-          Container(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 12.0,
-              vertical: 4.0,
-            ),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: value.booked ? context.colors.error : Colors.green,
-              ),
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: ListTile(
-              selected: formData[_index]["value"] == value.id,
-              selectedTileColor: Theme.of(context).colorScheme.primaryContainer,
-              onTap: () => {
-                if (!value.booked)
-                  {
-                    setState(() {
-                      formData[_index]["value"] =
-                          formData[_index]["value"] == value.id ? null : value.id;
-                    })
-                  }
-              },
-              title: Text(
-                  '${DateFormat.Hm().format(value.timeStart)} - ${DateFormat.Hm().format(value.timeEnd)}',
-                  style: context.titleSmall),
-              subtitle: Text(value.booked ? "Occupied" : "Available",
-                  style: context.bodySmall!.copyWith(
-                      color:
-                          value.booked ? context.colors.error : Colors.green)),
-            ),
+        const SizedBox(height: 10),
+        Text("Available Time Slots:", style: context.titleSmall),
+        const SizedBox(height: 10),
+        if (isLoading)
+          const Center(
+            child: CircularProgressIndicator(), // Show loading spinner
+          )
+        else if (timeSlots.isEmpty)
+          const Center(
+            child: Text("No time slots available for the selected date."),
+          )
+        else
+          Column(
+            children: timeSlots.map((slot) {
+              return ListTile(
+                title: Text(
+                  "${slot.timeStart} - ${slot.timeEnd} (${slot.status})",
+                ),
+                leading: Radio<FixedTimeSlotModel>(
+                  value: slot,
+                  groupValue: formData[_index]["value"],
+                  onChanged: slot.status == "available"
+                      ? (value) {
+                          setState(() {
+                            formData[_index]["value"] = value;
+                          });
+                        }
+                      : null,
+                ),
+                enabled: slot.status == "available",
+              );
+            }).toList(),
           ),
       ],
     );
   }
+
 
   Widget renderSelectMethodConnect() {
     return Column(
@@ -283,107 +285,199 @@ class _BookingScreenState extends State<BookingScreen> {
       children: [
         renderHeaderStep("Select method connect"),
         DecoratedBox(
-            decoration: BoxDecoration(
-              // border of dropdown button
-              border: Border.all(
-                  color: Theme.of(context).colorScheme.outline, width: 1),
-              borderRadius:
-                  BorderRadius.circular(8), // border radius of dropdown button
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outline, width: 1,
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: DropdownButton<String>(
-                focusColor: Colors.transparent,
-                isExpanded: true,
-                isDense: true,
-                underline: Container(),
-                value: formData[_index]["value"],
-                hint: const Text("Select method to connect with mentor"),
-                items: connectMethods.map((ConnectMethodModel value) {
-                  return DropdownMenuItem<String>(
-                    value: value.id,
-                    child: Text(value.name),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    formData[_index]["value"] = value;
-                  });
-                },
-              ),
-            ))
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: DropdownButton<String>(
+              focusColor: Colors.transparent,
+              isExpanded: true,
+              isDense: true,
+              underline: Container(),
+              value: formData[_index]["value"],
+              hint: const Text("Select method to connect with mentor"),
+              items: connectMethods.map((ConnectMethodModel value) {
+                return DropdownMenuItem<String>(
+                  value: value.id,
+                  child: Text(value.name),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  formData[_index]["value"] = value;
+                });
+              },
+            ),
+          ),
+        ),
       ],
     );
   }
 
   Widget renderSubmitBooking() {
+    // Get selected category and connect method
     var category = mentor!.categories
-        .firstWhere((element) => element.id == formData[0]["value"]);
-    var studySchedule = teachSchedule
-        .firstWhere((element) => element.id == formData[1]["value"]);
+        .firstWhere((element) => element.id == formData[0]["value"], orElse: () => Category(id: 'default', name: 'Default', icon: 'circle'));
+
     var method = connectMethods
-        .firstWhere((element) => element.id == formData[2]["value"]);
+        .firstWhere((element) => element.id == formData[2]["value"], orElse: () => const ConnectMethodModel(id: 'default', name: 'Default'));
+
+    var selectedTimeSlot = formData[1]["value"]; // This will hold the selected time slot object
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Your booking information: ", style: context.titleSmall),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         Text("Mentor:", style: context.titleSmall),
         Text(mentor!.name),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         Text("Category:", style: context.titleSmall),
         Text(category.name),
-        const SizedBox(
-          height: 10,
-        ),
-        Text("Study schedule:", style: context.titleSmall),
-        Text(
-            "${DateFormat.Hm().format(studySchedule.timeStart)} - ${DateFormat.Hm().format(studySchedule.timeEnd)}"),
-        const SizedBox(
-          height: 10,
-        ),
-        Text("Connect method", style: context.titleSmall),
+        const SizedBox(height: 10),
+        Text("Time Slot:", style: context.titleSmall),
+        Text("${selectedTimeSlot.timeStart} - ${selectedTimeSlot.timeEnd}"), // Display time slot
+        const SizedBox(height: 10),
+        Text("Connect method:", style: context.titleSmall),
         Text(method.name),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
       ],
     );
   }
 
-  Widget renderHeaderStep(label) {
+
+  Widget renderHeaderStep(String label) {
     return Column(
       children: [
         Text(label, style: context.titleSmall),
-        const SizedBox(
-          height: 10,
-        ),
+        const SizedBox(height: 10),
         if (_errorMessage.isNotEmpty)
           Text(_errorMessage,
-              style: context.bodySmall!.copyWith(color: context.colors.error)),
+              style: context.bodySmall!.copyWith(color: Colors.red)),
+        const SizedBox(height: 20),
       ],
     );
   }
 
-  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
-    if (!isSameDay(_selectedDay, selectedDay)) {
+  Future<void> submitBooking() async {
+    // Get the selected values
+    var category = mentor!.categories
+        .firstWhere((element) => element.id == formData[0]["value"], orElse: () => Category(id: 'default', name: 'Default', icon: 'circle'));
+
+    var method = connectMethods
+        .firstWhere((element) => element.id == formData[2]["value"], orElse: () => const ConnectMethodModel(id: 'default', name: 'Default'));
+
+    var selectedTimeSlot = formData[1]["value"]; // This will hold the selected time slot object
+    
+    // Prepare the body for the POST request
+    var requestBody = jsonEncode({
+      "mentorId": mentor!.id,  // You can replace with the actual mentor ID
+      "userId": 1,  // Replace with the actual user ID (you may get this from the user profile)
+      "timeSlotId": selectedTimeSlot.id,  // Time slot ID user selected
+      "date": DateFormat('yyyy-MM-dd').format(_selectedDay), // Format the selected day to string
+      "category": category.name,  // Category name selected by user
+      "connectMethod": method.name  // Connection method selected by user
+    });
+    print(requestBody);
+
+    try {
+      // Send the POST request to your backend API
+      var response = await http.post(
+        Uri.parse('https://yourapi.com/submit-booking'), // Replace with your actual API endpoint
+        headers: {
+          'Content-Type': 'application/json',  // Ensure the API expects JSON
+        },
+        body: requestBody,
+      );
+
+      if (response.statusCode == 200) {
+        // Successfully booked
+        print('Booking successful');
+        // You can display a success message or redirect the user
+      } else {
+        // Something went wrong, handle the error
+        print('Failed to submit booking. Status code: ${response.statusCode}');
+        setState(() {
+          _errorMessage = "Failed to submit booking. Please try again.";
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
       setState(() {
-        _selectedDay = selectedDay;
-        // _focusedDay = focusedDay;
+        _errorMessage = "An error occurred. Please try again.";
       });
-      _selectedEvents = _getEventsForDay(selectedDay);
     }
   }
+}
 
-  List<TeachingScheduleModel> _getEventsForDay(DateTime day) {
-    // Normalize the selected day to midnight (ignore the time)
-    var selectedDayNormalized = DateTime(day.year, day.month, day.day);
-    return kEvents[selectedDayNormalized] ?? [];
-  } 
+
+
+
+
+  // Widget renderHeaderStep(label) {
+  //   return Column(
+  //     children: [
+  //       Text(label, style: context.titleSmall),
+  //       const SizedBox(
+  //         height: 10,
+  //       ),
+  //       if (_errorMessage.isNotEmpty)
+  //         Text(_errorMessage,
+  //             style: context.bodySmall!.copyWith(color: context.colors.error)),
+  //     ],
+  //   );
+  // }
+
+  // void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+  //   if (!isSameDay(_selectedDay, selectedDay)) {
+  //     setState(() {
+  //       _selectedDay = selectedDay;
+  //       // _focusedDay = focusedDay;
+  //     });
+      
+  //   }
+  // }
+
+//   Future<void> _submitBooking() async {
+//     var category = mentor!.categories
+//         .firstWhere((element) => element.id == formData[0]["value"]);
+//     var selectedSlot = teachSchedule
+//         .firstWhere((slot) => slot.id == formData[1]["value"]);
+//     var method = connectMethods
+//         .firstWhere((element) => element.id == formData[2]["value"]);
+
+//     var bookingRequest = {
+//       'mentorId': mentor!.id,
+//       'categoryId': category.id,
+//       'timeSlotId': selectedSlot.id,
+//       'connectMethodId': method.id,
+//     };
+
+//     try {
+//       final response = await http.post(
+//         Uri.parse('your_api_url/bookings'),
+//         headers: {'Content-Type': 'application/json'},
+//         body: json.encode(bookingRequest),
+//       );
+
+//       if (response.statusCode == 201) {
+//         ScaffoldMessenger.of(context)
+//             .showSnackBar(const SnackBar(content: Text("Booking Successful!")));
+//         context.pop();
+//       } else {
+//         throw Exception("Failed to submit booking");
+//       }
+//     } catch (e) {
+//       ScaffoldMessenger.of(context)
+//           .showSnackBar(SnackBar(content: Text("Error: $e")));
+//     }
+//   }
+// }
+  
 
 
   // List<TeachingScheduleModel> _getEventsForDay(DateTime day) {
@@ -423,7 +517,7 @@ class _BookingScreenState extends State<BookingScreen> {
   //     );
   //   }
   // }
-}
+
 
 
 

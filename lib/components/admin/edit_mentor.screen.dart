@@ -31,10 +31,10 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
   List<TextEditingController> certificateProvidedByControllers = [];
   List<TextEditingController> certificateImageUrlControllers = [];
   List<TextEditingController> certificateDateControllers = [];
-  List<TextEditingController> teachingScheduleDateStartControllers = [];
-  List<TextEditingController> teachingScheduleTimeStartControllers = [];
-  List<TextEditingController> teachingScheduleTimeEndControllers = [];
-  List<TextEditingController> teachingScheduleBookedControllers = [];
+  
+  List<TextEditingController> timeSlotsTimeStartControllers = [];
+  List<TextEditingController> timeSlotsTimeEndControllers = [];
+
   List<TextEditingController> experienceRoleControllers = [];
   List<TextEditingController> experienceCompanyControllers = [];
   List<TextEditingController> experienceStartDateControllers = [];
@@ -45,7 +45,8 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
   void initState() {
     super.initState();
     mentorData = widget.mentor;
-    print(widget.mentor.teachingSchedules);
+    print(widget.mentor.timeSlots);
+    print(mentorData.experiences);
 
     nameController = TextEditingController(text: mentorData.name);
     roleController = TextEditingController(text: mentorData.role);
@@ -78,33 +79,15 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
       .toList();
 
     // Initialize controllers for teaching schedules
-    teachingScheduleDateStartControllers = mentorData.teachingSchedules
-        .map((schedule) => TextEditingController(
-            text: schedule.dateStart != null
-                ? DateFormat('yyyy-MM-ddTHH:mm:ss').format(schedule.dateStart)
-                : ''))
+  
+
+    timeSlotsTimeStartControllers = mentorData.timeSlots
+        .map((schedule) => TextEditingController(text: schedule.timeStart))
         .toList();
 
-    teachingScheduleTimeStartControllers = mentorData.teachingSchedules
-        .map((schedule) => TextEditingController(
-            text: schedule.timeStart != null
-                ? DateFormat('yyyy-MM-ddTHH:mm:ss').format(schedule.timeStart)
-                : ''))
+    timeSlotsTimeEndControllers = mentorData.timeSlots
+        .map((schedule) => TextEditingController(text: schedule.timeEnd))
         .toList();
-
-    teachingScheduleTimeEndControllers = mentorData.teachingSchedules
-        .map((schedule) => TextEditingController(
-            text: schedule.timeEnd != null
-                ? DateFormat('yyyy-MM-ddTHH:mm:ss').format(schedule.timeEnd)
-                : ''))
-        .toList();
-
-    teachingScheduleBookedControllers = mentorData.teachingSchedules
-        .map((schedule) => TextEditingController(
-            text: schedule.booked != null
-                ? schedule.booked.toString()
-                : ''))
-        .toList(); 
 
 
 
@@ -131,6 +114,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
         .map((experience) => TextEditingController(text: experience.description))
         .toList();     
     }
+   
 
   
   @override
@@ -152,10 +136,8 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
       ...certificateProvidedByControllers,
       ...certificateImageUrlControllers,
       ...certificateDateControllers,
-      ...teachingScheduleDateStartControllers,
-      ...teachingScheduleTimeStartControllers,
-      ...teachingScheduleTimeEndControllers,
-      ...teachingScheduleBookedControllers,
+      ...timeSlotsTimeStartControllers,
+      ...timeSlotsTimeEndControllers,
       ...experienceRoleControllers,
       ...experienceCompanyControllers,
       ...experienceStartDateControllers,
@@ -203,19 +185,11 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
           'description': experience.description,
         };
       }).toList(),
-      'teachingSchedules': mentorData.teachingSchedules.map((schedule) {
+      'timeSlots': mentorData.timeSlots.map((schedule) {
         return {
-          'dateStart': schedule.dateStart != null
-              ? DateFormat('yyyy-MM-ddTHH:mm:ss').format(schedule.dateStart)
-              : null,
-          'timeStart': schedule.timeStart != null
-              ? DateFormat('yyyy-MM-ddTHH:mm:ss').format(schedule.timeStart)
-              : null,
-          'timeEnd': schedule.timeEnd != null
-              ? DateFormat('yyyy-MM-ddTHH:mm:ss').format(schedule.timeEnd)
-              : null,
-          'booked': schedule.booked,
-        };
+          'timeStart': schedule.timeStart,
+          'timeEnd': schedule.timeEnd,
+        };  
       }).toList(),
       'categories': mentorData.categories.map((category) {
         return {
@@ -233,6 +207,13 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
     );
 
     if (response.statusCode == 200) {
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Mentor updated successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
       Navigator.pop(context, true); // Return success to the admin page
     } else {
       showDialog(
@@ -284,13 +265,11 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
             mentorData.categories[index] = mentorData.categories[index].copyWith(name: value);
           }
           break;
-        case 'teachingSchedules':
+        case 'timeSlots':
           if (index != null) {
-            mentorData.teachingSchedules[index] = mentorData.teachingSchedules[index].copyWith(
-              dateStart: DateTime.tryParse(value['dateStart']) ?? mentorData.teachingSchedules[index].dateStart,
-              timeStart: DateTime.tryParse(value['timeStart']) ?? mentorData.teachingSchedules[index].timeStart,
-              timeEnd: DateTime.tryParse(value['timeEnd']) ?? mentorData.teachingSchedules[index].timeEnd,
-              booked: value['booked'] ?? mentorData.teachingSchedules[index].booked,
+            mentorData.timeSlots[index] = mentorData.timeSlots[index].copyWith(
+              timeStart: timeSlotsTimeStartControllers[index].text,
+              timeEnd: timeSlotsTimeEndControllers[index].text,
             );
           }
           break;
@@ -312,10 +291,12 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
         case 'certificates':
           if (index != null) {
             mentorData.certificates[index] = mentorData.certificates[index].copyWith(
-              name: value['name'],
-              provideBy: value['provideBy'],
-              createDate: DateTime.tryParse(value['createDate']) ?? mentorData.certificates[index].createDate,
-              imageUrl: value['imageUrl'],
+              name: value['name'] ?? mentorData.certificates[index].name,
+              provideBy: value['provideBy'] ?? mentorData.certificates[index].provideBy,
+              createDate: value['createDate'] != null
+                  ? DateTime.tryParse(value['createDate'])
+                  : mentorData.certificates[index].createDate,
+              imageUrl: value['imageUrl'] ?? mentorData.certificates[index].imageUrl,
             );
           }
           break;
@@ -405,212 +386,348 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
               final index = entry.key;
               final controller = categoryControllers[index];
 
-              return TextField(
-                controller: controller,
-                decoration: const InputDecoration(labelText: 'Category Name'),
-                onChanged: (value) => updateField('categories', value, index: index),
+              return Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: controller,
+                      decoration: const InputDecoration(labelText: 'Category Name'),
+                      onChanged: (value) => updateField('categories', value, index: index),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      setState(() {
+                        mentorData.categories.removeAt(index); // Remove category from list
+                        categoryControllers.removeAt(index); // Remove associated controller
+                      });
+                    },
+                  ),
+                ],
               );
             }),
+            // Add New Category Button
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  mentorData.categories.add(Category(id: '', name: '', icon: '')); // Add a new empty category
+                  categoryControllers.add(TextEditingController()); // Add a new controller
+                });
+              },
+            ),
             // Experiences section
             // Experiences section
             const SizedBox(height: 16),
             const Text('Experiences:'),
-            ...mentorData.experiences.asMap().entries.map((entry) {
-              final index = entry.key;
-              final experience = entry.value;
+            Column(
+              children: [
+                ...mentorData.experiences.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final experience = entry.value;
 
-              return ListTile(
-                title: Column(
-                  children: [
-                    // Role
-                    TextField(
-                      controller: experienceRoleControllers[index],
-                      decoration: const InputDecoration(labelText: 'Role'),
-                      onChanged: (value) => updateField('experiences', {
-                        'role': value,
-                        'companyName': experience.companyName,
-                        'startDate': experience.startDate,
-                        'endDate': experience.endDate,
-                        'description': experience.description,
-                      }, index: index),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0), // Optional: Add vertical spacing
+                    child: Container(
+                      color: Colors.transparent, // Remove background color
+                      padding: const EdgeInsets.all(8.0), // Optional: Add padding inside
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Role
+                          TextField(
+                            controller: experienceRoleControllers[index],
+                            decoration: const InputDecoration(labelText: 'Role'),
+                            onChanged: (value) => updateField('experiences', {
+                              'role': value,
+                              'companyName': experience.companyName,
+                              'startDate': experience.startDate,
+                              'endDate': experience.endDate,
+                              'description': experience.description,
+                            }, index: index),
+                          ),
+                          // Company Name
+                          TextField(
+                            controller: experienceCompanyControllers[index],
+                            decoration: const InputDecoration(labelText: 'Company Name'),
+                            onChanged: (value) => updateField('experiences', {
+                              'role': experience.role,
+                              'companyName': value,
+                              'startDate': experience.startDate,
+                              'endDate': experience.endDate,
+                              'description': experience.description,
+                            }, index: index),
+                          ),
+                          // Description
+                          TextField(
+                            controller: experienceDescriptionControllers[index],
+                            decoration: const InputDecoration(labelText: 'Description'),
+                            onChanged: (value) => updateField('experiences', {
+                              'role': experience.role,
+                              'companyName': experience.companyName,
+                              'startDate': experience.startDate,
+                              'endDate': experience.endDate,
+                              'description': value,
+                            }, index: index),
+                          ),
+                          // Start Date
+                          TextField(
+                            controller: experienceStartDateControllers[index],
+                            decoration: const InputDecoration(labelText: 'Start Date YYYY-MM-DD'),
+                            onChanged: (value) => updateField('experiences', {
+                              'role': experience.role,
+                              'companyName': experience.companyName,
+                              'startDate': value,
+                              'endDate': experience.endDate,
+                              'description': experience.description,
+                            }, index: index),
+                          ),
+                          // End Date
+                          TextField(
+                            controller: experienceEndDateControllers[index],
+                            decoration: const InputDecoration(labelText: 'End Date YYYY-MM-DD'),
+                            onChanged: (value) => updateField('experiences', {
+                              'role': experience.role,
+                              'companyName': experience.companyName,
+                              'startDate': experience.startDate,
+                              'endDate': value,
+                              'description': experience.description,
+                            }, index: index),
+                          ),
+                          // Delete Button
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                setState(() {
+                                  mentorData.experiences.removeAt(index);
+                                  experienceRoleControllers.removeAt(index);
+                                  experienceCompanyControllers.removeAt(index);
+                                  experienceStartDateControllers.removeAt(index);
+                                  experienceEndDateControllers.removeAt(index);
+                                  experienceDescriptionControllers.removeAt(index);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    // Company Name
-                    TextField(
-                      controller: experienceCompanyControllers[index],
-                      decoration: const InputDecoration(labelText: 'Company Name'),
-                      onChanged: (value) => updateField('experiences', {
-                        'role': experience.role,
-                        'companyName': value,
-                        'startDate': experience.startDate,
-                        'endDate': experience.endDate,
-                        'description': experience.description,
-                      }, index: index),
-                    ),
-                    // Description
-                    TextField(
-                      controller: experienceDescriptionControllers[index],
-                      decoration: const InputDecoration(labelText: 'Description'),
-                      onChanged: (value) => updateField('experiences', {
-                        'role': experience.role,
-                        'companyName': experience.companyName,
-                        'startDate': experience.startDate,
-                        'endDate': experience.endDate,
-                        'description': value,
-                      }, index: index),
-                    ),
-                    // Start Date
-                    TextField(
-                      controller: experienceStartDateControllers[index],
-                      decoration: const InputDecoration(labelText: 'Start Date'),
-                      onChanged: (value) => updateField('experiences', {
-                        'role': experience.role,
-                        'companyName': experience.companyName,
-                        'startDate': value,
-                        'endDate': experience.endDate,
-                        'description': experience.description,
-                      }, index: index),
-                    ),
-                    // End Date
-                    TextField(
-                      controller: experienceEndDateControllers[index],
-                      decoration: const InputDecoration(labelText: 'End Date'),
-                      onChanged: (value) => updateField('experiences', {
-                        'role': experience.role,
-                        'companyName': experience.companyName,
-                        'startDate': experience.startDate,
-                        'endDate': value,
-                        'description': experience.description,
-                      }, index: index),
-                    ),
-                  ],
+                  );
+                }).toList(),
+                // Add New Experience Button
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add Experience'),
+                    onPressed: () {
+                      setState(() {
+                        mentorData.experiences.add(Experience(
+                          id: 0,
+                          mentorId: mentorData.id,
+                          role: '',
+                          companyName: '',
+                          startDate: null,
+                          endDate: null,
+                          description: '',
+                        ));
+                        experienceRoleControllers.add(TextEditingController());
+                        experienceCompanyControllers.add(TextEditingController());
+                        experienceStartDateControllers.add(TextEditingController());
+                        experienceEndDateControllers.add(TextEditingController());
+                        experienceDescriptionControllers.add(TextEditingController());
+                      });
+                    },
+                  ),
                 ),
-              );
-            }),
-            // Certificates section
+              ],
+            ),
             // Certificates section
             const SizedBox(height: 16),
             const Text('Certificates:'),
-            ...mentorData.certificates.asMap().entries.map((entry) {
-              final index = entry.key;
-              final certificate = entry.value;
+            Column(
+              children: [
+                ...mentorData.certificates.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final certificate = entry.value;
 
-              return ListTile(
-                title: Column(
-                  children: [
-                    TextField(
-                      controller: certificateNameControllers[index],
-                      decoration: const InputDecoration(labelText: 'Certificate Name'),
-                      onChanged: (value) => updateField('certificates', {
-                        'name': value,
-                        'provideBy': certificate.provideBy,
-                        'createDate': certificate.createDate?.toIso8601String(),
-                        'imageUrl': certificate.imageUrl,
-                      }, index: index),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0), // Optional: Add vertical spacing
+                    child: Container(
+                      color: Colors.transparent, // Remove background color
+                      padding: const EdgeInsets.all(8.0), // Optional: Add padding inside
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Certificate Name
+                          TextField(
+                            controller: certificateNameControllers[index],
+                            decoration: const InputDecoration(labelText: 'Certificate Name'),
+                            onChanged: (value) => updateField('certificates', {
+                              'name': value,
+                              'provideBy': certificate.provideBy ?? '',
+                              'createDate': certificate.createDate?.toIso8601String(),
+                              'imageUrl': certificate.imageUrl ?? '',
+                            }, index: index),
+                          ),
+                          // Provided By
+                          TextField(
+                            controller: certificateProvidedByControllers[index],
+                            decoration: const InputDecoration(labelText: 'Provided By'),
+                            onChanged: (value) => updateField('certificates', {
+                              'name': certificate.name,
+                              'provideBy': value,
+                              'createDate': certificate.createDate?.toIso8601String(),
+                              'imageUrl': certificate.imageUrl,
+                            }, index: index),
+                          ),
+                          // Create Date
+                          TextField(
+                            controller: certificateDateControllers[index],
+                            decoration: const InputDecoration(labelText: 'Create Date YYYY-MM-DD'),
+                            onChanged: (value) => updateField('certificates', {
+                              'name': certificate.name,
+                              'provideBy': certificate.provideBy,
+                              'createDate': DateTime.tryParse(value)?.toIso8601String(),
+                              'imageUrl': certificate.imageUrl,
+                            }, index: index),
+                          ),
+                          // Image URL
+                          TextField(
+                            controller: certificateImageUrlControllers[index],
+                            decoration: const InputDecoration(labelText: 'Image URL'),
+                            onChanged: (value) => updateField('certificates', {
+                              'name': certificate.name,
+                              'provideBy': certificate.provideBy,
+                              'createDate': certificate.createDate?.toIso8601String(),
+                              'imageUrl': value,
+                            }, index: index),
+                          ),
+                          // Delete Button
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                setState(() {
+                                  mentorData.certificates.removeAt(index);
+                                  certificateNameControllers.removeAt(index);
+                                  certificateProvidedByControllers.removeAt(index);
+                                  certificateDateControllers.removeAt(index);
+                                  certificateImageUrlControllers.removeAt(index);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    TextField(
-                      controller: certificateProvidedByControllers[index],
-                      decoration: const InputDecoration(labelText: 'Provided By'),
-                      onChanged: (value) => updateField('certificates', {
-                        'name': certificate.name,
-                        'provideBy': value,
-                        'createDate': certificate.createDate?.toIso8601String(),
-                        'imageUrl': certificate.imageUrl,
-                      }, index: index),
-                    ),
-                    TextField(
-                      controller: certificateDateControllers[index],
-                      decoration: const InputDecoration(labelText: 'Create Date'),
-                      onChanged: (value) => updateField('certificates', {
-                        'name': certificate.name,
-                        'provideBy': certificate.provideBy,
-                        'createDate': DateTime.tryParse(value)?.toIso8601String(),
-                        'imageUrl': certificate.imageUrl,
-                      }, index: index),
-                    ),
-                    TextField(
-                      controller: certificateImageUrlControllers[index],
-                      decoration: const InputDecoration(labelText: 'Image URL'),
-                      onChanged: (value) => updateField('certificates', {
-                        'name': certificate.name,
-                        'provideBy': certificate.provideBy,
-                        'createDate': certificate.createDate?.toIso8601String(),
-                        'imageUrl': value,
-                      }, index: index),
-                    ),
-                  ],
+                  );
+                }).toList(),
+                // Add New Certificate Button (if needed)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add Certificate'),
+                    onPressed: () {
+                      setState(() {
+                        mentorData.certificates.add(Certificate(
+                          id: 0,
+                          mentorId: mentorData.id,
+                          name: '', // Default values
+                          provideBy: '', // Default values
+                          createDate: null, // Default values
+                          imageUrl: '', // Default values
+                        ));
+                        certificateNameControllers.add(TextEditingController());
+                        certificateProvidedByControllers.add(TextEditingController());
+                        certificateDateControllers.add(TextEditingController());
+                        certificateImageUrlControllers.add(TextEditingController());
+                      });
+                    },
+                  ),
                 ),
-              );
-            }),
-
-            // Teaching Schedules section
-            // Teaching Schedules section
+              ],
+            ),
+            // Time Slots section
             const SizedBox(height: 16),
-            const Text('Teaching Schedules:'),
-            ...mentorData.teachingSchedules.asMap().entries.map((entry) {
-              final index = entry.key;
-              final schedule = entry.value;
+            const Text('Time Slots:'),
+            Column(
+              children: [
+                ...mentorData.timeSlots.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final schedule = entry.value;
 
-              return ListTile(
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextField(
-                      controller: teachingScheduleDateStartControllers[index],
-                      decoration: const InputDecoration(labelText: 'Start Date'),
-                      onChanged: (value) {
-                        updateField('teachingSchedules', {
-                          'dateStart': value,
-                          'timeStart': schedule.timeStart.toIso8601String(),
-                          'timeEnd': schedule.timeEnd.toIso8601String(),
-                          'booked': schedule.booked,
-                        }, index: index);
-                      },
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0), // Optional: Add vertical spacing
+                    child: Container(
+                      color: Colors.transparent, // Remove background color
+                      padding: const EdgeInsets.all(8.0), // Optional: Add padding inside
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Time Start
+                          TextField(
+                            controller: timeSlotsTimeStartControllers[index],
+                            decoration: const InputDecoration(labelText: 'Time Start HH:MM:SS'),
+                            onChanged: (value) {
+                              updateField('timeSlots', {
+                                'timeStart': value,
+                                'timeEnd': schedule.timeEnd,
+                              }, index: index);
+                            },
+                          ),
+                          // Time End
+                          TextField(
+                            controller: timeSlotsTimeEndControllers[index],
+                            decoration: const InputDecoration(labelText: 'Time End HH:MM:SS'),
+                            onChanged: (value) {
+                              updateField('timeSlots', {
+                                'timeStart': schedule.timeStart,
+                                'timeEnd': value,
+                              }, index: index);
+                            },
+                          ),
+                          // Delete Button
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                setState(() {
+                                  mentorData.timeSlots.removeAt(index);
+                                  timeSlotsTimeStartControllers.removeAt(index);
+                                  timeSlotsTimeEndControllers.removeAt(index);
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    TextField(
-                      controller: teachingScheduleTimeStartControllers[index],
-                      decoration: const InputDecoration(labelText: 'Time Start'),
-                      onChanged: (value) {
-                        updateField('teachingSchedules', {
-                          'dateStart': schedule.dateStart.toIso8601String(),
-                          'timeStart': value,
-                          'timeEnd': schedule.timeEnd.toIso8601String(),
-                          'booked': schedule.booked,
-                        }, index: index);
-                      },
-                    ),
-                    TextField(
-                      controller: teachingScheduleTimeEndControllers[index],
-                      decoration: const InputDecoration(labelText: 'Time End'),
-                      onChanged: (value) {
-                        updateField('teachingSchedules', {
-                          'dateStart': schedule.dateStart.toIso8601String(),
-                          'timeStart': schedule.timeStart.toIso8601String(),
-                          'timeEnd': value,
-                          'booked': schedule.booked,
-                        }, index: index);
-                      },
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Booked'),
-                        Switch(
-                          value: schedule.booked,
-                          onChanged: (value) {
-                            updateField('teachingSchedules', {
-                              'dateStart': schedule.dateStart.toIso8601String(),
-                              'timeStart': schedule.timeStart.toIso8601String(),
-                              'timeEnd': schedule.timeEnd.toIso8601String(),
-                              'booked': value,
-                            }, index: index);
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+                  );
+                }).toList(),
+                // Add New Time Slot Button (if needed)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.add),
+                    label: const Text('Add Time Slot'),
+                    onPressed: () {
+                      setState(() {
+                        mentorData.timeSlots.add(FixedTimeSlot(id:0,mentorId: mentorData.id,timeStart: '', timeEnd: ''));
+                        timeSlotsTimeStartControllers.add(TextEditingController());
+                        timeSlotsTimeEndControllers.add(TextEditingController());
+                      });
+                    },
+                  ),
                 ),
-              );
-            }),
+              ],
+            ),
             // Save button
             ElevatedButton(
               onPressed: saveMentor,
