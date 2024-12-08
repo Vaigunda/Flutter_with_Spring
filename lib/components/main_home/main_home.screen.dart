@@ -139,6 +139,7 @@ import 'package:mentor/components/main_home/widgets/verified.dart';
 import 'package:mentor/navigation/router.dart';
 import 'package:mentor/shared/models/verified.model.dart';
 import 'package:mentor/shared/services/verified.service.dart';
+import 'package:mentor/provider/user_data_provider.dart';
 import '../../shared/services/top_rated_mentor.service.dart';
 import '../../shared/services/top_mentor.service.dart';
 import '../../shared/models/top_rated_mentor.model.dart';
@@ -147,6 +148,7 @@ import '../../shared/views/brightness_toggle.dart';
 import 'widgets/categories.dart';
 import 'widgets/explore.dart';
 import 'widgets/top_mentors.dart';
+import 'package:provider/provider.dart';
 
 class MainHomeScreen extends StatefulWidget {
   const MainHomeScreen({super.key});
@@ -160,6 +162,11 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   late Future<List<TopMentorModel>> topMentors;
   late Future<List<VerifiedMentor>> verifiedMentors;
 
+  late String usertoken;
+  late String userid;
+
+  var provider;
+
   @override
   void initState() {
     super.initState();
@@ -167,6 +174,10 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     topRatedMentors = MentorService().fetchTopRatedMentors();
     topMentors = TopMentorService().fetchTopMentors();
     verifiedMentors= VerifiedService().fetchVerifiedMentors();
+
+    provider = context.read<UserDataProvider>();
+    usertoken = provider.usertoken;
+    userid = provider.userid;
   }
 
   @override
@@ -181,10 +192,11 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               children: [
                 Row(
                   children: [
-                    TextButton(
-                      onPressed: () => context.go(AppRoutes.signin),
-                      child: const Text("Sign in"),
-                    ),
+                    if(userid.isEmpty)
+                      TextButton(
+                        onPressed: () => context.go(AppRoutes.signin),
+                        child: const Text("Sign in"),
+                      ),
                     Expanded(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
