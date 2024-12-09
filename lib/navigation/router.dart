@@ -19,6 +19,12 @@ import 'package:mentor/components/search/search.screen.dart';
 import 'package:mentor/components/settings/setting_teaching_schedule.screen.dart';
 import 'package:mentor/components/settings/settings.screen.dart';
 import 'package:mentor/components/splash/spash.screen.dart';
+import 'package:mentor/components/admin/create_mentor.screen.dart';
+import 'package:mentor/components/admin/admin_page.screen.dart';
+import 'package:mentor/components/admin/edit_mentor.screen.dart';
+import 'package:mentor/components/admin/view_mentor.screen.dart';
+
+import 'package:mentor/shared/models/all_mentors.model.dart';
 
 import '../components/notification/notification.screen.dart';
 import '../shared/views/root_layout.dart';
@@ -46,6 +52,10 @@ class AppRoutes {
   static String bookingMentor = '/booking-mentor';
   static String becomeMentor = '/become-mentor';
   static String settingTeachingSchedule = '/setting-teaching-schedule';
+  static String createMentor = '/create-mentor';  // New route
+  static String adminPage = '/admin'; // Route for Admin Page
+  static String editMentor = '/edit-mentor'; // Route for Edit Mentor Page
+  static String viewMentor = '/view-mentor'; // Route for View Mentor Page
 }
 
 // navigation list
@@ -89,6 +99,22 @@ List<NavigationDestination> destinations = [
       size: 20,
     ),
     route: AppRoutes.profile,
+  ),
+  // NavigationDestination(
+  //   label: 'Create Mentor',  // Add the 'Create Mentor' option here
+  //   icon: const Icon(
+  //     FontAwesomeIcons.plus,
+  //     size: 20,
+  //   ),
+  //   route: AppRoutes.createMentor,  // Use the new route for navigation
+  // ),
+  NavigationDestination(
+    label: 'Admin',  // Add the 'Admin' option
+    icon: const Icon(
+      FontAwesomeIcons.userShield,
+      size: 20,
+    ),
+    route: AppRoutes.adminPage,  // Use the new route for Admin Page
   ),
 ];
 
@@ -195,8 +221,12 @@ final appRouter = GoRouter(
         builder: (context, state) => const SettingsScreen()),
     GoRoute(
         path: '${AppRoutes.profileMentor}/:id',
-        builder: (context, state) =>
-            ProfileMentorScreen(profileId: state.pathParameters['id']!)),
+        builder: (context, state) {
+          // Convert the path parameter to an int
+          final profileId = int.tryParse(state.pathParameters['id']!) ?? 0; // Use 0 or some other default value if parsing fails
+          return ProfileMentorScreen(profileId: profileId);
+        },
+      ),
     GoRoute(
         path: '${AppRoutes.bookingMentor}/:id',
         builder: (context, state) =>
@@ -211,5 +241,27 @@ final appRouter = GoRouter(
     GoRoute(
         path: AppRoutes.settingTeachingSchedule,
         builder: (context, state) => const SettingTeachingScheduleScreen()),
+    GoRoute(
+      path: AppRoutes.createMentor,  // New route for CreateMentorScreen
+      builder: (context, state) => CreateMentorScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.adminPage, // Admin Page Route
+      builder: (context, state) => AdminPage(),
+    ),
+    GoRoute(
+      path: AppRoutes.editMentor,
+      builder: (context, state) {
+        final mentor = state.extra as AllMentors; // Pass `ProfileMentor` object
+        return EditMentorScreen(mentor: mentor);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.viewMentor, // View Page Route
+      builder: (context, state) {
+        final mentor = state.extra as AllMentors; // Expect ProfileMentor instead of Map
+        return ViewMentorScreen(mentor: mentor); // Pass the ProfileMentor object
+      },
+    ),
   ],
 );

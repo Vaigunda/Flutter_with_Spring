@@ -3,19 +3,21 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mentor/navigation/router.dart';
-import 'package:mentor/shared/models/category.model.dart';
-import 'package:mentor/shared/models/certificate.model.dart';
-import 'package:mentor/shared/models/experience.model.dart';
-import 'package:mentor/shared/models/review.model.dart';
+// import 'package:mentor/shared/models/category.model.dart';
+// import 'package:mentor/shared/models/certificate.model.dart';
+// import 'package:mentor/shared/models/experience.model.dart';
+import 'package:mentor/shared/models/profile_mentor.model.dart';
+// import 'package:mentor/shared/models/review.model.dart';
+import 'package:mentor/shared/services/profile_mentor.service.dart';
 import 'package:mentor/shared/shared.dart';
 
-import '../../shared/models/mentor.model.dart';
-import '../../shared/providers/mentors.provider.dart';
+// import '../../shared/models/mentor.model.dart';
+// import '../../shared/providers/mentors.provider.dart';
 import '../../shared/views/button.dart';
 
 class ProfileMentorScreen extends StatefulWidget {
   const ProfileMentorScreen({super.key, required this.profileId});
-  final String profileId;
+  final int profileId;
 
   @override
   State<ProfileMentorScreen> createState() => _ProfileMentorScreenState();
@@ -23,7 +25,7 @@ class ProfileMentorScreen extends StatefulWidget {
 
 class _ProfileMentorScreenState extends State<ProfileMentorScreen>
     with SingleTickerProviderStateMixin {
-  late MentorModel? mentor;
+  ProfileMentor? mentor;
   late TabController _tabController;
   final ScrollController _scrollCtrl = ScrollController();
   List<String> tab = ["Overview", "Reviews", "Certificates"];
@@ -58,7 +60,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
   @override
   void initState() {
     super.initState();
-    mentor = MentorsProvider.shared.getMentor(widget.profileId);
+    _fetchMentorData();
     _tabController = TabController(length: tab.length, vsync: this);
   }
 
@@ -70,40 +72,68 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
     _scrollCtrl.dispose();
   }
 
+  Future<void> _fetchMentorData() async {
+    try {
+      ProfileMentor? fetchedMentor = await ProfileMentorService.fetchMentorById(widget.profileId);
+      print("Fetched mentor data: $fetchedMentor");
+      setState(() {
+        mentor = fetchedMentor;
+      });
+    } catch (e) {
+      // Handle the error, maybe show a message to the user
+      print("Error fetching mentor: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (mentor == null) {
+      // Show loading state or an error state if mentor is not fetched
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Loading..."),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    // Mentor data is fetched, proceed with building the profile screen
     return Scaffold(
-        body: SafeArea(
-            child: NestedScrollView(
-      controller: _scrollCtrl,
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        return [
-          SliverAppBar(
-            backgroundColor: Theme.of(context).colorScheme.surface,
-            pinned: false,
-            flexibleSpace: FlexibleSpaceBar(
-                collapseMode: CollapseMode.parallax,
-                background: Column(children: [
-                  const SizedBox(height: 20),
-                  headerProfile(),
-                  const SizedBox(height: 15),
-                  actions()
-                ])),
-            forceElevated: innerBoxIsScrolled,
-            expandedHeight: 370.0,
-            bottom: PreferredSize(
-              preferredSize: _tabBar.preferredSize,
-              child: Material(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  child: _tabBar),
-            ),
-          )
-        ];
-      },
-      body: TabBarView(
-          controller: _tabController,
-          children: [overviewProfile(), reviewMentor(), certificates()]),
-    )));
+      body: SafeArea(
+        child: NestedScrollView(
+          controller: _scrollCtrl,
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                pinned: false,
+                flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.parallax,
+                    background: Column(children: [
+                      const SizedBox(height: 20),
+                      headerProfile(),
+                      const SizedBox(height: 15),
+                      actions()
+                    ])),
+                forceElevated: innerBoxIsScrolled,
+                expandedHeight: 370.0,
+                bottom: PreferredSize(
+                  preferredSize: _tabBar.preferredSize,
+                  child: Material(
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      child: _tabBar),
+                ),
+              )
+            ];
+          },
+          body: TabBarView(
+              controller: _tabController,
+              children: [overviewProfile(), reviewMentor(), certificates()]),
+        ),
+      ),
+    );
   }
 
   Widget headerProfile() {
@@ -129,14 +159,14 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
-      if (mentor!.role != null) ...[
-        Text(
-          mentor!.role!,
-          style: context.bodyMedium,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        )
-      ],
+      ...[
+      Text(
+        mentor!.role,
+        style: context.bodyMedium,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      )
+    ],
       const SizedBox(height: 20),
       Wrap(spacing: 15, children: [
         Column(
@@ -146,9 +176,9 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
             Text(
                 mentor!.free == null
                     ? "No information"
-                    : mentor!.free?.price == 0
+                    : mentor!.free.price == 0
                         ? "Free"
-                        : "\$${mentor!.free!.price} / ${mentor!.free!.unit.name}",
+                        : "\$${mentor!.free.price} / ${mentor!.free.unit.name}",
                 style: const TextStyle(fontWeight: FontWeight.bold))
           ],
         ),
@@ -183,6 +213,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
         CustomButton(
           label: "Booking",
           onPressed: () {
+            print('Mentor ID: ${mentor!.id}');
             context.push('${AppRoutes.bookingMentor}/${mentor!.id}');
           },
         ),
@@ -204,10 +235,10 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               bio(),
-              if (mentor!.experiences != null) ...[
-                const SizedBox(height: 10),
-                experiences()
-              ],
+              ...[
+              const SizedBox(height: 10),
+              experiences()
+            ],
               ...[
               const SizedBox(height: 10),
               skills()
@@ -235,13 +266,13 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text("Experiences", style: context.titleMedium),
       const SizedBox(height: 10),
-      for (var exp in mentor!.experiences!) itemExperience(exp),
+      for (var exp in mentor!.experiences) itemExperience(exp),
       const SizedBox(height: 10),
       divider()
     ]);
   }
 
-  Widget itemExperience(ExperienceModel exp) {
+  Widget itemExperience(Experience exp) {
     return Column(
       children: [
         Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -267,7 +298,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
-                "${DateFormat('yyyy/MM').format(exp.startDate)} - ${exp.endDate == null ? "Present" : DateFormat('yyyy/MM').format(exp.endDate!)}",
+                "${exp.startDate != null ? DateFormat('yyyy/MM').format(exp.startDate!) : "N/A"} - ${exp.endDate != null ? DateFormat('yyyy/MM').format(exp.endDate!) : "Present"}",
                 style: context.bodySmall,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -304,7 +335,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
     ]);
   }
 
-  Widget itemSkill(CategoryModel cate) {
+  Widget itemSkill(Category cate) {
     return Chip(
       backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
       label: Text(
@@ -322,68 +353,91 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
     return SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.all(20),
-            child: mentor!.reviews == null || mentor!.reviews!.isEmpty
+            child: mentor!.reviews.isEmpty
                 ? Text("No review found", style: context.bodyMedium)
                 : Column(children: [
-                    for (var review in mentor!.reviews!) itemReview(review)
+                    for (var review in mentor!.reviews) itemReview(review)
                   ])));
   }
 
-  Widget itemReview(ReviewModel review) {
-    var reviewer = MentorsProvider.shared.getMentor(review.createById);
-
-    return Container(
-        decoration: BoxDecoration(
+  Widget itemReview(Review review) {
+  return FutureBuilder<ProfileMentor?>(
+    future: ProfileMentorService.fetchMentorById(int.parse(review.createdById)),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const CircularProgressIndicator(); // Loading indicator
+      } else if (snapshot.hasError) {
+        return Text('Error: ${snapshot.error}'); // Display error
+      } else {
+        final mentor = snapshot.data;
+        return Container(
+          decoration: BoxDecoration(
             border: Border(
-                bottom:
-                    BorderSide(color: Theme.of(context).colorScheme.tertiary))),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundImage: AssetImage(reviewer!.avatarUrl),
-                  ),
-                  const SizedBox(width: 5),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(reviewer.name, style: context.titleSmall),
-                      Text(
-                        DateFormat("yyyy/MM/dd").format(review.createDate),
-                        style: context.bodySmall,
-                      )
-                    ],
-                  )
-                ],
-              ),
-              const SizedBox(height: 5),
-              Text(review.message, style: context.bodyMedium, softWrap: true)
-            ],
+              bottom: BorderSide(color: Theme.of(context).colorScheme.tertiary),
+            ),
           ),
-        ));
-  }
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundImage: mentor != null
+                          ? AssetImage(mentor.avatarUrl)
+                          : null,
+                    ),
+                    const SizedBox(width: 5),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          mentor != null ? mentor.name : "Unknown",
+                          style: context.titleSmall,
+                        ),
+                        Text(
+                          review.createDate != null
+                              ? DateFormat("yyyy/MM/dd").format(review.createDate!)
+                              : "No Date",
+                          style: context.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  review.message,
+                  style: context.bodyMedium,
+                  softWrap: true,
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    },
+  );
+}
 
 //--------------------END--------------------------------
   Widget certificates() {
     return SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.all(20),
-            child: mentor!.certificates == null || mentor!.certificates!.isEmpty
+            child: mentor!.certificates.isEmpty
                 ? Text("No certificate found", style: context.bodyMedium)
                 : Column(
                     children: [
-                      for (var certificate in mentor!.certificates!)
+                      for (var certificate in mentor!.certificates)
                         itemCertificate(certificate)
                     ],
                   )));
   }
 
-  Widget itemCertificate(CertificateModel certificate) {
+  Widget itemCertificate(Certificate certificate) {
     return Container(
         padding: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
@@ -403,7 +457,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
               maxLines: 2,
               overflow: TextOverflow.ellipsis),
           const SizedBox(height: 20),
-          Text(DateFormat("yyyy/MM/dd").format(certificate.createDate),
+          Text(certificate.createDate != null ? DateFormat("yyyy/MM/dd").format(certificate.createDate!) : "No Date",
               style: context.bodySmall,
               maxLines: 2,
               overflow: TextOverflow.ellipsis),

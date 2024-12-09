@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mentor/components/authentication/widgets/social_button.dart';
@@ -8,6 +10,9 @@ import 'package:mentor/shared/utils/validator.dart';
 import 'package:mentor/shared/views/button.dart';
 import 'package:mentor/shared/views/divider_with_text.dart';
 import 'package:mentor/shared/views/input_field.dart';
+import 'package:mentor/provider/user_data_provider.dart';
+import 'package:provider/provider.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -23,12 +28,75 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordCtrl = TextEditingController();
   bool _passwordVisible = true;
   bool isChecked = false;
+
+  var _isFormLoading = false;
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     usernameCtrl.dispose();
     passwordCtrl.dispose();
+  }
+
+   bool isNullOrEmpty(String? value) {
+    return value == null || value.isEmpty;
+  }
+
+  Future<void> login(BuildContext context) async {
+
+    // Access UserDataProvider via context
+    final userDataProvider = context.read<UserDataProvider>();
+
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isFormLoading = true;
+    });
+
+    var parsed;
+
+    try {
+      String userName = usernameCtrl.text.trim();
+      String password = passwordCtrl.text.trim();
+
+      if (!isNullOrEmpty(userName) && !isNullOrEmpty(password)) {
+        final response = await http.post(
+          Uri.parse('http://localhost:8080/auth/login'),
+            headers: {
+              "content-type": "application/json"
+            },
+            body: jsonEncode(<String, String>{
+              'userName': userName,
+              'password': password,
+            })
+          );
+
+          parsed = response.body;
+        if (response.statusCode == 200) {
+          Map<String, dynamic> map = jsonDecode(parsed);
+
+          String usertoken = map['token'];
+          String userid = map['userId'].toString();
+          
+          await userDataProvider.setUserDataAsync(
+            usertoken: usertoken,
+            userid: userid,
+          );
+          context.go(AppRoutes.home);
+        }
+        } else {
+          throw Exception('Invalid credentials');
+        }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      setState(() {
+        _isFormLoading = false;
+      });
+    }
   }
 
   @override
@@ -164,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 minWidth: MediaQuery.of(context).size.width,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    //TODO: Logic here
+                    login(context);
                   }
                 },
                 label: "Sign in"),

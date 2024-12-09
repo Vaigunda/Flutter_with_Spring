@@ -7,6 +7,9 @@ import 'package:universal_platform/universal_platform.dart';
 import 'navigation/router.dart';
 import 'shared/models/theme_settings.dart';
 
+import 'package:mentor/provider/user_data_provider.dart';
+import 'package:provider/provider.dart';
+
 Future setDesktopWindow() async {
   await DesktopWindow.setMinWindowSize(const Size(400, 400));
   await DesktopWindow.setWindowSize(const Size(1300, 900));
@@ -19,7 +22,12 @@ void main() {
     setDesktopWindow();
   }
 
-  runApp(const MainApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => UserDataProvider(),
+      child: MainApp(),
+    ),
+    );
 }
 
 class MainApp extends StatefulWidget {
