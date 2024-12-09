@@ -5,12 +5,17 @@ import 'package:mentor/shared/models/fixed_time_slot.model.dart';
 
 class TimeSlotService {
   Future<List<FixedTimeSlotModel>> fetchAvailableTimeSlots(
-      String mentorId, DateTime date) async {
+      String mentorId, DateTime date, String usertoken) async {
     final String formattedDate = DateFormat('yyyy-MM-dd').format(date);
-    final String apiUrl =
-        'http://localhost:8080/api/mentors/time-slots/$mentorId?date=$formattedDate';
 
-    final response = await http.get(Uri.parse(apiUrl));
+    final url = Uri.parse('http://localhost:8080/api/mentors/time-slots/$mentorId?date=$formattedDate');
+
+      final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $usertoken',
+      },
+    );
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body) as List;

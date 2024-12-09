@@ -93,6 +93,8 @@ import 'package:flutter/material.dart';
 import 'package:mentor/shared/models/category.model.dart';
 import 'package:mentor/shared/services/categories.service.dart';
 import 'package:mentor/shared/utils/extensions.dart';
+import 'package:provider/provider.dart';
+import 'package:mentor/provider/user_data_provider.dart';
 
 class HomeCategories extends StatefulWidget {
   const HomeCategories({super.key});
@@ -104,10 +106,17 @@ class HomeCategories extends StatefulWidget {
 class _HomeCategoriesState extends State<HomeCategories> {
   late Future<List<CategoryModel>> categoriesFuture;
 
+  late String usertoken;
+  var provider;
+
   @override
   void initState() {
     super.initState();
-    categoriesFuture = CategoriesService().fetchCategories(); // Fetch categories on widget init
+
+    provider = context.read<UserDataProvider>();
+    usertoken = provider.usertoken;
+
+    categoriesFuture = CategoriesService().fetchCategories(usertoken); // Fetch categories on widget init
   }
 
   @override

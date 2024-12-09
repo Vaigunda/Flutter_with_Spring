@@ -441,6 +441,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:provider/provider.dart';
+import 'package:mentor/provider/user_data_provider.dart';
+
 class CreateMentorScreen extends StatefulWidget {
   @override
   _CreateMentorScreenState createState() => _CreateMentorScreenState();
@@ -476,14 +479,21 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
   List<TextEditingController> timeSlotsTimeStartControllers = [];
   List<TextEditingController> timeSlotsTimeEndControllers = [];
   
-
   List<TextEditingController> categoryControllers = [];
-
-  
 
   bool isVerified = false;
   bool isSubmitting = false;
   
+  late String usertoken;
+  var provider;
+
+  @override
+  void initState() {
+    super.initState();
+
+    provider = context.read<UserDataProvider>();
+    usertoken = provider.usertoken;
+  }
 
   // API endpoint for creating a mentor
   final String apiUrl = "http://localhost:8080/api/mentors"; // Replace with your actual API URL
@@ -496,8 +506,6 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
       isSubmitting = true;
     });
     print("hai");
-
-    
 
     // Prepare the mentor data to be sent
     Map<String, dynamic> mentorData = {
@@ -547,6 +555,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {
+          'Authorization': 'Bearer $usertoken',
           "Content-Type": "application/json",
         },
         body: json.encode(mentorData),

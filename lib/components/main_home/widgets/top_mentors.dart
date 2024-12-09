@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:mentor/navigation/router.dart';
 import 'package:mentor/shared/models/top_mentor.model.dart';
 import 'package:mentor/shared/services/top_mentor.service.dart';
+import 'package:provider/provider.dart';
+import 'package:mentor/provider/user_data_provider.dart';
 
 class HomeTopMentors extends StatefulWidget {
   final Future<List<TopMentorModel>>? topMentors;
@@ -16,11 +18,18 @@ class HomeTopMentors extends StatefulWidget {
 class _HomeTopMentorsState extends State<HomeTopMentors> {
   late Future<List<TopMentorModel>> topMentors;
 
+  late String usertoken;
+  var provider;
+
   @override
   void initState() {
     super.initState();
+
+    provider = context.read<UserDataProvider>();
+    usertoken = provider.usertoken;
+
     topMentors = widget.topMentors ??
-        TopMentorService().fetchTopMentors();
+        TopMentorService().fetchTopMentors(usertoken);
   }
 
   @override
@@ -62,11 +71,13 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
   }
 
   Widget _customCard(BuildContext context, TopMentorModel mentor) {
-    print('Mentor ID: ${mentor.id}');
-    print('Mentor ID: ${mentor.id}');
       return InkWell(
-
-      onTap: () => context.push('${AppRoutes.profileMentor}/${mentor.id}'),
+      
+      onTap: () {
+        if(usertoken.isNotEmpty) {
+          context.push('${AppRoutes.profileMentor}/${mentor.id}');
+        }
+      },
       child: Container(
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -14,7 +13,8 @@ import 'package:mentor/shared/services/time_slot.service.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
+import 'package:provider/provider.dart';
+import 'package:mentor/provider/user_data_provider.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key, required this.profileId});
@@ -34,6 +34,10 @@ class _BookingScreenState extends State<BookingScreen> {
   late List<ConnectMethodModel> connectMethods = [];
   late List<FixedTimeSlotModel> timeSlots = [];
 
+  late String usertoken;
+  late String userid;
+  var provider;
+
   List<Map<String, dynamic>> formData = [
     {"message": "Please choose a category", "value": null},
     {"message": "Please select a date and time slot", "value": null},
@@ -44,11 +48,15 @@ class _BookingScreenState extends State<BookingScreen> {
   void initState() {
     super.initState();
 
+    provider = context.read<UserDataProvider>();
+    usertoken = provider.usertoken;
+    userid = provider.userid;
+
     ConnectMethodService connectMethodService = ConnectMethodService();
 
     Future.wait([
-      ProfileMentorService.fetchMentorById(int.parse(widget.profileId)),
-      connectMethodService.fetchConnectMethods(),
+      ProfileMentorService.fetchMentorById(int.parse(widget.profileId), usertoken),
+      connectMethodService.fetchConnectMethods(usertoken),
     ]).then((results) {
       setState(() {
         mentor = results[0] as ProfileMentor;
@@ -70,6 +78,7 @@ class _BookingScreenState extends State<BookingScreen> {
       var slots = await timeSlotService.fetchAvailableTimeSlots(
         widget.profileId,
         _selectedDay,
+        usertoken
       );
       setState(() {
         timeSlots = slots; // List of time slots from API
@@ -161,7 +170,6 @@ class _BookingScreenState extends State<BookingScreen> {
                 CustomButton(
                   label: "Booking",
                   onPressed: () async {
-                    // TODO: Submit booking here
                     await submitBooking();
                     context.pop();
                   },
@@ -376,7 +384,7 @@ class _BookingScreenState extends State<BookingScreen> {
     // Prepare the body for the POST request
     var requestBody = jsonEncode({
       "mentorId": mentor!.id,  // You can replace with the actual mentor ID
-      "userId": 1,  // Replace with the actual user ID (you may get this from the user profile)
+      "userId": int.parse(userid),  // Replace with the actual user ID (you may get this from the user profile)
       "timeSlotId": selectedTimeSlot.id,  // Time slot ID user selected
       "date": DateFormat('yyyy-MM-dd').format(_selectedDay), // Format the selected day to string
       "category": category.name,  // Category name selected by user
@@ -387,8 +395,9 @@ class _BookingScreenState extends State<BookingScreen> {
     try {
       // Send the POST request to your backend API
       var response = await http.post(
-        Uri.parse('https://yourapi.com/submit-booking'), // Replace with your actual API endpoint
+        Uri.parse('http://localhost:8080/api/bookings'), // Replace with your actual API endpoint
         headers: {
+          'Authorization': 'Bearer $usertoken',
           'Content-Type': 'application/json',  // Ensure the API expects JSON
         },
         body: requestBody,

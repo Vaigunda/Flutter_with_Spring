@@ -4,11 +4,21 @@ import 'package:http/http.dart' as http;
 import 'package:mentor/shared/models/top_mentor.model.dart';
 
 class TopMentorService {
-  final String apiUrl = 'http://localhost:8080/api/mentors/top-mentor';
+  //final String apiUrl = 'http://localhost:8080/api/mentors/top-mentor';
 
   // Method to fetch top mentors
-  Future<List<TopMentorModel>> fetchTopMentors() async {
-    final response = await http.get(Uri.parse(apiUrl));
+  Future<List<TopMentorModel>> fetchTopMentors(String usertoken) async {
+
+    final url = Uri.parse('http://localhost:8080/api/mentors/top-mentor');
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $usertoken',
+      },
+    );
+
+    //final response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);

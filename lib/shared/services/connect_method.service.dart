@@ -4,13 +4,21 @@ import 'package:mentor/shared/models/connect_method.model.dart';
 
 class ConnectMethodService {
   // Define the base URL for the API
-  static const String _baseUrl = 'http://localhost:8080/api/mentors/connect-methods';
+  //static const String _baseUrl = 'http://localhost:8080/api/mentors/connect-methods';
 
   // Method to fetch the connect methods from the API
-  Future<List<ConnectMethodModel>> fetchConnectMethods() async {
+  Future<List<ConnectMethodModel>> fetchConnectMethods(String usertoken) async {
     try {
       // Send the GET request to the API
-      final response = await http.get(Uri.parse(_baseUrl));
+      //final response = await http.get(Uri.parse(_baseUrl));
+      final url = Uri.parse('http://localhost:8080/api/mentors/connect-methods');
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $usertoken',
+        },
+      );
 
       // Check if the request was successful (status code 200)
       if (response.statusCode == 200) {

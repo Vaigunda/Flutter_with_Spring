@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:mentor/shared/models/all_mentors.model.dart';
 import 'package:mentor/components/admin/edit_mentor.screen.dart';
 import 'package:mentor/components/admin/view_mentor.screen.dart';
+import 'package:provider/provider.dart';
+import 'package:mentor/provider/user_data_provider.dart';
 
 class AdminPage extends StatefulWidget {
   @override
@@ -15,20 +17,36 @@ class AdminPage extends StatefulWidget {
 class _AdminPageState extends State<AdminPage> {
   List<dynamic> mentors = [];
 
+  late String usertoken;
+
+  var provider;
+
   @override
   void initState() {
     super.initState();
+
+    provider = context.read<UserDataProvider>();
+    usertoken = provider.usertoken;
+
     fetchMentors();
   }
 
   // Fetch mentors from the API
   Future<void> fetchMentors() async {
-    final response = await http.get(Uri.parse('http://localhost:8080/api/mentors/all'));
+
+    final url = Uri.parse('http://localhost:8080/api/mentors/all');
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $usertoken',
+      },
+    );
+    //final response = await http.get(Uri.parse('http://localhost:8080/api/mentors/all'));
 
     if (response.statusCode == 200) {
       // Parse the JSON response into a list of ProfileMentor objects
       List<dynamic> mentorList = json.decode(response.body);
-
       setState(() {
         // Convert each item in the list to a ProfileMentor object using the factory constructor
         mentors = mentorList.map((mentorJson) => AllMentors.fromJson(mentorJson)).toList();
@@ -40,7 +58,16 @@ class _AdminPageState extends State<AdminPage> {
 
   // Updated deleteMentor function
   Future<void> deleteMentor(int id) async {
-    final response = await http.delete(Uri.parse('http://localhost:8080/api/mentors/$id'));
+    //final response = await http.delete(Uri.parse('http://localhost:8080/api/mentors/$id'));
+    final url = Uri.parse('http://localhost:8080/api/mentors/$id');
+
+    final response = await http.delete(
+      url,
+      headers: {
+        'Authorization': 'Bearer $usertoken',
+      },
+    );
+    
     if (response.statusCode == 200) {
       setState(() {
         mentors.removeWhere((mentor) => mentor.id == id); // Access `id` as an object property

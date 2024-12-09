@@ -170,14 +170,14 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch data from the API
-    topRatedMentors = MentorService().fetchTopRatedMentors();
-    topMentors = TopMentorService().fetchTopMentors();
-    verifiedMentors= VerifiedService().fetchVerifiedMentors();
-
     provider = context.read<UserDataProvider>();
     usertoken = provider.usertoken;
     userid = provider.userid;
+
+    // Fetch data from the API
+    topRatedMentors = MentorService().fetchTopRatedMentors(usertoken);
+    topMentors = TopMentorService().fetchTopMentors(usertoken);
+    verifiedMentors= VerifiedService().fetchVerifiedMentors(usertoken);
   }
 
   @override
@@ -269,12 +269,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 const SizedBox(height: 10),
                 const ExploreMentor(),
                 const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    context.go(AppRoutes.adminPage); // Navigate to the Admin Page
-                  },
-                  child: const Text(''),
-                ),
                 const HomeCategories(),
                 const SizedBox(height: 30),
                 HomeTopMentors(topMentors: topMentors),

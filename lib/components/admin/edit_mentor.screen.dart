@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:mentor/shared/models/all_mentors.model.dart';
 import 'package:intl/intl.dart';
-
+import 'package:provider/provider.dart';
+import 'package:mentor/provider/user_data_provider.dart';
 
 class EditMentorScreen extends StatefulWidget {
   final AllMentors mentor;
@@ -41,12 +42,16 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
   List<TextEditingController> experienceEndDateControllers = [];
   List<TextEditingController> experienceDescriptionControllers = [];
 
+  late String usertoken;
+  var provider;
+
   @override
   void initState() {
     super.initState();
     mentorData = widget.mentor;
-    print(widget.mentor.timeSlots);
-    print(mentorData.experiences);
+    
+    provider = context.read<UserDataProvider>();
+    usertoken = provider.usertoken;
 
     nameController = TextEditingController(text: mentorData.name);
     roleController = TextEditingController(text: mentorData.role);
@@ -202,7 +207,10 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
 
     final response = await http.put(
       Uri.parse('http://localhost:8080/api/mentors/${mentorData.id}'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $usertoken',
+        },
       body: json.encode(updatedData),
     );
 

@@ -4,6 +4,8 @@ import 'dart:convert';
 
 import '../model/item_search_result.dart';
 import 'item_result.widget.dart';
+import 'package:provider/provider.dart';
+import 'package:mentor/provider/user_data_provider.dart';
 
 class SearchResult extends StatefulWidget {
   const SearchResult({super.key, required this.keyword});
@@ -17,16 +19,28 @@ class _SearchResultState extends State<SearchResult> {
   List<ItemSearchResult> result = [];
   bool isLoading = true;
 
+  late String usertoken;
+  var provider;
+
   @override
   void initState() {
     super.initState();
+
+    provider = context.read<UserDataProvider>();
+    usertoken = provider.usertoken;
+
     fetchResults();
   }
 
   Future<void> fetchResults() async {
     try {
+      final url = Uri.parse('http://localhost:8080/api/mentors/search?keyword=${widget.keyword}');
+
       final response = await http.get(
-        Uri.parse('http://localhost:8080/api/mentors/search?keyword=${widget.keyword}'),
+        url,
+        headers: {
+          'Authorization': 'Bearer $usertoken',
+        },
       );
 
       print("API Response Body: ${response.body}");

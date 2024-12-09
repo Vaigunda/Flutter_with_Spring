@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mentor/shared/models/top_rated_mentor.model.dart';
 import 'package:mentor/shared/services/top_rated_mentor.service.dart';
+import 'package:provider/provider.dart';
+import 'package:mentor/provider/user_data_provider.dart';
 
 class HomeTopRated extends StatefulWidget {
   final Future<List<TopRatedMentorModel>>? topRatedMentors;
@@ -17,12 +19,19 @@ class HomeTopRated extends StatefulWidget {
 class _HomeTopRatedState extends State<HomeTopRated> {
   late Future<List<TopRatedMentorModel>> topRatedMentors;
 
+  late String usertoken;
+  var provider;
+
   @override
   void initState() {
     super.initState();
+    
+    provider = context.read<UserDataProvider>();
+    usertoken = provider.usertoken;
+
     // If the widget has provided mentors, use that; otherwise, fetch from the service
     topRatedMentors = widget.topRatedMentors ??
-        MentorService().fetchTopRatedMentors();
+        MentorService().fetchTopRatedMentors(usertoken);
   }
 
   @override

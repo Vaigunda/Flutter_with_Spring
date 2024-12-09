@@ -126,6 +126,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mentor/shared/models/verified.model.dart';
 import 'package:mentor/shared/services/verified.service.dart';
 import 'package:mentor/shared/utils/extensions.dart';
+import 'package:provider/provider.dart';
+import 'package:mentor/provider/user_data_provider.dart';
 
 class HomeVerified extends StatefulWidget {
   final Future<List<VerifiedMentor>>? verifiedMentors;
@@ -139,11 +141,18 @@ class HomeVerified extends StatefulWidget {
 class _HomeVerifiedState extends State<HomeVerified> {
   late Future<List<VerifiedMentor>> verifiedMentors;
 
+ late String usertoken;
+  var provider;
+
   @override
   void initState() {
     super.initState();
+
+    provider = context.read<UserDataProvider>();
+    usertoken = provider.usertoken;
+
     // If the widget has provided mentors, use that; otherwise, fetch from the service
-    verifiedMentors = widget.verifiedMentors ?? VerifiedService().fetchVerifiedMentors();
+    verifiedMentors = widget.verifiedMentors ?? VerifiedService().fetchVerifiedMentors(usertoken);
   }
 
   @override

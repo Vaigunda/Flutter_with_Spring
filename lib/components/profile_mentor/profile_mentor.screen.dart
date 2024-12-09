@@ -14,6 +14,8 @@ import 'package:mentor/shared/shared.dart';
 // import '../../shared/models/mentor.model.dart';
 // import '../../shared/providers/mentors.provider.dart';
 import '../../shared/views/button.dart';
+import 'package:provider/provider.dart';
+import 'package:mentor/provider/user_data_provider.dart';
 
 class ProfileMentorScreen extends StatefulWidget {
   const ProfileMentorScreen({super.key, required this.profileId});
@@ -29,6 +31,9 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
   late TabController _tabController;
   final ScrollController _scrollCtrl = ScrollController();
   List<String> tab = ["Overview", "Reviews", "Certificates"];
+
+  late String usertoken;
+  var provider;
 
   TabBar get _tabBar => TabBar(
           indicator: ShapeDecoration(
@@ -60,6 +65,10 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
   @override
   void initState() {
     super.initState();
+
+    provider = context.read<UserDataProvider>();
+    usertoken = provider.usertoken;
+
     _fetchMentorData();
     _tabController = TabController(length: tab.length, vsync: this);
   }
@@ -74,7 +83,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
 
   Future<void> _fetchMentorData() async {
     try {
-      ProfileMentor? fetchedMentor = await ProfileMentorService.fetchMentorById(widget.profileId);
+      ProfileMentor? fetchedMentor = await ProfileMentorService.fetchMentorById(widget.profileId, usertoken);
       print("Fetched mentor data: $fetchedMentor");
       setState(() {
         mentor = fetchedMentor;
@@ -362,7 +371,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
 
   Widget itemReview(Review review) {
   return FutureBuilder<ProfileMentor?>(
-    future: ProfileMentorService.fetchMentorById(int.parse(review.createdById)),
+    future: ProfileMentorService.fetchMentorById(int.parse(review.createdById), usertoken),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return const CircularProgressIndicator(); // Loading indicator
