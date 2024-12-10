@@ -28,8 +28,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController ageCtrl = TextEditingController();
   TextEditingController genderCtrl = TextEditingController();
   
+  TextEditingController otpCtrl = TextEditingController();
+  
   bool _passwordVisible = true;
   bool isChecked = false;
+
+  late String otp;
+  bool isOtpVerified = false;
 
   @override
   void dispose() {
@@ -123,20 +128,68 @@ class _SignUpScreenState extends State<SignUpScreen> {
             prefixIcon: const Icon(Icons.person),
           ),
           const SizedBox(height: 20),
-          InputField(
-            controller: emailCtrl,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'This field is required';
-              }
-              final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-              if (!emailRegex.hasMatch(value)) {
-                return 'Please enter a valid email address';
-              }
-              return null;
-            },
-            labelText: "Email",
-            prefixIcon: const Icon(Icons.email),
+          SizedBox(
+          width: double.infinity,
+          child: Wrap(
+            direction: Axis.horizontal,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              SizedBox(
+                 width: 450.0,
+                child: InputField(
+                  controller: emailCtrl,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'This field is required';
+                    }
+                    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                    if (!emailRegex.hasMatch(value)) {
+                      return 'Please enter a valid email address';
+                    }
+                    return null;
+                  },
+                  labelText: "Email",
+                  prefixIcon: const Icon(Icons.email),
+                ),
+              ),
+              const SizedBox(width: 20),
+              SizedBox(
+                 width: 150.0,
+                child: TextButton(
+                  onPressed: () {
+                    sendOTP(emailCtrl.text);
+                  },
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    textStyle: const TextStyle(fontSize: 18), // Text style
+                  ),
+                  child: const Text('Send OTP'),
+                )
+              ),
+              const SizedBox(width: 20),
+              SizedBox(
+                width: 150.0,
+                child: InputField(
+                  controller: otpCtrl,
+                  labelText: 'OTP',
+                )
+              ),
+              const SizedBox(width: 20),
+              SizedBox(
+                 width: 150.0,
+                child: TextButton(
+                   onPressed: () {
+                    verifyOTP(otpCtrl.text);
+                  },
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    textStyle: const TextStyle(fontSize: 18), // Text style
+                  ),
+                  child: const Text('Verify OTP'),
+                )
+              ),
+            ]
+          )
           ),
           const SizedBox(height: 20),
           InputField(
@@ -212,24 +265,72 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'gender': genderCtrl.text.isEmpty ? 'Not Specified' : genderCtrl.text, // Optional field
     });
 
-    final response = await http.post(
-      url,
-      headers: {
-        "Content-Type": "application/json", // Make sure content type is correct
-      },
-      body: body, // Send the JSON string as the body
-    );
-
-    if (response.statusCode == 201) {
-      // Handle success, show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Sign up successful!")),
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json", // Make sure content type is correct
+        },
+        body: body, // Send the JSON string as the body
       );
-      context.go(AppRoutes.signin);
-    } else {
-      // Handle error, show error message
+
+      if (response.statusCode == 201) {
+        // Handle success, show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Sign up successful!"),
+          backgroundColor: Colors.green,),
+        );
+        context.go(AppRoutes.signin);
+      } else {
+        // Handle error, show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Sign up failed! Please try again."),
+          backgroundColor: Colors.red,),
+        );
+      }
+  }
+
+  Future<void> sendOTP(String email) async {
+    final response = await http.get(Uri.parse('http://localhost:8080/auth/mail/verify/$email'));
+
+    if (response.statusCode == 200) {
+      var parsed = response.body;
+      Map<String, dynamic> map = jsonDecode(parsed);
+
+      otp = map['data'];
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Sign up failed! Please try again.")),
+        const SnackBar(
+          content: Text('OTP is sent Successfully to your mail.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to send email, Please check your Email ID'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void verifyOTP(String verifyOTP) {
+    if(otp == verifyOTP) {
+
+      isOtpVerified = true;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('OTP verified successfully. Continue your Sign up!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid OTP. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
