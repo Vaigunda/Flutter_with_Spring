@@ -58,7 +58,6 @@ class _AdminPageState extends State<AdminPage> {
 
   // Updated deleteMentor function
   Future<void> deleteMentor(int id) async {
-    //final response = await http.delete(Uri.parse('http://localhost:8080/api/mentors/$id'));
     final url = Uri.parse('http://localhost:8080/api/mentors/$id');
 
     final response = await http.delete(
@@ -67,13 +66,31 @@ class _AdminPageState extends State<AdminPage> {
         'Authorization': 'Bearer $usertoken',
       },
     );
-    
+
     if (response.statusCode == 200) {
       setState(() {
         mentors.removeWhere((mentor) => mentor.id == id); // Access `id` as an object property
       });
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Mentor deleted successfully!'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+    } else {
+      // Handle errors (optional)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete mentor. Please try again.'),
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
-  }
+ }
+
 
 
   // Navigate to ViewMentorScreen to view mentor details

@@ -3,12 +3,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mentor/components/authentication/widgets/social_button.dart';
 import 'package:mentor/navigation/router.dart';
 import 'package:mentor/shared/utils/extensions.dart';
 import 'package:mentor/shared/utils/validator.dart';
 import 'package:mentor/shared/views/button.dart';
-import 'package:mentor/shared/views/divider_with_text.dart';
 import 'package:mentor/shared/views/input_field.dart';
 import 'package:mentor/provider/user_data_provider.dart';
 import 'package:provider/provider.dart';
@@ -74,10 +72,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
           String usertoken = map['token'];
           String userid = map['userId'].toString();
+          String name = map['name'];
 
           await userDataProvider.setUserDataAsync(
             usertoken: usertoken,
             userid: userid,
+            username: name,
           );
           context.go(AppRoutes.home);
         }

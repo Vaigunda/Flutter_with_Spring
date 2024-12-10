@@ -173,6 +173,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     provider = context.read<UserDataProvider>();
     usertoken = provider.usertoken;
     userid = provider.userid;
+    print(provider.username);
+    
 
     // Fetch data from the API
     topRatedMentors = MentorService().fetchTopRatedMentors(usertoken);
@@ -196,7 +198,15 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                       TextButton(
                         onPressed: () => context.go(AppRoutes.signin),
                         child: const Text("Sign in"),
+                      )
+                    else // If logged in, show welcome message
+                    Text(
+                      "Welcome, ${provider.username}", // Use the username from provider
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
                       ),
+                    ), 
                     Expanded(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,

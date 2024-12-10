@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
-import 'package:mentor/components/authentication/sign_in/presentation/login.screen.dart';
 import 'package:mentor/navigation/router.dart';
 import 'dart:convert';
 
@@ -10,7 +9,6 @@ import 'dart:convert';
 import 'package:mentor/shared/utils/extensions.dart';
 import 'package:mentor/shared/utils/validator.dart';
 import 'package:mentor/shared/views/button.dart';
-import 'package:mentor/shared/views/divider_with_text.dart';
 import 'package:mentor/shared/views/input_field.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -207,13 +205,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (response.statusCode == 201) {
       // Handle success, show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Sign up successful!")),
+        const SnackBar(content: Text("Sign up successful!")),
       );
       context.go(AppRoutes.signin);
     } else {
       // Handle error, show error message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Sign up failed! Please try again.")),
+        const SnackBar(content: Text("Sign up failed! Please try again.")),
       );
     }
   }

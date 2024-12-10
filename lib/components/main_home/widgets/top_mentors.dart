@@ -71,11 +71,16 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
   }
 
   Widget _customCard(BuildContext context, TopMentorModel mentor) {
-      return InkWell(
-      
+    return InkWell(
       onTap: () {
-        if(usertoken.isNotEmpty) {
+        if (usertoken.isNotEmpty) {
           context.push('${AppRoutes.profileMentor}/${mentor.id}');
+        } else {
+          // Show scaffold message and redirect to login
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please login to view mentor details')),
+          );
+          context.go(AppRoutes.signin);
         }
       },
       child: Container(
@@ -100,6 +105,7 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
       ),
     );
   }
+
 
   Widget _buildDetails(TopMentorModel mentor) {
     return Column(

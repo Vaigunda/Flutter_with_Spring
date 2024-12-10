@@ -500,19 +500,18 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
 
    // Method to handle form submission
   Future<void> submitMentor() async {
-    if (isSubmitting) return;  // Prevent duplicate submissions
+    if (isSubmitting) return; // Prevent duplicate submissions
 
     setState(() {
       isSubmitting = true;
     });
-    print("hai");
 
     // Prepare the mentor data to be sent
     Map<String, dynamic> mentorData = {
       "name": nameController.text,
       "avatarUrl": avatarUrlController.text,
       "bio": bioController.text,
-      "role": roleController.text, // Hardcoded for now
+      "role": roleController.text,
       "freePrice": double.parse(freePriceController.text),
       "freeUnit": freeUnitController.text,
       "verified": isVerified,
@@ -523,7 +522,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
           "name": certificateNameControllers[index].text,
           "provideBy": certificateProviderControllers[index].text,
           "createDate": certificateDateControllers[index].text,
-          "imageUrl": "https://example.com/certificate${index + 1}.jpg" // Placeholder image
+          "imageUrl": "https://example.com/certificate${index + 1}.jpg", // Placeholder image
         };
       }),
       "experiences": List.generate(experienceRoleControllers.length, (index) {
@@ -536,8 +535,6 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
         };
       }),
       "timeSlots": List.generate(timeSlotsTimeStartControllers.length, (index) {
-        
-
         return {
           "timeStart": timeSlotsTimeStartControllers[index].text,
           "timeEnd": timeSlotsTimeEndControllers[index].text,
@@ -545,7 +542,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
       }),
       "categories": List.generate(categoryControllers.length, (index) {
         return {"name": categoryControllers[index].text};
-      })
+      }),
     };
 
     // Log the request body
@@ -562,50 +559,42 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
       );
 
       if (response.statusCode == 201) {
-
         // Mentor created successfully
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text("Success"),
-            content: const Text("Mentor created successfully!"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  // Clear the form after success
-                  _clearForm();
-                },
-                child: const Text("OK"),
-              ),
-            ],
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Mentor created successfully!'),
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.green,
           ),
         );
+        // Clear the form after success
+        _clearForm();
       } else {
         // Handle failure
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text("Error"),
-            content: const Text("Failed to create mentor. Please try again."),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text("OK"),
-              ),
-            ],
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to create mentor. Please try again.'),
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.red,
           ),
         );
       }
     } catch (e) {
       print(e); // Handle any errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An error occurred. Please try again.'),
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
       setState(() {
-        isSubmitting = false;
+        isSubmitting = false; // Reset submission state
       });
     }
   }
+
 
   // Clear all form fields after submission
   void _clearForm() {

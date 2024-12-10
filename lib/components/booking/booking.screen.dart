@@ -373,22 +373,26 @@ class _BookingScreenState extends State<BookingScreen> {
 
   Future<void> submitBooking() async {
     // Get the selected values
-    var category = mentor!.categories
-        .firstWhere((element) => element.id == formData[0]["value"], orElse: () => Category(id: 'default', name: 'Default', icon: 'circle'));
+    var category = mentor!.categories.firstWhere(
+      (element) => element.id == formData[0]["value"],
+      orElse: () => Category(id: 'default', name: 'Default', icon: 'circle'),
+    );
 
-    var method = connectMethods
-        .firstWhere((element) => element.id == formData[2]["value"], orElse: () => const ConnectMethodModel(id: 'default', name: 'Default'));
+    var method = connectMethods.firstWhere(
+      (element) => element.id == formData[2]["value"],
+      orElse: () => const ConnectMethodModel(id: 'default', name: 'Default'),
+    );
 
     var selectedTimeSlot = formData[1]["value"]; // This will hold the selected time slot object
-    
+
     // Prepare the body for the POST request
     var requestBody = jsonEncode({
-      "mentorId": mentor!.id,  // You can replace with the actual mentor ID
-      "userId": int.parse(userid),  // Replace with the actual user ID (you may get this from the user profile)
-      "timeSlotId": selectedTimeSlot.id,  // Time slot ID user selected
+      "mentorId": mentor!.id, // You can replace with the actual mentor ID
+      "userId": int.parse(userid), // Replace with the actual user ID (you may get this from the user profile)
+      "timeSlotId": selectedTimeSlot.id, // Time slot ID user selected
       "date": DateFormat('yyyy-MM-dd').format(_selectedDay), // Format the selected day to string
-      "category": category.name,  // Category name selected by user
-      "connectMethod": method.name  // Connection method selected by user
+      "category": category.name, // Category name selected by user
+      "connectMethod": method.name, // Connection method selected by user
     });
     print(requestBody);
 
@@ -398,29 +402,43 @@ class _BookingScreenState extends State<BookingScreen> {
         Uri.parse('http://localhost:8080/api/bookings'), // Replace with your actual API endpoint
         headers: {
           'Authorization': 'Bearer $usertoken',
-          'Content-Type': 'application/json',  // Ensure the API expects JSON
+          'Content-Type': 'application/json', // Ensure the API expects JSON
         },
         body: requestBody,
       );
 
       if (response.statusCode == 200) {
         // Successfully booked
-        print('Booking successful');
-        // You can display a success message or redirect the user
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Booked successfully!'),
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.green,
+          ),
+        );
       } else {
         // Something went wrong, handle the error
         print('Failed to submit booking. Status code: ${response.statusCode}');
-        setState(() {
-          _errorMessage = "Failed to submit booking. Please try again.";
-        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to submit booking. Please try again.'),
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     } catch (e) {
       print('Error: $e');
-      setState(() {
-        _errorMessage = "An error occurred. Please try again.";
-      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An error occurred. Please try again.'),
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
+
 }
 
 
