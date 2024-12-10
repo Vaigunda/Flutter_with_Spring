@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mentor/shared/models/all_mentors.model.dart';
-import 'package:mentor/shared/models/fixed_time_slot.model.dart';
 
 class ViewMentorScreen extends StatelessWidget {
   final AllMentors mentor;

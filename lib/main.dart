@@ -25,7 +25,7 @@ void main() {
   runApp(
     ChangeNotifierProvider(
       create: (_) => UserDataProvider(),
-      child: MainApp(),
+      child: const MainApp(),
     ),
     );
 }

@@ -404,7 +404,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.delete),
+                    icon: const Icon(Icons.delete),
                     onPressed: () {
                       setState(() {
                         mentorData.categories.removeAt(index); // Remove category from list
@@ -417,7 +417,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
             }),
             // Add New Category Button
             IconButton(
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
               onPressed: () {
                 setState(() {
                   mentorData.categories.add(Category(id: '', name: '', icon: '')); // Add a new empty category
@@ -524,7 +524,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
                       ),
                     ),
                   );
-                }).toList(),
+                }),
                 // Add New Experience Button
                 Align(
                   alignment: Alignment.centerLeft,
@@ -634,7 +634,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
                       ),
                     ),
                   );
-                }).toList(),
+                }),
                 // Add New Certificate Button (if needed)
                 Align(
                   alignment: Alignment.centerLeft,
@@ -718,7 +718,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
                       ),
                     ),
                   );
-                }).toList(),
+                }),
                 // Add New Time Slot Button (if needed)
                 Align(
                   alignment: Alignment.centerLeft,
