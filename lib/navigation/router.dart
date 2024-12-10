@@ -58,7 +58,7 @@ class AppRoutes {
   static String viewMentor = '/view-mentor'; // Route for View Mentor Page
 }
 
-// navigation list
+// navigation list after login
 List<NavigationDestination> destinations = [
   NavigationDestination(
     label: 'Home',
@@ -115,6 +115,26 @@ List<NavigationDestination> destinations = [
       size: 20,
     ),
     route: AppRoutes.adminPage,  // Use the new route for Admin Page
+  ),
+];
+
+// navigation list before login
+List<NavigationDestination> beforeDestinations = [
+  NavigationDestination(
+    label: 'Home',
+    icon: const Icon(
+      FontAwesomeIcons.house,
+      size: 20,
+    ),
+    route: AppRoutes.home,
+  ),
+  NavigationDestination(
+    label: 'Schedule',
+    icon: const Icon(
+      FontAwesomeIcons.listCheck,
+      size: 20,
+    ),
+    route: AppRoutes.mySchedule,
   ),
 ];
 

@@ -164,6 +164,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
 
   late String usertoken;
   late String userid;
+  late String name;
 
   var provider;
 
@@ -173,9 +174,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     provider = context.read<UserDataProvider>();
     usertoken = provider.usertoken;
     userid = provider.userid;
-    print(provider.username);
+    name = provider.name;
     
-
     // Fetch data from the API
     topRatedMentors = MentorService().fetchTopRatedMentors(usertoken);
     topMentors = TopMentorService().fetchTopMentors(usertoken);
@@ -201,7 +201,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                       )
                     else // If logged in, show welcome message
                     Text(
-                      "Welcome, ${provider.username}", // Use the username from provider
+                      "Welcome, $name", // Use the name from provider
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,

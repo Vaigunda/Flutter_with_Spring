@@ -77,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
           await userDataProvider.setUserDataAsync(
             usertoken: usertoken,
             userid: userid,
-            username: name,
+            name: name,
           );
           context.go(AppRoutes.home);
         }
