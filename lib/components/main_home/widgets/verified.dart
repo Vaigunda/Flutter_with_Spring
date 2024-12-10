@@ -175,7 +175,10 @@ class _HomeVerifiedState extends State<HomeVerified> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator(); // Show loading indicator
             } else if (snapshot.hasError) {
-              return Text("Error: ${snapshot.error}");
+              // Log the error to the console for debugging
+              debugPrint('Error fetching verified mentors: ${snapshot.error}');
+              // Show "No mentors found" in UI
+              return const Text("No verified mentors found");
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Text("No verified mentors found");
             }
@@ -193,6 +196,7 @@ class _HomeVerifiedState extends State<HomeVerified> {
       ],
     );
   }
+
 
   Widget _customCard(VerifiedMentor mentor) {
     return Container(

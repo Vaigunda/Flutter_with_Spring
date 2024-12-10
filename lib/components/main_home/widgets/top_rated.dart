@@ -51,9 +51,12 @@ class _HomeTopRatedState extends State<HomeTopRated> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
             } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
+              // Log the error to the console for debugging
+              debugPrint('Error fetching top-rated mentors: ${snapshot.error}');
+              // Show "No mentors found" in UI
+              return const Text('No top-rated mentors found');
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Text('No top-rated mentors available.');
+              return const Text('No top-rated mentors found');
             } else {
               final mentors = snapshot.data!;
               return Wrap(
@@ -67,6 +70,7 @@ class _HomeTopRatedState extends State<HomeTopRated> {
       ],
     );
   }
+
 
   Widget _info(TopRatedMentorModel mentor) {
     return ConstrainedBox(

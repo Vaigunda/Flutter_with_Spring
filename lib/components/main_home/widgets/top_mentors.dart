@@ -40,16 +40,21 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          // Log the error to console
+          debugPrint('Error: ${snapshot.error}');
+          // Continue to show "No mentors found" in UI
+          return _buildContent(context, false);
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No top mentors found'));
+          return _buildContent(context, false);
         } else {
           final mentors = snapshot.data!;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                children: [Text("Top Mentors", style: Theme.of(context).textTheme.titleLarge)],
+                children: [
+                  Text("Top Mentors", style: Theme.of(context).textTheme.titleLarge),
+                ],
               ),
               const SizedBox(height: 10),
               GridView.builder(
@@ -69,6 +74,26 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
       },
     );
   }
+
+  Widget _buildContent(BuildContext context, bool hasMentors) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text("Top Mentors", style: Theme.of(context).textTheme.titleLarge),
+          ],
+        ),
+        const SizedBox(height: 10),
+        if (!hasMentors)
+          const Padding(
+            padding: EdgeInsets.only(left: 16.0), // Align with the title's start
+            child: Text('No top mentors found'),
+          ),
+      ],
+    );
+  }
+
 
   Widget _customCard(BuildContext context, TopMentorModel mentor) {
     return InkWell(

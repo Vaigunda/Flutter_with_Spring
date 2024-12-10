@@ -410,7 +410,7 @@ class _BookingScreenState extends State<BookingScreen> {
       if (response.statusCode == 200) {
         // Successfully booked
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Booked successfully!'),
             duration: Duration(seconds: 3),
             backgroundColor: Colors.green,
@@ -420,7 +420,7 @@ class _BookingScreenState extends State<BookingScreen> {
         // Something went wrong, handle the error
         print('Failed to submit booking. Status code: ${response.statusCode}');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Failed to submit booking. Please try again.'),
             duration: Duration(seconds: 3),
             backgroundColor: Colors.red,
@@ -430,7 +430,7 @@ class _BookingScreenState extends State<BookingScreen> {
     } catch (e) {
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('An error occurred. Please try again.'),
           duration: Duration(seconds: 3),
           backgroundColor: Colors.red,

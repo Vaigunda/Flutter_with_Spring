@@ -143,11 +143,14 @@ class _HomeCategoriesState extends State<HomeCategories> {
             }
 
             if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
+              // Log the error to the console
+              debugPrint('Error fetching categories: ${snapshot.error}');
+              // Show "No categories found" in the UI
+              return _buildNoCategoriesMessage(context);
             }
 
             if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No categories available'));
+              return _buildNoCategoriesMessage(context);
             }
 
             // Display categories in horizontal scrollable list
@@ -165,6 +168,15 @@ class _HomeCategoriesState extends State<HomeCategories> {
       ],
     );
   }
+
+  Widget _buildNoCategoriesMessage(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.only(left: 16.0), // Align with the title
+      child: Text('No categories found'),
+    );
+  }
+
+
 
   Widget _chip(CategoryModel cat, BuildContext context) {
     return Chip(

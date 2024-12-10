@@ -145,11 +145,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
             prefixIcon: const Icon(Icons.calendar_today),
           ),
           const SizedBox(height: 20),
-          InputField(
-            controller: genderCtrl,
-            labelText: "Gender (Optional)",
-            prefixIcon: const Icon(Icons.accessibility),
-          ),
+            DropdownButtonFormField<String>(
+              value: genderCtrl.text.isEmpty ? null : genderCtrl.text,
+              onChanged: (value) {
+                setState(() {
+                  genderCtrl.text = value!;
+                });
+              },
+              items: [
+                const DropdownMenuItem(
+                  value: 'Male',
+                  child: Text('Male'),
+                ),
+                const DropdownMenuItem(
+                  value: 'Female',
+                  child: Text('Female'),
+                ),
+              ],
+              decoration: const InputDecoration(
+                labelText: "Gender (Optional)",
+                prefixIcon: Icon(Icons.accessibility),
+                border: OutlineInputBorder(),
+              ),
+            ),
           const SizedBox(height: 10),
           Row(
             children: [

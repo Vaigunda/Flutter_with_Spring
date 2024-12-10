@@ -74,7 +74,7 @@ class _AdminPageState extends State<AdminPage> {
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Mentor deleted successfully!'),
           duration: Duration(seconds: 3),
         ),
@@ -82,7 +82,7 @@ class _AdminPageState extends State<AdminPage> {
     } else {
       // Handle errors (optional)
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to delete mentor. Please try again.'),
           duration: Duration(seconds: 3),
           backgroundColor: Colors.red,
