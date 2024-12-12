@@ -448,6 +448,8 @@ import 'package:mentor/provider/user_data_provider.dart';
 
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class CreateMentorScreen extends StatefulWidget {
   @override
@@ -495,6 +497,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
   
   List<CategoryModel> categories = [];
   List<CategoryModel> selectedCategories = [];
+  List<CategoryModel> displayedCategories = [];
 
 
   @override
@@ -514,6 +517,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
       final fetchedCategories = await categoriesService.fetchCategories(usertoken);
       setState(() {
         categories = fetchedCategories;
+        categories.add(CategoryModel(id:"0",name: "Others",icon:"")); // Add "Others" manually
       });
     } catch (error) {
       print('Error fetching categories: $error');
@@ -556,6 +560,49 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     }
   }
 
+  // Show dialog to enter custom category if "Others" is selected
+  void _showOthersCategoryField() {
+    TextEditingController othersCategoryController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Enter Custom Category"),
+          content: TextField(
+            controller: othersCategoryController,
+            decoration: InputDecoration(
+              labelText: "Custom Category Name",
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  if (othersCategoryController.text.isNotEmpty) {
+                    // Add the custom category to both selected and displayed categories
+                    final customCategory = CategoryModel(
+                      id: "0",
+                      name: othersCategoryController.text,
+                      icon: "",
+                    );
+                    selectedCategories.add(customCategory);
+                    displayedCategories = List.from(selectedCategories);
+                  }
+
+                  Navigator.of(context).pop(); // Close the dialog
+                });
+              },
+              child: Text("Submit"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
    // Method to handle form submission
   Future<void> submitMentor() async {
     if (isSubmitting) return; // Prevent duplicate submissions
@@ -563,6 +610,8 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     setState(() {
       isSubmitting = true;
     });
+
+    List<CategoryModel> filteredCategories = selectedCategories.where((category) => category.name != "Others").toList();
 
     // Prepare the mentor data to be sent
     Map<String, dynamic> mentorData = {
@@ -598,7 +647,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
           "timeEnd": timeSlotsTimeEndControllers[index].text,
         };
       }),
-      "categories": selectedCategories.map((category) {
+      "categories": filteredCategories.map((category) {
         return {"name": category.name};
       }).toList(),
     };
@@ -829,14 +878,34 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                     ),
                     onConfirm: (values) {
                       setState(() {
+                        // Temporarily store the selected categories
                         selectedCategories = values;
+
+                        // Check if "Others" was selected
+                        if (selectedCategories.any((category) => category.name == "Others")) {
+                          // Remove "Others" from the selected categories temporarily
+                          selectedCategories.removeWhere((category) => category.name == "Others");
+
+                          // Prevent chipDisplay from showing categories yet
+                          displayedCategories = [];
+
+                          // Show a dialog for the custom category
+                          _showOthersCategoryField();
+                        } else {
+                          // If "Others" was not selected, immediately update displayedCategories
+                          displayedCategories = List.from(selectedCategories);
+                        }
                       });
                     },
                     chipDisplay: MultiSelectChipDisplay(
-                      items: selectedCategories.map((category) => MultiSelectItem(category, category.name)).toList(),
+                      // Use the new displayedCategories variable instead of selectedCategories
+                      items: displayedCategories
+                          .map((category) => MultiSelectItem(category, category.name))
+                          .toList(),
                       onTap: (value) {
                         setState(() {
                           selectedCategories.remove(value);
+                          displayedCategories.remove(value);
                         });
                       },
                       textStyle: TextStyle(
