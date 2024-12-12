@@ -459,6 +459,7 @@ class CreateMentorScreen extends StatefulWidget {
 class _CreateMentorScreenState extends State<CreateMentorScreen> {
   // Controllers for basic mentor details
   TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController avatarUrlController = TextEditingController();
   TextEditingController bioController = TextEditingController();
   TextEditingController roleController = TextEditingController();
@@ -616,6 +617,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     // Prepare the mentor data to be sent
     Map<String, dynamic> mentorData = {
       "name": nameController.text,
+      "email": emailController.text,
       "avatarUrl": avatarUrlController.text,
       "bio": bioController.text,
       "role": roleController.text,
@@ -652,9 +654,6 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
       }).toList(),
     };
 
-    // Log the request body
-    print("Request Body: ${json.encode(mentorData)}");
-
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -689,7 +688,6 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
         );
       }
     } catch (e) {
-      print(e); // Handle any errors
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('An error occurred. Please try again.'),
@@ -708,6 +706,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
   // Clear all form fields after submission
   void _clearForm() {
     nameController.clear();
+    emailController.clear();
     avatarUrlController.clear();
     bioController.clear();
     roleController.clear();
@@ -788,6 +787,11 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
               TextField(
                 controller: nameController,
                 decoration: const InputDecoration(labelText: "Name"),
+              ),
+              // Name Field
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(labelText: "Email Id"),
               ),
               // Avatar URL Field
               TextField(

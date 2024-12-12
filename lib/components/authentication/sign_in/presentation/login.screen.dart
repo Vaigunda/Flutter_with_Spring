@@ -21,17 +21,15 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final validator = Validator();
-  TextEditingController usernameCtrl = TextEditingController();
+  TextEditingController emailCtrl = TextEditingController();
   TextEditingController passwordCtrl = TextEditingController();
   bool _passwordVisible = true;
   bool isChecked = false;
 
-  var _isFormLoading = false;
-
   @override
   void dispose() {
     super.dispose();
-    usernameCtrl.dispose();
+    emailCtrl.dispose();
     passwordCtrl.dispose();
   }
 
@@ -44,24 +42,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (!_formKey.currentState!.validate()) return;
 
-    setState(() {
-      _isFormLoading = true;
-    });
-
     String parsed;
-
     try {
-      String userName = usernameCtrl.text.trim();
+      String email = emailCtrl.text.trim();
       String password = passwordCtrl.text.trim();
 
-      if (!isNullOrEmpty(userName) && !isNullOrEmpty(password)) {
+      if (!isNullOrEmpty(email) && !isNullOrEmpty(password)) {
         final response = await http.post(
           Uri.parse('http://localhost:8080/auth/login'),
           headers: {
             "content-type": "application/json"
           },
           body: jsonEncode(<String, String>{
-            'userName': userName,
+            'emailId': email,
             'password': password,
           })
         );
@@ -73,11 +66,13 @@ class _LoginScreenState extends State<LoginScreen> {
           String usertoken = map['token'];
           String userid = map['userId'].toString();
           String name = map['name'];
+          String usertype = map['userType'];
 
           await userDataProvider.setUserDataAsync(
             usertoken: usertoken,
             userid: userid,
             name: name,
+            usertype: usertype,
           );
           context.go(AppRoutes.home);
         }
@@ -89,9 +84,6 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text(e.toString())),
       );
     } finally {
-      setState(() {
-        _isFormLoading = false;
-      });
     }
   }
 
@@ -150,11 +142,11 @@ class _LoginScreenState extends State<LoginScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InputField(
-              controller: usernameCtrl,
+              controller: emailCtrl,
               validator: (value) {
                 return validator.required(value, 'This field is required');
               },
-              labelText: "Username",
+              labelText: "Email Id",
               prefixIcon: const Icon(Icons.account_circle_outlined),
             ),
             const SizedBox(

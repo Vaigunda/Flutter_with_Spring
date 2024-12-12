@@ -58,8 +58,8 @@ class AppRoutes {
   static String viewMentor = '/view-mentor'; // Route for View Mentor Page
 }
 
-// navigation list after login
-List<NavigationDestination> destinations = [
+// navigation list after login for Admin
+List<NavigationDestination> adminDestinations = [
   NavigationDestination(
     label: 'Home',
     icon: const Icon(
@@ -118,8 +118,8 @@ List<NavigationDestination> destinations = [
   ),
 ];
 
-// navigation list before login
-List<NavigationDestination> beforeDestinations = [
+// navigation list after login for User
+List<NavigationDestination> userDestinations = [
   NavigationDestination(
     label: 'Home',
     icon: const Icon(
@@ -135,6 +135,42 @@ List<NavigationDestination> beforeDestinations = [
       size: 20,
     ),
     route: AppRoutes.mySchedule,
+  ),
+  NavigationDestination(
+    label: 'Search',
+    icon: const Icon(
+      FontAwesomeIcons.magnifyingGlass,
+      size: 20,
+    ),
+    route: AppRoutes.search,
+  ),
+  NavigationDestination(
+    label: 'Profile',
+    icon: const Icon(
+      FontAwesomeIcons.user,
+      size: 20,
+    ),
+    route: AppRoutes.profile,
+  ),
+];
+
+// navigation list before login
+List<NavigationDestination> beforeDestinations = [
+  NavigationDestination(
+    label: 'Home',
+    icon: const Icon(
+      FontAwesomeIcons.house,
+      size: 20,
+    ),
+    route: AppRoutes.home,
+  ),
+  NavigationDestination(
+    label: 'Search',
+    icon: const Icon(
+      FontAwesomeIcons.magnifyingGlass,
+      size: 20,
+    ),
+    route: AppRoutes.search,
   ),
 ];
 

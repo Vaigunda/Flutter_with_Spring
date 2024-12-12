@@ -23,12 +23,28 @@ class RootLayout extends StatelessWidget {
 
     var provider = context.read<UserDataProvider>();
     String userId = provider.userid;
+    String userType = provider.usertype;
     
     return LayoutBuilder(builder: (context, dimens) {
       void onSelected(int index) {
-        final destination = router.destinations[index];
-        go.GoRouter.of(context).go(destination.route);
+        if (userId.isEmpty) {
+          if (index >= 0 && index < router.beforeDestinations.length) {
+            final dest = router.beforeDestinations[index];
+            go.GoRouter.of(context).go(dest.route);
+          }
+        } else if (userType == "Admin") {
+          if (index >= 0 && index < router.adminDestinations.length) {
+            final dest = router.adminDestinations[index];
+            go.GoRouter.of(context).go(dest.route);
+          }
+        } else {
+          if (index >= 0 && index < router.userDestinations.length) {
+            final dest = router.userDestinations[index];
+            go.GoRouter.of(context).go(dest.route);
+          }
+        }
       }
+
       if (userId.isEmpty) {
         return AdaptiveNavigation(
         key: _navigationRailKey,
@@ -38,7 +54,9 @@ class RootLayout extends StatelessWidget {
                   label: e.label,
                 ))
             .toList(),
-        selectedIndex: currentIndex,
+        selectedIndex: (currentIndex >= 0 && currentIndex < router.beforeDestinations.length)
+                        ? currentIndex
+                        : 0,
         onDestinationSelected: onSelected,
         child: Column(
           children: [
@@ -47,20 +65,21 @@ class RootLayout extends StatelessWidget {
                 key: _switcherKey,
                 child: child,
               ),
-            )
-          ],
-        ),
-      );
-      } else {
+            )],
+          ),
+        );
+      } else if (userType == "Admin") {
         return AdaptiveNavigation(
         key: _navigationRailKey,
-        destinations: router.destinations
+        destinations: router.adminDestinations
             .map((e) => NavigationDestination(
                   icon: e.icon,
                   label: e.label,
                 ))
             .toList(),
-        selectedIndex: currentIndex,
+        selectedIndex: (currentIndex >= 0 && currentIndex < router.beforeDestinations.length)
+                        ? currentIndex
+                        : 0,
         onDestinationSelected: onSelected,
         child: Column(
           children: [
@@ -69,11 +88,33 @@ class RootLayout extends StatelessWidget {
                 key: _switcherKey,
                 child: child,
               ),
-            )
-          ],
-        ),
-      );
-      }
+            )],
+         ),
+        );
+      } else {
+      return AdaptiveNavigation(
+        key: _navigationRailKey,
+        destinations: router.userDestinations
+            .map((e) => NavigationDestination(
+                  icon: e.icon,
+                  label: e.label,
+                ))
+            .toList(),
+        selectedIndex: (currentIndex >= 0 && currentIndex < router.beforeDestinations.length)
+                        ? currentIndex
+                        : 0,
+        onDestinationSelected: onSelected,
+        child: Column(
+          children: [
+            Expanded(
+              child: _Switcher(
+                key: _switcherKey,
+                child: child,
+              ),
+            )],
+			    ),
+		    );
+		  }
     });
   }
 }

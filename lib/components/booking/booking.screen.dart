@@ -65,7 +65,6 @@ class _BookingScreenState extends State<BookingScreen> {
       // Fetch time slots for today's date
       fetchTimeSlots();
     }).catchError((error) {
-      print('Error fetching data: $error');
       setState(() {
         _errorMessage = "Failed to fetch data.";
       });
@@ -84,7 +83,6 @@ class _BookingScreenState extends State<BookingScreen> {
         timeSlots = slots; // List of time slots from API
       });
     } catch (error) {
-      print('Error fetching time slots: $error');
       setState(() {
         _errorMessage = "Failed to fetch time slots.";
       });
@@ -104,7 +102,6 @@ class _BookingScreenState extends State<BookingScreen> {
       setState(() {
         _errorMessage = formData[_index]["message"];
       });
-      print(_errorMessage);
       return;
     }
     setState(() {
@@ -241,7 +238,6 @@ class _BookingScreenState extends State<BookingScreen> {
                 isLoading = false;
               });
               // Show error feedback if needed
-              print("Error fetching time slots: $error");
             });
           },
           enabledDayPredicate: (day) {
@@ -394,7 +390,6 @@ class _BookingScreenState extends State<BookingScreen> {
       "category": category.name, // Category name selected by user
       "connectMethod": method.name, // Connection method selected by user
     });
-    print(requestBody);
 
     try {
       // Send the POST request to your backend API
@@ -418,7 +413,6 @@ class _BookingScreenState extends State<BookingScreen> {
         );
       } else {
         // Something went wrong, handle the error
-        print('Failed to submit booking. Status code: ${response.statusCode}');
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Failed to submit booking. Please try again.'),
@@ -428,7 +422,6 @@ class _BookingScreenState extends State<BookingScreen> {
         );
       }
     } catch (e) {
-      print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('An error occurred. Please try again.'),

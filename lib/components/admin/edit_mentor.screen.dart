@@ -19,6 +19,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
   late AllMentors mentorData;
 
   late TextEditingController nameController;
+  late TextEditingController emailController;
   late TextEditingController roleController;
   late TextEditingController bioController;
   late TextEditingController avatarUrlController;
@@ -54,6 +55,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
     usertoken = provider.usertoken;
 
     nameController = TextEditingController(text: mentorData.name);
+    emailController = TextEditingController(text: mentorData.email);
     roleController = TextEditingController(text: mentorData.role);
     bioController = TextEditingController(text: mentorData.bio);
     avatarUrlController = TextEditingController(text: mentorData.avatarUrl);
@@ -127,6 +129,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
     // Dispose of all TextEditingController instances
 
     nameController.dispose();
+    emailController.dispose();
     roleController.dispose();
     bioController.dispose();
     avatarUrlController.dispose();
@@ -159,6 +162,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
   Future<void> saveMentor() async {
     final updatedData = {
       'name': mentorData.name,
+      'email': mentorData.email,
       'avatarUrl': mentorData.avatarUrl,
       'bio': mentorData.bio,
       'role': mentorData.role,
@@ -247,6 +251,9 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
         case 'name':
           mentorData = mentorData.copyWith(name: value);
           break;
+        case 'email':
+          mentorData = mentorData.copyWith(email: value);
+          break;
         case 'role':
           mentorData = mentorData.copyWith(role: value);
           break;
@@ -328,7 +335,12 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
               decoration: const InputDecoration(labelText: 'Name'),
               onChanged: (value) => updateField('name', value),
             ),
-            
+            // Email
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(labelText: 'Email'),
+              onChanged: (value) => updateField('email', value),
+            ),
             // Role
             TextField(
               controller: roleController,
