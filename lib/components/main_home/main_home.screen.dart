@@ -61,7 +61,6 @@
 //   }
 // }
 
-
 // 2nd change
 // import 'package:flutter/material.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -130,7 +129,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -145,6 +143,7 @@ import '../../shared/services/top_mentor.service.dart';
 import '../../shared/models/top_rated_mentor.model.dart';
 import '../../shared/models/top_mentor.model.dart';
 import '../../shared/views/brightness_toggle.dart';
+import '../splash/aboutus.dart';
 import 'widgets/categories.dart';
 import 'widgets/explore.dart';
 import 'widgets/top_mentors.dart';
@@ -175,11 +174,11 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     usertoken = provider.usertoken;
     userid = provider.userid;
     name = provider.name;
-    
+
     // Fetch data from the API
     topRatedMentors = MentorService().fetchTopRatedMentors(usertoken);
     topMentors = TopMentorService().fetchTopMentors(usertoken);
-    verifiedMentors= VerifiedService().fetchVerifiedMentors(usertoken);
+    verifiedMentors = VerifiedService().fetchVerifiedMentors(usertoken);
   }
 
   @override
@@ -194,27 +193,45 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               children: [
                 Row(
                   children: [
-                    if(userid.isEmpty)
+                    if (userid.isEmpty)
                       TextButton(
                         onPressed: () => context.go(AppRoutes.signin),
                         child: const Text("Sign in"),
                       )
                     else // If logged in, show welcome message
-                    Text(
-                      "Welcome, $name", // Use the name from provider
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                      Text(
+                        "Welcome, $name", // Use the name from provider
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ), 
                     Expanded(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const AboutUs(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'About Us',
+                              style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),
+                            ),
+                          ),
+
+                          const SizedBox(
+                            width: 40,
+                          ),
                           // Mentorboosters logo (aligned with baseline)
                           const Padding(
-                            padding:  EdgeInsets.only(bottom: 40),
-                            child:  Row(
+                            padding: EdgeInsets.only(bottom: 40),
+                            child: Row(
                               crossAxisAlignment: CrossAxisAlignment.baseline,
                               textBaseline: TextBaseline.alphabetic,
                               children: [
@@ -222,10 +239,13 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                                   "m",
                                   style: TextStyle(
                                     fontSize: 48, // Size: 48px
-                                    fontFamily: "Lobster", // Font Family: Lobster
+                                    fontFamily:
+                                        "Lobster", // Font Family: Lobster
                                     fontWeight: FontWeight.w400, // Weight: 400
-                                    color: Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
-                                    height: 62 / 48, // Line Height: 62px / 48px = ~1.29
+                                    color: Color(
+                                        0xFF4ABFE2), // Color: rgb(74, 191, 226)
+                                    height: 62 /
+                                        48, // Line Height: 62px / 48px = ~1.29
                                   ),
                                 ),
                                 Text(
@@ -233,16 +253,20 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                                   style: TextStyle(
                                     fontSize: 32, // Size: 32px
                                     fontWeight: FontWeight.w900, // Weight: 800
-                                    fontFamily: "Epilogue", // Font Family: Epilogue, sans-serif
-                                    color: Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
-                                    height: 42 / 32, // Line Height: 42px / 32px = ~1.31
+                                    fontFamily:
+                                        "Epilogue", // Font Family: Epilogue, sans-serif
+                                    color: Color(
+                                        0xFF4ABFE2), // Color: rgb(74, 191, 226)
+                                    height: 42 /
+                                        32, // Line Height: 42px / 32px = ~1.31
                                   ),
                                 ),
                                 Text(
                                   ".",
                                   style: TextStyle(
                                     fontSize: 72, // Font size for the dot
-                                    fontWeight: FontWeight.w800, // Match the same weight as text
+                                    fontWeight: FontWeight
+                                        .w800, // Match the same weight as text
                                     fontFamily: "Epilogue", // Font Family
                                     color: Color(0xFF4ABFE2), // Match the color
                                     height: 1, // Default height
@@ -285,7 +309,9 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 const SizedBox(height: 30),
                 HomeVerified(verifiedMentors: verifiedMentors),
                 const SizedBox(height: 30),
-                HomeTopRated(topRatedMentors: topRatedMentors,)
+                HomeTopRated(
+                  topRatedMentors: topRatedMentors,
+                )
                 // Pass the future data for top-rated mentors
               ],
             ),
@@ -294,5 +320,4 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       }),
     );
   }
-
 }

@@ -60,6 +60,7 @@ class _MainAppState extends State<MainApp> {
                 return MaterialApp.router(
                   debugShowCheckedModeBanner: false,
                   title: 'Find your best mentor',
+                  
                   theme: theme.light(),
                   darkTheme: theme.dark(),
                   themeMode: theme.themeMode(),

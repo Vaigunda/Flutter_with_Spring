@@ -100,7 +100,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         centerTitle: false,
         title: Text(
           "My schedule",
-          style: context.headlineMedium,
         ),
       ),
       body: Container(
