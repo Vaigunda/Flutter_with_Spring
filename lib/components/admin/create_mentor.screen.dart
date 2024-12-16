@@ -849,10 +849,12 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                                 ),
                               ],
                             ),
-                            Center(
-                              child: Image.asset(
-                                'assets/images/admin.png',
-                                fit: BoxFit.cover,
+                            Expanded(
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/images/admin.png',
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ],
@@ -1213,10 +1215,13 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                   //   controller: experienceDescriptionControllers[index],
                   //   decoration: const InputDecoration(labelText: "Description"),
                   //),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   TextField(
                     controller: experienceStartDateControllers[index],
                     decoration: const InputDecoration(
-                        labelText: "Start Date YYYY-MM-DD"),
+                        labelText: "Start Date YYYY-MM-DD",border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10.0)))),
                     onTap: () => _selectDate(
                         context, experienceStartDateControllers[index]),
                     readOnly: true,
@@ -1228,7 +1233,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                   TextField(
                     controller: experienceEndDateControllers[index],
                     decoration:
-                        const InputDecoration(labelText: "End Date YYYY-MM-DD"),
+                        const InputDecoration(labelText: "End Date YYYY-MM-DD",border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10.0)))),
                     onTap: () => _selectDate(
                         context, experienceEndDateControllers[index]),
                     readOnly: true,
@@ -1239,6 +1244,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                 ],
               );
             }),
+            
             CustomButton(
                 minWidth: MediaQuery.of(context).size.width,
                 borderRadius: 4,
@@ -1265,15 +1271,18 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                   TextField(
                     controller: timeSlotsTimeStartControllers[index],
                     decoration: const InputDecoration(
-                        labelText: "Start Time (HH:mm:ss)"),
+                        labelText: "Start Time (HH:mm:ss)",border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
                     onTap: () => _selectTime(
                         context, timeSlotsTimeStartControllers[index]),
                     readOnly: true,
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   TextField(
                     controller: timeSlotsTimeEndControllers[index],
                     decoration:
-                        const InputDecoration(labelText: "End Time (HH:mm:ss)"),
+                        const InputDecoration(labelText: "End Time (HH:mm:ss)",border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
                     onTap: () => _selectTime(
                         context, timeSlotsTimeEndControllers[index]),
                     readOnly: true,
@@ -1281,7 +1290,9 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                 ],
               );
             }),
-
+              const SizedBox(
+                    height: 20,
+                  ),
             CustomButton(
                 minWidth: MediaQuery.of(context).size.width,
                 borderRadius: 4,

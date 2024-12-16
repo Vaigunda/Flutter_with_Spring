@@ -388,7 +388,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: 24,
                           ),
                           const SizedBox(width: 8),
-                          const Text('Sign with Google'),
+                          const Text('Sign with Facebook'),
                         ],
                       ),
                     ),
