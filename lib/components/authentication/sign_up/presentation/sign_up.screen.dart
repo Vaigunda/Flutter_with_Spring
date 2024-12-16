@@ -67,138 +67,131 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
           child: KeyboardDismissOnTap(
-            child: Padding(
-              padding: const EdgeInsets.all(80),
-              child: Material(
-                elevation: 4,
-                child: SingleChildScrollView(
-                  child: Column(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    textBaseline: TextBaseline.alphabetic,
                     children: [
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: [
-                          Text(
-                            "M",
-                            style: TextStyle(
-                              fontSize: 52,
-                              fontFamily: "Lobster",
-                              fontWeight: FontWeight.w400, // Weight: 400
-                              color: Color(0xFF4ABFE2),
-                              height: 62 / 48,
-                            ),
-                          ),
-                          Text(
-                            "entorboosters",
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.w900,
-                              fontFamily: "Epilogue",
-                              color: Color(0xFF4ABFE2),
-                              height: 42 / 32,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(bottom: 10),
-                            child: Text(
-                              ".",
-                              style: TextStyle(
-                                fontSize: 62,
-                                fontWeight: FontWeight.w900,
-                                fontFamily: "Epilogue",
-                                color: Color(0xFF4ABFE2),
-                                height: 42 / 32,
-                              ),
-                            ),
-                          ),
-                        ],
+                      Text(
+                        "M",
+                        style: TextStyle(
+                          fontSize: 52,
+                          fontFamily: "Lobster",
+                          fontWeight: FontWeight.w400, // Weight: 400
+                          color: Color(0xFF4ABFE2),
+                          height: 62 / 48,
+                        ),
                       ),
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          if (constraints.maxWidth > 600) {
-                            return Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: SingleChildScrollView(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Center(
-                                          child: Text(
-                                            'Create Account,',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineMedium,
-                                          ),
-                                        ),
-                                        Center(
-                                          child: Text(
-                                            'Sign up to get started!',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 20),
-                                        Padding(
-                                          padding: const EdgeInsets.all(16),
-                                          child: formSignUp(context),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 40),
-                                Expanded(
-                                  child: Center(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(16),
-                                      child: Image.asset(
-                                        'assets/images/register.png',
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          } else {
-                            return SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Center(
-                                    child: Text(
-                                      'Create Account,',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineMedium,
-                                    ),
-                                  ),
-                                  Center(
-                                    child: Text(
-                                      'Sign up to get started!',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: formSignUp(context),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                        },
+                      Text(
+                        "entorboosters",
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: "Epilogue",
+                          color: Color(0xFF4ABFE2),
+                          height: 42 / 32,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 10),
+                        child: Text(
+                          ".",
+                          style: TextStyle(
+                            fontSize: 62,
+                            fontWeight: FontWeight.w900,
+                            fontFamily: "Epilogue",
+                            color: Color(0xFF4ABFE2),
+                            height: 42 / 32,
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (constraints.maxWidth > 600) {
+                        return Material(
+                          elevation: 4,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Center(
+                                      child: Text(
+                                        'Create Account,',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineMedium,
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Text(
+                                        'Sign up to get started!',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Padding(
+                                      padding: const EdgeInsets.all(16),
+                                      child: formSignUp(context),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 40),
+                              Expanded(
+                                child: Center(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Image.asset(
+                                      'assets/images/register.png',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Center(
+                              child: Text(
+                                'Create Account,',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineMedium,
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                'Sign up to get started!',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: formSignUp(context),
+                            ),
+                          ],
+                        );
+                      }
+                    },
+                  ),
+                ],
               ),
             ),
           ),
