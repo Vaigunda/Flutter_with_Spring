@@ -262,31 +262,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           const SizedBox(height: 20),
           Center(
-            child: Row(
-              children: [
-                CustomButton(
-                  borderRadius: 4,
-                  onPressed: () {
-                    sendOTP(emailCtrl.text);
-                  },
-                  label: 'Send OTP',
-                ),
-                const SizedBox(width: 10),
-                SizedBox(
-                    width: 150.0,
-                    child: InputField(
-                      controller: otpCtrl,
-                      labelText: 'OTP',
-                    )),
-                const SizedBox(width: 10),
-                CustomButton(
-                  borderRadius: 4,
-                  onPressed: () {
-                    verifyOTP(otpCtrl.text);
-                  },
-                  label: 'Verify OTP',
-                ),
-              ],
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  CustomButton(
+                    borderRadius: 4,
+                    onPressed: () {
+                      sendOTP(emailCtrl.text);
+                    },
+                    label: 'Send OTP',
+                  ),
+                  const SizedBox(width: 10),
+                  SizedBox(
+                      width: 150.0,
+                      child: InputField(
+                        controller: otpCtrl,
+                        labelText: 'OTP',
+                      )),
+                  const SizedBox(width: 10),
+                  CustomButton(
+                    borderRadius: 4,
+                    onPressed: () {
+                      verifyOTP(otpCtrl.text);
+                    },
+                    label: 'Verify OTP',
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 20),

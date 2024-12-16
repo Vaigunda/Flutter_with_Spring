@@ -291,31 +291,34 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Forget password", style: context.bodySmall),
-                      TextButton(
-                          onPressed: () =>
-                              context.push(AppRoutes.forgetPassword),
-                          child: Text('Recover now!',
-                              style: TextStyle(color: context.colors.primary))),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Not a member!', style: context.bodyMedium),
-                      TextButton(
-                          onPressed: () => context.push(AppRoutes.signup),
-                          child: Text('Register Now!',
-                              style: TextStyle(color: context.colors.primary))),
-                    ],
-                  ),
-                ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Forget password", style: context.bodySmall),
+                        TextButton(
+                            onPressed: () =>
+                                context.push(AppRoutes.forgetPassword),
+                            child: Text('Recover now!',
+                                style: TextStyle(color: context.colors.primary))),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Not a member!', style: context.bodyMedium),
+                        TextButton(
+                            onPressed: () => context.push(AppRoutes.signup),
+                            child: Text('Register Now!',
+                                style: TextStyle(color: context.colors.primary))),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 24,
