@@ -357,7 +357,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   // Function to send sign-up request to API
   Future<void> _signUp() async {
-    final url = Uri.parse('http://localhost:8080/auth/sign-up');
 
     // Prepare the data to send as JSON
     final body = jsonEncode({
@@ -366,36 +365,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'name': nameCtrl.text,
       'emailId': emailCtrl.text,
       'age': ageCtrl.text.isEmpty ? '0' : ageCtrl.text, // Optional field
-      'gender': genderCtrl.text.isEmpty
-          ? 'Not Specified'
-          : genderCtrl.text, // Optional field
+      'gender': genderCtrl.text.isEmpty ? 'Not Specified' : genderCtrl.text, // Optional field
     });
 
-    final response = await http.post(
-      url,
-      headers: {
-        "Content-Type": "application/json", // Make sure content type is correct
-      },
-      body: body, // Send the JSON string as the body
-    );
+    if (isOtpVerified) {
+      final url = Uri.parse('http://localhost:8080/auth/sign-up');
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json", // Make sure content type is correct
+        },
+        body: body, // Send the JSON string as the body
+      );
 
-    if (response.statusCode == 201) {
-      // Handle success, show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Sign up successful!"),
-          backgroundColor: Colors.green,
-        ),
-      );
-      context.go(AppRoutes.signin);
+      if (response.statusCode == 200) {
+        if (response.body == 'Email already Exists') {
+          // Email already exists
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Email already Exists!"),
+            backgroundColor: Colors.green,),
+          );
+        }
+      } if (response.statusCode == 201) {
+        // Sign up successful
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Sign up successful!"),
+          backgroundColor: Colors.green,),
+        );
+        context.go(AppRoutes.signin);
+      } else {
+        // Handle error, show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Sign up failed! Please try again."),
+          backgroundColor: Colors.red,),
+        );
+      }
     } else {
-      // Handle error, show error message
+      // Verification
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Sign up failed! Please try again."),
-          backgroundColor: Colors.red,
-        ),
-      );
+        const SnackBar(content: Text("Please Verify Your Email OTP"),
+        backgroundColor: Colors.red,),
+      );             
     }
   }
 
