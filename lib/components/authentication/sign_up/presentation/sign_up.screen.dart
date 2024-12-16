@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:mentor/navigation/router.dart';
 import 'dart:convert';
 
-
 import 'package:mentor/shared/utils/extensions.dart';
 import 'package:mentor/shared/utils/validator.dart';
 import 'package:mentor/shared/views/button.dart';
@@ -27,9 +26,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController emailCtrl = TextEditingController();
   TextEditingController ageCtrl = TextEditingController();
   TextEditingController genderCtrl = TextEditingController();
-  
+
   TextEditingController otpCtrl = TextEditingController();
-  
+
   bool _passwordVisible = true;
   bool isChecked = false;
 
@@ -51,37 +50,156 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     final isKeyboardVisibility = MediaQuery.of(context).viewInsets.bottom > 0;
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => context.pop(),
+          icon: Icon(Icons.arrow_back,
+              color: Theme.of(context).colorScheme.onSecondaryContainer),
+        ),
+        title: const Center(
+          child: Text(
+            "Register",
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 25, 20, 25),
+          padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
           child: KeyboardDismissOnTap(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    IconButton(
-                      onPressed: () => context.pop(),
-                      icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSecondaryContainer),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 40),
-                        Text('Create Account,', style: context.displayMedium),
-                        Text('Sign up to get started!', style: context.bodyMedium),
-                        const SizedBox(height: 20),
-                        formSignUp(context),
-                        const SizedBox(height: 16),
-                      ],
-                    ),
+            child: Padding(
+              padding: const EdgeInsets.all(80),
+              child: Material(
+                elevation: 4,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        textBaseline: TextBaseline.alphabetic,
+                        children: [
+                          Text(
+                            "M",
+                            style: TextStyle(
+                              fontSize: 52,
+                              fontFamily: "Lobster",
+                              fontWeight: FontWeight.w400, // Weight: 400
+                              color: Color(0xFF4ABFE2),
+                              height: 62 / 48,
+                            ),
+                          ),
+                          Text(
+                            "entorboosters",
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w900,
+                              fontFamily: "Epilogue",
+                              color: Color(0xFF4ABFE2),
+                              height: 42 / 32,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(bottom: 10),
+                            child: Text(
+                              ".",
+                              style: TextStyle(
+                                fontSize: 62,
+                                fontWeight: FontWeight.w900,
+                                fontFamily: "Epilogue",
+                                color: Color(0xFF4ABFE2),
+                                height: 42 / 32,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          if (constraints.maxWidth > 600) {
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Center(
+                                          child: Text(
+                                            'Create Account,',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineMedium,
+                                          ),
+                                        ),
+                                        Center(
+                                          child: Text(
+                                            'Sign up to get started!',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        Padding(
+                                          padding: const EdgeInsets.all(16),
+                                          child: formSignUp(context),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 40),
+                                Expanded(
+                                  child: Center(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: Image.asset(
+                                        'assets/images/register.png',
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else {
+                            return SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Create Account,',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineMedium,
+                                    ),
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      'Sign up to get started!',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: formSignUp(context),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -97,14 +215,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
         children: [
           InputField(
             controller: usernameCtrl,
-            validator: (value) => validator.required(value, 'This field is required'),
+            validator: (value) =>
+                validator.required(value, 'This field is required'),
             labelText: "Username",
-            prefixIcon: const Icon(Icons.account_circle_outlined),
+            prefixIcon: const Icon(Icons.person_2),
           ),
           const SizedBox(height: 20),
           InputField(
             controller: passwordCtrl,
-            validator: (value) => validator.required(value, 'This field is required'),
+            validator: (value) =>
+                validator.required(value, 'This field is required'),
             obscureText: _passwordVisible,
             prefixIcon: const Icon(Icons.lock_outline_rounded),
             suffixIcon: IconButton(
@@ -114,7 +234,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 });
               },
               icon: Icon(
-                _passwordVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                _passwordVisible
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
                 size: 18,
               ),
             ),
@@ -123,73 +245,56 @@ class _SignUpScreenState extends State<SignUpScreen> {
           const SizedBox(height: 20),
           InputField(
             controller: nameCtrl,
-            validator: (value) => validator.required(value, 'This field is required'),
+            validator: (value) =>
+                validator.required(value, 'This field is required'),
             labelText: "Full Name",
             prefixIcon: const Icon(Icons.person),
           ),
           const SizedBox(height: 20),
-          SizedBox(
-          width: double.infinity,
-          child: Wrap(
-            direction: Axis.horizontal,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              SizedBox(
-                 width: 450.0,
-                child: InputField(
-                  controller: emailCtrl,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'This field is required';
-                    }
-                    final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-                    if (!emailRegex.hasMatch(value)) {
-                      return 'Please enter a valid email address';
-                    }
-                    return null;
-                  },
-                  labelText: "Email",
-                  prefixIcon: const Icon(Icons.email),
-                ),
-              ),
-              const SizedBox(width: 20),
-              SizedBox(
-                 width: 150.0,
-                child: TextButton(
+          InputField(
+            controller: emailCtrl,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'This field is required';
+              }
+              final emailRegex =
+                  RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+              if (!emailRegex.hasMatch(value)) {
+                return 'Please enter a valid email address';
+              }
+              return null;
+            },
+            labelText: "Email",
+            prefixIcon: const Icon(Icons.email),
+          ),
+          const SizedBox(height: 20),
+          Center(
+            child: Row(
+              children: [
+                CustomButton(
+                  borderRadius: 4,
                   onPressed: () {
                     sendOTP(emailCtrl.text);
                   },
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    textStyle: const TextStyle(fontSize: 18), // Text style
-                  ),
-                  child: const Text('Send OTP'),
-                )
-              ),
-              const SizedBox(width: 20),
-              SizedBox(
-                width: 150.0,
-                child: InputField(
-                  controller: otpCtrl,
-                  labelText: 'OTP',
-                )
-              ),
-              const SizedBox(width: 20),
-              SizedBox(
-                 width: 150.0,
-                child: TextButton(
-                   onPressed: () {
+                  label: 'Send OTP',
+                ),
+                const SizedBox(width: 10),
+                SizedBox(
+                    width: 150.0,
+                    child: InputField(
+                      controller: otpCtrl,
+                      labelText: 'OTP',
+                    )),
+                const SizedBox(width: 10),
+                CustomButton(
+                  borderRadius: 4,
+                  onPressed: () {
                     verifyOTP(otpCtrl.text);
                   },
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                    textStyle: const TextStyle(fontSize: 18), // Text style
-                  ),
-                  child: const Text('Verify OTP'),
-                )
-              ),
-            ]
-          )
+                  label: 'Verify OTP',
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 20),
           InputField(
@@ -198,29 +303,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
             prefixIcon: const Icon(Icons.calendar_today),
           ),
           const SizedBox(height: 20),
-            DropdownButtonFormField<String>(
-              value: genderCtrl.text.isEmpty ? null : genderCtrl.text,
-              onChanged: (value) {
-                setState(() {
-                  genderCtrl.text = value!;
-                });
-              },
-              items: [
-                const DropdownMenuItem(
-                  value: 'Male',
-                  child: Text('Male'),
-                ),
-                const DropdownMenuItem(
-                  value: 'Female',
-                  child: Text('Female'),
-                ),
-              ],
-              decoration: const InputDecoration(
-                labelText: "Gender (Optional)",
-                prefixIcon: Icon(Icons.accessibility),
-                border: OutlineInputBorder(),
+          DropdownButtonFormField<String>(
+            value: genderCtrl.text.isEmpty ? null : genderCtrl.text,
+            onChanged: (value) {
+              setState(() {
+                genderCtrl.text = value!;
+              });
+            },
+            items: [
+              const DropdownMenuItem(
+                value: 'Male',
+                child: Text('Male'),
               ),
+              const DropdownMenuItem(
+                value: 'Female',
+                child: Text('Female'),
+              ),
+            ],
+            decoration: const InputDecoration(
+              labelText: "Gender (Optional)",
+              prefixIcon: Icon(Icons.person),
+              border: OutlineInputBorder(),
             ),
+          ),
           const SizedBox(height: 10),
           Row(
             children: [
@@ -237,14 +342,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ],
           ),
           const SizedBox(height: 24),
-          CustomButton(
-            minWidth: MediaQuery.of(context).size.width,
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _signUp();
-              }
-            },
-            label: "Sign up",
+          Center(
+            child: CustomButton(
+              borderRadius: 4,
+              minWidth: MediaQuery.of(context).size.width,
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _signUp();
+                }
+              },
+              label: "Sign up",
+            ),
           ),
         ],
       ),
@@ -254,7 +362,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   // Function to send sign-up request to API
   Future<void> _signUp() async {
     final url = Uri.parse('http://localhost:8080/auth/sign-up');
-    
+
     // Prepare the data to send as JSON
     final body = jsonEncode({
       'userName': usernameCtrl.text,
@@ -262,35 +370,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'name': nameCtrl.text,
       'emailId': emailCtrl.text,
       'age': ageCtrl.text.isEmpty ? '0' : ageCtrl.text, // Optional field
-      'gender': genderCtrl.text.isEmpty ? 'Not Specified' : genderCtrl.text, // Optional field
+      'gender': genderCtrl.text.isEmpty
+          ? 'Not Specified'
+          : genderCtrl.text, // Optional field
     });
 
-      final response = await http.post(
-        url,
-        headers: {
-          "Content-Type": "application/json", // Make sure content type is correct
-        },
-        body: body, // Send the JSON string as the body
-      );
+    final response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json", // Make sure content type is correct
+      },
+      body: body, // Send the JSON string as the body
+    );
 
-      if (response.statusCode == 201) {
-        // Handle success, show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Sign up successful!"),
-          backgroundColor: Colors.green,),
-        );
-        context.go(AppRoutes.signin);
-      } else {
-        // Handle error, show error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Sign up failed! Please try again."),
-          backgroundColor: Colors.red,),
-        );
-      }
+    if (response.statusCode == 201) {
+      // Handle success, show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Sign up successful!"),
+          backgroundColor: Colors.green,
+        ),
+      );
+      context.go(AppRoutes.signin);
+    } else {
+      // Handle error, show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Sign up failed! Please try again."),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<void> sendOTP(String email) async {
-    final response = await http.get(Uri.parse('http://localhost:8080/auth/mail/verify/$email'));
+    final response = await http
+        .get(Uri.parse('http://localhost:8080/auth/mail/verify/$email'));
 
     if (response.statusCode == 200) {
       var parsed = response.body;
@@ -315,8 +430,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void verifyOTP(String verifyOTP) {
-    if(otp == verifyOTP) {
-
+    if (otp == verifyOTP) {
       isOtpVerified = true;
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -335,9 +449,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 }
-
-
-
 
 // import 'package:flutter/material.dart';
 // import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';

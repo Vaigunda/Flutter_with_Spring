@@ -11,83 +11,99 @@ class AboutUs extends StatefulWidget {
 class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(),
-      body: const SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'Why choose us?',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 56),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 40,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  textAlign: TextAlign.center,
-                  'We believe in your success and that Data-driven Mentorship can help you \n achieve the best results for your business, regardless of your field or target\n market. ',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 15,
-                      letterSpacing: 1.5),
+            const Padding(
+              padding: EdgeInsets.only(left: 20, right: 20),
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      textAlign: TextAlign.center,
+                      'We believe in your success and that Data-driven Mentorship \n can help you achieve the best results for your business, \n regardless of your field or target market. ',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 15,
+                          letterSpacing: 1),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-            SizedBox(
-              height: 120,
+            const SizedBox(
+              height: 40,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                AboutusCard(
-                  icon: Icons.public,
-                  title: "Global experience",
-                  description:
-                      "We have worked with multinational companies, as well as\n smaller businesses from all continents.",
-                ),
-                AboutusCard(
-                  icon: Icons.diamond,
-                  title: "Quality for value",
-                  description:
-                      "Our motto is to provide only the highest quality to \n our clients, no matter the circumstances.",
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 120,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                AboutusCard(
-                  icon: Icons.handshake,
-                  title: "Favorable terms",
-                  description:
-                      "Each project we work on is tailored to the \n particular client’s needs, not the other way \n around.",
-                ),
-                AboutusCard(
-                  icon: HugeIcons.strokeRoundedAward05,
-                  title: "High standards",
-                  description:
-                      "We take data seriously, meaning that we only \n deliver work that we can be proud of.",
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 120,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: GridView.count(
+                shrinkWrap: true,
+                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 2 : 1,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 50,
+                childAspectRatio: getChildAspectRatioFromWidth(width),
+                children: const [
+                  AboutusCard(
+                    icon: Icons.public,
+                    title: "Global experience",
+                    description:
+                        "We have worked with multinational companies, as well as\nsmaller businesses from all continents.",
+                  ),
+                  AboutusCard(
+                    icon: Icons.diamond,
+                    title: "Quality for value",
+                    description:
+                        "Our motto is to provide only the highest quality to\nour clients, no matter the circumstances.",
+                  ),
+                  AboutusCard(
+                    icon: Icons.handshake,
+                    title: "Favorable terms",
+                    description:
+                        "Each project we work on is tailored to the\nparticular client’s needs, not the other way\naround.",
+                  ),
+                  AboutusCard(
+                    icon: Icons.verified,
+                    title: "High standards",
+                    description:
+                        "We take data seriously, meaning that we only\ndeliver work that we can be proud of.",
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  static double getChildAspectRatioFromWidth(double width) {
+    if (width > 1200) {
+      return 2;
+    } else if (width > 800) {
+      return 1.5;
+    } else if (width > 500) {
+      return 1.3;
+    } else if (width > 600) {
+      return 1.5;
+    } else {
+      return 1.5;
+    }
   }
 }
 
