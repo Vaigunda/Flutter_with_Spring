@@ -57,8 +57,6 @@
 //     DateTime parsedStartDate = DateTime.parse(startDateController.text);
 //     DateTime parsedEndDate = DateTime.parse(endDateController.text);
 
-    
-
 //     // Combine the parsed start date with the time from the controllers
 //     DateTime parsedTimeStart = DateTime.parse('${parsedStartDate.toIso8601String().split("T")[0]} ${timeStartController.text}:00');
 //     DateTime parsedTimeEnd = DateTime.parse('${parsedEndDate.toIso8601String().split("T")[0]} ${timeEndController.text}:00');
@@ -434,11 +432,11 @@
 //   }
 // }
 
-
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 // For date formatting
 import 'package:http/http.dart' as http;
+import 'package:hugeicons/hugeicons.dart';
 import 'package:mentor/shared/models/category.model.dart';
 import 'package:mentor/shared/services/categories.service.dart';
 import 'dart:convert';
@@ -450,6 +448,10 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+
+import '../../shared/utils/validator.dart';
+import '../../shared/views/button.dart';
+import '../../shared/views/input_field.dart';
 
 class CreateMentorScreen extends StatefulWidget {
   @override
@@ -486,20 +488,19 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
   //Time Slots
   List<TextEditingController> timeSlotsTimeStartControllers = [];
   List<TextEditingController> timeSlotsTimeEndControllers = [];
-  
+
   List<TextEditingController> categoryControllers = [];
+  final validator = Validator();
 
   bool isVerified = false;
   bool isSubmitting = false;
-  
+
   late String usertoken;
   var provider;
 
-  
   List<CategoryModel> categories = [];
   List<CategoryModel> selectedCategories = [];
   List<CategoryModel> displayedCategories = [];
-
 
   @override
   void initState() {
@@ -511,14 +512,15 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     _fetchCategories();
   }
 
-
   Future<void> _fetchCategories() async {
     try {
       final categoriesService = CategoriesService();
-      final fetchedCategories = await categoriesService.fetchCategories(usertoken);
+      final fetchedCategories =
+          await categoriesService.fetchCategories(usertoken);
       setState(() {
         categories = fetchedCategories;
-        categories.add(CategoryModel(id:"0",name: "Others",icon:"")); // Add "Others" manually
+        categories.add(CategoryModel(
+            id: "0", name: "Others", icon: "")); // Add "Others" manually
       });
     } catch (error) {
       print('Error fetching categories: $error');
@@ -532,10 +534,11 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
   }
 
   // API endpoint for creating a mentor
-  final String apiUrl = "http://localhost:8080/api/mentors"; // Replace with your actual API URL
+  final String apiUrl =
+      "http://localhost:8080/api/mentors"; // Replace with your actual API URL
 
-
-  Future<void> _selectTime(BuildContext context, TextEditingController controller) async {
+  Future<void> _selectTime(
+      BuildContext context, TextEditingController controller) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -549,7 +552,8 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     }
   }
 
-  Future<void> _selectDate(BuildContext context, TextEditingController controller) async {
+  Future<void> _selectDate(
+      BuildContext context, TextEditingController controller) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -557,7 +561,8 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
       lastDate: DateTime(2101),
     );
     if (picked != null && picked != DateTime.now()) {
-      controller.text = "${picked.toLocal()}".split(' ')[0]; // Format it to "YYYY-MM-DD"
+      controller.text =
+          "${picked.toLocal()}".split(' ')[0]; // Format it to "YYYY-MM-DD"
     }
   }
 
@@ -602,9 +607,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     );
   }
 
-
-
-   // Method to handle form submission
+  // Method to handle form submission
   Future<void> submitMentor() async {
     if (isSubmitting) return; // Prevent duplicate submissions
 
@@ -612,7 +615,9 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
       isSubmitting = true;
     });
 
-    List<CategoryModel> filteredCategories = selectedCategories.where((category) => category.name != "Others").toList();
+    List<CategoryModel> filteredCategories = selectedCategories
+        .where((category) => category.name != "Others")
+        .toList();
 
     // Prepare the mentor data to be sent
     Map<String, dynamic> mentorData = {
@@ -631,7 +636,8 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
           "name": certificateNameControllers[index].text,
           "provideBy": certificateProviderControllers[index].text,
           "createDate": certificateDateControllers[index].text,
-          "imageUrl": "https://example.com/certificate${index + 1}.jpg", // Placeholder image
+          "imageUrl":
+              "https://example.com/certificate${index + 1}.jpg", // Placeholder image
         };
       }),
       "experiences": List.generate(experienceRoleControllers.length, (index) {
@@ -702,7 +708,6 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     }
   }
 
-
   // Clear all form fields after submission
   void _clearForm() {
     nameController.clear();
@@ -735,8 +740,6 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     });
   }
 
-  
-
   // Add new certificate input fields
   void _addCertificate() {
     setState(() {
@@ -757,11 +760,12 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     });
   }
 
-   // Add new teaching schedule input fields
+  // Add new teaching schedule input fields
   void _addTeachingSchedule() {
     setState(() {
       timeSlotsTimeStartControllers.add(TextEditingController());
-      timeSlotsTimeEndControllers.add(TextEditingController()); // Default value for "booked" status
+      timeSlotsTimeEndControllers
+          .add(TextEditingController()); // Default value for "booked" status
     });
   }
 
@@ -775,93 +779,240 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Create Mentor"),
+      appBar: AppBar(title: const Text("Create Mentor Form",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),)),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          bool isWideScreen = constraints.maxWidth > 800;
+
+          if (isWideScreen) {
+            return Padding(
+              padding: const EdgeInsets.all(40),
+              child: Material(
+                elevation: 4,
+                borderRadius: BorderRadius.circular(30),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(16.0),
+                        child: _buildFormFields(),
+                      ),
+                    ),
+                    // Image
+                    Expanded(
+                      flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              textBaseline: TextBaseline.alphabetic,
+                              children: [
+                                Text(
+                                  "M",
+                                  style: TextStyle(
+                                    fontSize: 62,
+                                    fontFamily: "Lobster",
+                                    fontWeight: FontWeight.w400, // Weight: 400
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    height: 62 / 48,
+                                  ),
+                                ),
+                                Text(
+                                  "entorboosters",
+                                  style: TextStyle(
+                                    fontSize: 42,
+                                    fontWeight: FontWeight.w900,
+                                    fontFamily: "Epilogue",
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    height: 42 / 32,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: 15),
+                                  child: Text(
+                                    ".",
+                                    style: TextStyle(
+                                      fontSize: 72,
+                                      fontWeight: FontWeight.w900,
+                                      fontFamily: "Epilogue",
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      height: 42 / 32,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Center(
+                              child: Image.asset(
+                                'assets/images/admin.png',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  _buildFormFields(),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            );
+          }
+        },
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Name Field
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(labelText: "Name"),
+    );
+  }
+
+  Widget _buildFormFields() {
+    return Column(
+      children: [
+        const Row(
+          children: [
+            Column(
+              children: [
+                Text(
+                  'Welcome',
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontFamily: "Lobster",
+                    fontWeight: FontWeight.w400,
+                    height: 62 / 48,
+                  ),
+                ),
+                Text(
+                  'Create Mentors!',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        InputField(
+          controller: nameController,
+          labelText: "Name",
+          prefixIcon: const Icon(Icons.person),
+        ),
+        const SizedBox(height: 20),
+        InputField(
+          controller: emailController,
+          labelText: "Email Id",
+          prefixIcon: const Icon(Icons.email),
+        ),
+        const SizedBox(height: 20),
+        InputField(
+          controller: avatarUrlController,
+          labelText: "Avatar URL",
+          prefixIcon: const Icon(Icons.image),
+        ),
+        const SizedBox(height: 20),
+        InputField(
+          controller: bioController,
+          maxLines: 3,
+          labelText: "Bio",
+          prefixIcon: const Icon(Icons.info),
+        ),
+        const SizedBox(height: 20),
+        InputField(
+          controller: roleController,
+          labelText: "Role",
+          prefixIcon: const Icon(Icons.work),
+        ),
+        const SizedBox(height: 20),
+        InputField(
+          controller: rateController,
+          labelText: "Rate (1-5)",
+          prefixIcon: const Icon(Icons.star),
+        ),
+        const SizedBox(height: 20),
+        InputField(
+          controller: freePriceController,
+          keyboardType: TextInputType.number,
+          labelText: "Free Price",
+          prefixIcon: const Icon(Icons.attach_money),
+        ),
+        const SizedBox(height: 20),
+        InputField(
+          controller: freeUnitController,
+          labelText: "Free Unit (e.g. hour)",
+          prefixIcon: const Icon(Icons.timer),
+        ),
+        const SizedBox(height: 20),
+        InputField(
+          controller: numberOfMentoreeController,
+          keyboardType: TextInputType.number,
+          labelText: "Number of Mentores",
+          prefixIcon: const Icon(Icons.group),
+        ),
+        const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // CheckboxListTile on the left
+            Expanded(
+              flex: 2,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ?  Colors.transparent
+                      : const Color.fromARGB(255, 249, 245, 252),
+                ),
+                child: CheckboxListTile(
+                  title: const Text("Verified Mentor"),
+                  value: isVerified,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isVerified = value!;
+                    });
+                  },
+                ),
               ),
-              // Name Field
-              TextField(
-                controller: emailController,
-                decoration: const InputDecoration(labelText: "Email Id"),
-              ),
-              // Avatar URL Field
-              TextField(
-                controller: avatarUrlController,
-                decoration: const InputDecoration(labelText: "Avatar URL"),
-              ),
-              // Bio Field
-              TextField(
-                controller: bioController,
-                decoration: const InputDecoration(labelText: "Bio"),
-                maxLines: 3,
-              ),
-              // Role field
-              TextField(
-                controller: roleController,
-                decoration: const InputDecoration(labelText: "Role"),
-              ),
-              // Rate Field
-              TextField(
-                controller: rateController,
-                decoration: const InputDecoration(labelText: "Rate (1-5)"),
-                keyboardType: TextInputType.number,
-              ),
-              // Free Price Field
-              TextField(
-                controller: freePriceController,
-                decoration: const InputDecoration(labelText: "Free Price"),
-                keyboardType: TextInputType.number,
-              ),
-              // Free Unit Field
-              TextField(
-                controller: freeUnitController,
-                decoration: const InputDecoration(labelText: "Free Unit (e.g. hour)"),
-              ),
-              // Number of Mentoree Field
-              TextField(
-                controller: numberOfMentoreeController,
-                decoration: const InputDecoration(labelText: "Number of Mentoree"),
-                keyboardType: TextInputType.number,
-              ),
-              // Verified Checkbox
-              CheckboxListTile(
-                title: const Text("Verified Mentor"),
-                value: isVerified,
-                onChanged: (bool? value) {
-                  setState(() {
-                    isVerified = value!;
-                  });
-                },
-              ),
-              // Categories Section
-              Column(
+            ),
+
+            const SizedBox(width: 20), // Add spacing between the two widgets
+
+            // MultiSelectDialogField on the right
+            Expanded(
+              flex: 3,
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Categories",
-                    style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black,
-                    ),
-                  ),
                   MultiSelectDialogField<CategoryModel>(
-                    items: categories.map((category) => MultiSelectItem(category, category.name)).toList(),
+                    items: categories
+                        .map((category) =>
+                            MultiSelectItem(category, category.name))
+                        .toList(),
                     title: const Text("Select Categories"),
                     selectedColor: Colors.blue,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                        color: Colors.blue,
                         width: 1,
                       ),
                     ),
@@ -882,13 +1033,13 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                     ),
                     onConfirm: (values) {
                       setState(() {
-                        // Temporarily store the selected categories
                         selectedCategories = values;
 
-                        // Check if "Others" was selected
-                        if (selectedCategories.any((category) => category.name == "Others")) {
+                        if (selectedCategories
+                            .any((category) => category.name == "Others")) {
                           // Remove "Others" from the selected categories temporarily
-                          selectedCategories.removeWhere((category) => category.name == "Others");
+                          selectedCategories.removeWhere(
+                              (category) => category.name == "Others");
 
                           // Prevent chipDisplay from showing categories yet
                           displayedCategories = [];
@@ -904,7 +1055,8 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                     chipDisplay: MultiSelectChipDisplay(
                       // Use the new displayedCategories variable instead of selectedCategories
                       items: displayedCategories
-                          .map((category) => MultiSelectItem(category, category.name))
+                          .map((category) =>
+                              MultiSelectItem(category, category.name))
                           .toList(),
                       onTap: (value) {
                         setState(() {
@@ -921,120 +1073,248 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                   ),
                 ],
               ),
-              // Certificates Section
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("Certificates"),
-                  ...List.generate(certificateNameControllers.length, (index) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextField(
-                          controller: certificateNameControllers[index],
-                          decoration: const InputDecoration(labelText: "Certificate Name"),
-                        ),
-                        TextField(
-                          controller: certificateProviderControllers[index],
-                          decoration: const InputDecoration(labelText: "Certificate Provider"),
-                        ),
-                        TextField(
-                          controller: certificateDateControllers[index],
-                          decoration: const InputDecoration(labelText: "Certificate Date YYYY-MM-DD"),
-                          onTap: () => _selectDate(context, certificateDateControllers[index]),
-                          readOnly: true,
-                        ),
-                      ],
-                    );
-                  }),
-                  ElevatedButton(
-                    onPressed: _addCertificate,
-                    child: const Text("Add Certificate"),
-                  ),
-                ],
-              ),
-              // Experiences Section
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("Experiences"),
-                  ...List.generate(experienceRoleControllers.length, (index) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextField(
-                          controller: experienceRoleControllers[index],
-                          decoration: const InputDecoration(labelText: "Role"),
-                        ),
-                        TextField(
-                          controller: experienceCompanyControllers[index],
-                          decoration: const InputDecoration(labelText: "Company"),
-                        ),
-                        TextField(
-                          controller: experienceDescriptionControllers[index],
-                          decoration: const InputDecoration(labelText: "Description"),
-                        ),
-                        TextField(
-                          controller: experienceStartDateControllers[index],
-                          decoration: const InputDecoration(labelText: "Start Date YYYY-MM-DD"),
-                          onTap: () => _selectDate(context, experienceStartDateControllers[index]),
-                          readOnly: true,
-                        ),
-                        TextField(
-                          controller: experienceEndDateControllers[index],
-                          decoration: const InputDecoration(labelText: "End Date YYYY-MM-DD"),
-                          onTap: () => _selectDate(context, experienceEndDateControllers[index]),
-                          readOnly: true,
-                        ),
-                      ],
-                    );
-                  }),
-                  ElevatedButton(
-                    onPressed: _addExperience,
-                    child: const Text("Add Experience"),
-                  ),
-                ],
-              ),
-              // Add Teaching Schedules Section
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("Time Slots"),
-                  ...List.generate(timeSlotsTimeStartControllers.length, (index) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextField(
-                          controller: timeSlotsTimeStartControllers[index],
-                          decoration: const InputDecoration(labelText: "Start Time (HH:mm:ss)"),
-                          onTap: () => _selectTime(context, timeSlotsTimeStartControllers[index]),
-                          readOnly: true,
-                        ),
-                        TextField(
-                          controller: timeSlotsTimeEndControllers[index],
-                          decoration: const InputDecoration(labelText: "End Time (HH:mm:ss)"),
-                          onTap: () => _selectTime(context, timeSlotsTimeEndControllers[index]),
-                          readOnly: true,
-                        ),
-                      ],
-                    );
-                  }),
-                  ElevatedButton(
-                    onPressed: _addTeachingSchedule,
-                    child: const Text("Add TimeSlots"),
-                  ),
-                ],
-              ),
-              // Submit Button
-              ElevatedButton(
-                onPressed: submitMentor,
-                child: Text(isSubmitting ? "Submitting..." : "Submit Mentor"),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ),
+        const SizedBox(
+          height: 20,
+        ),
+
+        // Certificates Section
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ...List.generate(certificateNameControllers.length, (index) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InputField(
+                    controller: certificateNameControllers[index],
+                    labelText: "Certificate Name",
+                    prefixIcon: const Icon(HugeIcons.strokeRoundedMessageAdd02),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  InputField(
+                    controller: certificateProviderControllers[index],
+                    labelText: "Certificate Provider",
+                    prefixIcon: const Icon(HugeIcons.strokeRoundedMessageAdd02),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  InputField(
+                    controller: certificateDateControllers[index],
+                    labelText: "Certificate Date YYYY-MM-DD",
+                    prefixIcon: const Icon(HugeIcons.strokeRoundedMessageAdd02),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  )
+                  // TextField(
+                  //   controller: certificateNameControllers[index],
+                  //   decoration: const InputDecoration(
+                  //       labelText: ""),
+                  // ),
+                  // TextField(
+                  //   controller: certificateProviderControllers[index],
+                  //   decoration: const InputDecoration(
+                  //       labelText: "Certificate Provider"),
+                  // ),
+                  // TextField(
+                  //   controller: certificateDateControllers[index],
+                  //   decoration: const InputDecoration(
+                  //       labelText: "Certificate Date YYYY-MM-DD"),
+                  //   onTap: () => _selectDate(
+                  //       context, certificateDateControllers[index]),
+                  //   readOnly: true,
+                  // ),
+                ],
+              );
+            }),
+            CustomButton(
+                minWidth: MediaQuery.of(context).size.width,
+                borderRadius: 4,
+                onPressed: _addCertificate,
+                label: "Add Certificate"),
+
+            // ElevatedButton(
+            //   onPressed: _addCertificate,
+            //   child: const Text("Add Certificate"),
+            // ),
+          ],
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        // Experiences Section
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ...List.generate(experienceRoleControllers.length, (index) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InputField(
+                    controller: experienceRoleControllers[index],
+                    labelText: "Role",
+                    prefixIcon: const Icon(HugeIcons.strokeRoundedMessageAdd02),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  InputField(
+                    controller: experienceCompanyControllers[index],
+                    labelText: "Company",
+                    prefixIcon: const Icon(HugeIcons.strokeRoundedMessageAdd02),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  InputField(
+                    controller: experienceDescriptionControllers[index],
+                    labelText: "Description",
+                    prefixIcon: const Icon(HugeIcons.strokeRoundedMessageAdd02),
+                  ),
+                  // InkWell(
+                  //   onTap: () => _selectDate(
+                  //       context, experienceStartDateControllers[index]),
+                  //   child: InputField(
+                  //     controller: experienceStartDateControllers[index],
+                  //     labelText: "Start Date YYYY-MM-DD",
+                  //     prefixIcon:
+                  //         const Icon(HugeIcons.strokeRoundedMessageAdd02),
+                  //     readOnly: true,
+                  //   ),
+                  // ),
+                  // InkWell(
+                  //    onTap: () => _selectDate(
+                  //       context, experienceEndDateControllers[index]),
+                  //   child: InputField(
+                  //     controller: experienceEndDateControllers[index],
+                  //     labelText: "End Date YYYY-MM-DD",
+                  //     prefixIcon:
+                  //         const Icon(HugeIcons.strokeRoundedMessageAdd02),
+                  //     readOnly: true,
+                  //   ),
+                  // ),
+                  // TextField(
+                  //   controller: experienceRoleControllers[index],
+                  //   decoration: const InputDecoration(labelText: "Role"),
+                  // ),
+                  // TextField(
+                  //   controller: experienceCompanyControllers[index],
+                  //   decoration: const InputDecoration(labelText: "Company"),
+                  // ),
+                  // TextField(
+                  //   controller: experienceDescriptionControllers[index],
+                  //   decoration: const InputDecoration(labelText: "Description"),
+                  //),
+                  TextField(
+                    controller: experienceStartDateControllers[index],
+                    decoration: const InputDecoration(
+                        labelText: "Start Date YYYY-MM-DD"),
+                    onTap: () => _selectDate(
+                        context, experienceStartDateControllers[index]),
+                    readOnly: true,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  TextField(
+                    controller: experienceEndDateControllers[index],
+                    decoration:
+                        const InputDecoration(labelText: "End Date YYYY-MM-DD"),
+                    onTap: () => _selectDate(
+                        context, experienceEndDateControllers[index]),
+                    readOnly: true,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  )
+                ],
+              );
+            }),
+            CustomButton(
+                minWidth: MediaQuery.of(context).size.width,
+                borderRadius: 4,
+                onPressed: _addExperience,
+                label: "Add Experience"),
+            // ElevatedButton(
+            //   onPressed: _addExperience,
+            //   child: const Text("Add Experience"),
+            // ),
+          ],
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+
+        // Add Teaching Schedules Section
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ...List.generate(timeSlotsTimeStartControllers.length, (index) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: timeSlotsTimeStartControllers[index],
+                    decoration: const InputDecoration(
+                        labelText: "Start Time (HH:mm:ss)"),
+                    onTap: () => _selectTime(
+                        context, timeSlotsTimeStartControllers[index]),
+                    readOnly: true,
+                  ),
+                  TextField(
+                    controller: timeSlotsTimeEndControllers[index],
+                    decoration:
+                        const InputDecoration(labelText: "End Time (HH:mm:ss)"),
+                    onTap: () => _selectTime(
+                        context, timeSlotsTimeEndControllers[index]),
+                    readOnly: true,
+                  ),
+                ],
+              );
+            }),
+
+            CustomButton(
+                minWidth: MediaQuery.of(context).size.width,
+                borderRadius: 4,
+                onPressed: _addTeachingSchedule,
+                label: "Add TimeSlots"),
+
+            // ElevatedButton(
+            //   onPressed: _addTeachingSchedule,
+            //   child: const Text("Add TimeSlots"),
+            // ),
+          ],
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        CustomButton(
+            minWidth: MediaQuery.of(context).size.width,
+            borderRadius: 4,
+            onPressed: submitMentor,
+            label: isSubmitting ? "Submitting..." : "Submit Mentor"),
+        // Submit Button
+        // ElevatedButton(
+        //   onPressed: submitMentor,
+        //   child: Text(isSubmitting ? "Submitting..." : "Submit Mentor"),
+        // ),
+        const SizedBox(
+          height: 40,
+        ),
+        // if(Get.width >800)
+        // const Expanded(
+        //   child: Text("kjnsdkncs"),
+        // )
+      ],
     );
   }
 }
-

@@ -92,17 +92,21 @@ class _AboutUsState extends State<AboutUs> {
     );
   }
 
-  static double getChildAspectRatioFromWidth(double width) {
+ static double getChildAspectRatioFromWidth(double width) {
     if (width > 1200) {
       return 2;
     } else if (width > 800) {
-      return 1.5;
-    } else if (width > 500) {
       return 1.3;
+    } else if (width > 750) {
+      return 1.1;
+    } else if (width > 700) {
+      return 1;
+    } else if (width > 650) {
+      return 0.9;
     } else if (width > 600) {
-      return 1.5;
+      return 0.8;
     } else {
-      return 1.5;
+      return 1.7;
     }
   }
 }

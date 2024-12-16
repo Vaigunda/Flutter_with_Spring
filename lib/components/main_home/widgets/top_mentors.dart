@@ -75,6 +75,72 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
     );
   }
 
+//   class _HomeTopMentorsState extends State<HomeTopMentors> {
+//   late Future<List<TopMentorModel>> _topMentors;
+//   late String _userToken;
+
+//   @override
+//   void initState() {
+//     super.initState();
+
+//     // Get the user token once during initialization
+//     final provider = context.read<UserDataProvider>();
+//     _userToken = provider.usertoken;
+
+//     // Cache the Future for top mentors
+//     _topMentors = widget.topMentors ?? TopMentorService().fetchTopMentors(_userToken);
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return LayoutBuilder(
+//       builder: (context, constraints) {
+//         // Reuse the cached Future to avoid repeated API calls
+//         return FutureBuilder<List<TopMentorModel>>(
+//           future: _topMentors,
+//           builder: (context, snapshot) {
+//             if (snapshot.connectionState == ConnectionState.waiting) {
+//               return const Center(child: CircularProgressIndicator());
+//             } else if (snapshot.hasError) {
+//               // Log the error to console
+//               debugPrint('Error: ${snapshot.error}');
+//               // Show fallback UI
+//               return _buildContent(context, false);
+//             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+//               return _buildContent(context, false);
+//             } else {
+//               final mentors = snapshot.data!;
+//               return Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Row(
+//                     children: [
+//                       Text("Top Mentors", style: Theme.of(context).textTheme.titleLarge),
+//                     ],
+//                   ),
+//                   const SizedBox(height: 10),
+//                   GridView.builder(
+//                     shrinkWrap: true,
+//                     itemCount: mentors.length,
+//                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//                       crossAxisCount: 2,
+//                       mainAxisSpacing: 10,
+//                       crossAxisSpacing: 10,
+//                       mainAxisExtent: 300.0,
+//                     ),
+//                     itemBuilder: (context, index) => _customCard(context, mentors[index]),
+//                   ),
+//                 ],
+//               );
+//             }
+//           },
+//         );
+//       },
+//     );
+//   }
+// }
+
+
   Widget _buildContent(BuildContext context, bool hasMentors) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
