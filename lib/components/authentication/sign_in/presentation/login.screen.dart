@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -52,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!isNullOrEmpty(email) && !isNullOrEmpty(password)) {
         final response =
-            await http.post(Uri.parse('http://localhost:8080/auth/login'),
+            await http.post(Uri.parse('http://localhost:8080/api/auth/login'),
                 headers: {"content-type": "application/json"},
                 body: jsonEncode(<String, String>{
                   'emailId': email,
@@ -467,7 +466,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
 //       if (!isNullOrEmpty(userName) && !isNullOrEmpty(password)) {
 //         final response = await http.post(
-//           Uri.parse('http://localhost:8080/auth/login'),
+//           Uri.parse('http://localhost:8080/api/auth/login'),
 //             headers: {
 //               "content-type": "application/json"
 //             },
