@@ -43,10 +43,8 @@ class _SearchResultState extends State<SearchResult> {
         },
       );
 
-      print("API Response Body: ${response.body}");
       if (response.statusCode == 200) {
         final List data = json.decode(response.body);
-        print("Parsed List: $data");
         setState(() {
           result = data.map((e) => ItemSearchResult.fromJson(e)).toList();
           isLoading = false;

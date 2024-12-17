@@ -74,6 +74,13 @@ class _LoginScreenState extends State<LoginScreen> {
             usertype: usertype,
           );
           context.go(AppRoutes.home);
+        } else if (response.statusCode == 401) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Invalid email or password. Please Check!'),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
       } else {
         throw Exception('Invalid credentials');
@@ -239,8 +246,18 @@ class _LoginScreenState extends State<LoginScreen> {
               InputField(
                 controller: emailCtrl,
                 validator: (value) {
-                  return validator.required(value, 'This field is required');
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an email address';
+                  }
+                  // Email validation using regex
+                  final emailRegex = RegExp(
+                      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                  if (!emailRegex.hasMatch(value)) {
+                    return 'Please enter a valid email address';
+                  }
+                  return null; // input is valid
                 },
+                keyboardType: TextInputType.emailAddress,
                 labelText: "Email Id",
                 prefixIcon: const Icon(HugeIcons.strokeRoundedUser),
               ),
@@ -332,7 +349,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   label: "Sign in"),
               const SizedBox(height: 20),
-              SizedBox(
+              /*SizedBox(
                 width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
@@ -396,7 +413,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(
                 height: 40,
-              )
+              )*/
             ],
           ),
         ));

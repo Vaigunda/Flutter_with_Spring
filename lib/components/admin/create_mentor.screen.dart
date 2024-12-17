@@ -523,7 +523,6 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
             id: "0", name: "Others", icon: "")); // Add "Others" manually
       });
     } catch (error) {
-      print('Error fetching categories: $error');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Failed to load categories'),

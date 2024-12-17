@@ -248,15 +248,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
             controller: emailCtrl,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'This field is required';
+                return 'Please enter an email address';
               }
-              final emailRegex =
-                  RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+              // Email validation using regex
+              final emailRegex = RegExp(
+                  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
               if (!emailRegex.hasMatch(value)) {
                 return 'Please enter a valid email address';
               }
-              return null;
+              return null; // input is valid
             },
+            keyboardType: TextInputType.emailAddress,
             labelText: "Email",
             prefixIcon: const Icon(Icons.email),
           ),
@@ -358,6 +360,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   // Function to send sign-up request to API
   Future<void> _signUp() async {
 
+    if (!_formKey.currentState!.validate()) return;
+
     // Prepare the data to send as JSON
     final body = jsonEncode({
       'userName': usernameCtrl.text,
@@ -410,28 +414,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> sendOTP(String email) async {
-    final response = await http
-        .get(Uri.parse('http://localhost:8080/api/auth/mail/verify/$email'));
+    // Email validation using regex
+    final emailRegex = RegExp(
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
 
-    if (response.statusCode == 200) {
-      var parsed = response.body;
-      Map<String, dynamic> map = jsonDecode(parsed);
-
-      otp = map['data'];
-
+    if (!emailRegex.hasMatch(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('OTP is sent Successfully to your mail.'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to send email, Please check your Email ID'),
+          content: Text('Please enter a valid email address.'),
           backgroundColor: Colors.red,
         ),
       );
+    } else {
+      final response = await http
+        .get(Uri.parse('http://localhost:8080/api/auth/mail/verify/$email'));
+
+      if (response.statusCode == 200) {
+        var parsed = response.body;
+        Map<String, dynamic> map = jsonDecode(parsed);
+
+        otp = map['data'];
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('OTP is sent Successfully to your mail.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to send email, Please check your Email ID'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 

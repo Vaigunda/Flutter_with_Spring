@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart'; // Required for navigation
 import 'package:mentor/navigation/router.dart';
 
 import '../model/item_search_result.dart';
+import 'package:provider/provider.dart';
+import 'package:mentor/provider/user_data_provider.dart';
 
 class ItemResult extends StatelessWidget {
   const ItemResult({super.key, required this.item});
@@ -11,12 +13,25 @@ class ItemResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    var provider = context.read<UserDataProvider>();
+    String userId = provider.userid;
+
     return MouseRegion(
       cursor: SystemMouseCursors.click, // Changes cursor to a pointer
       child: GestureDetector(
         onTap: () {
-          // Navigate to the profile mentor screen, passing the mentor ID
-          context.push('${AppRoutes.profileMentor}/${item.mentorId}');
+          if (userId.isNotEmpty) {
+            // Navigate to the profile mentor screen, passing the mentor ID
+            context.push('${AppRoutes.profileMentor}/${item.mentorId}');
+          } else {
+            // Show scaffold message and redirect to login
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Please login!'),
+                             backgroundColor: Colors.red,),
+            );
+            context.go(AppRoutes.signin);
+          }
         },
         child: Container(
           padding: const EdgeInsets.all(12),

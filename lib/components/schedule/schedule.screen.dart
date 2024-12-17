@@ -58,7 +58,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     DateTime currentDate = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
 
-    late final url;
+    late final Uri url;
 
     if (userType == "Mentor") {
       url = Uri.parse(
