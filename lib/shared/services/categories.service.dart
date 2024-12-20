@@ -6,7 +6,6 @@ import 'package:mentor/shared/models/category.model.dart';
 class CategoriesService {
 
   Future<List<CategoryModel>> fetchCategories(String usertoken) async {
-    //final String apiUrl = 'http://localhost:8080/api/mentors/categories'; // Replace with your actual API URL
     final url = Uri.parse('http://localhost:8080/api/mentors/categories');
     final response = await http.get(
       url,

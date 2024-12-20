@@ -11,6 +11,7 @@ import 'package:mentor/components/become_mentor/become_mentor.screen.dart';
 import 'package:mentor/components/booking/booking.screen.dart';
 import 'package:mentor/components/inbox/inbox.screen.dart';
 import 'package:mentor/components/main_home/main_home.screen.dart';
+import 'package:mentor/components/payment/payment_element.dart';
 import 'package:mentor/components/profile/profile.screen.dart';
 import 'package:mentor/components/profile_mentor/profile_mentor.screen.dart';
 import 'package:mentor/components/schedule/schedule.screen.dart';
@@ -27,6 +28,7 @@ import 'package:mentor/components/admin/view_mentor.screen.dart';
 import 'package:mentor/shared/models/all_mentors.model.dart';
 
 import '../components/notification/notification.screen.dart';
+import '../shared/models/profile_mentor.model.dart';
 import '../shared/views/root_layout.dart';
 
 const _pageKey = ValueKey('_pageKey');
@@ -56,6 +58,7 @@ class AppRoutes {
   static String adminPage = '/admin'; // Route for Admin Page
   static String editMentor = '/edit-mentor'; // Route for Edit Mentor Page
   static String viewMentor = '/view-mentor'; // Route for View Mentor Page
+  static String payment = '/payment';
 }
 
 // navigation list after login for Admin
@@ -91,14 +94,6 @@ List<NavigationDestination> adminDestinations = [
       size: 20,
     ),
     route: AppRoutes.inbox,
-  ),
-  NavigationDestination(
-    label: 'Profile',
-    icon: const Icon(
-      FontAwesomeIcons.user,
-      size: 20,
-    ),
-    route: AppRoutes.profile,
   ),
   // NavigationDestination(
   //   label: 'Create Mentor',  // Add the 'Create Mentor' option here
@@ -319,5 +314,14 @@ final appRouter = GoRouter(
         return ViewMentorScreen(mentor: mentor); // Pass the ProfileMentor object
       },
     ),
+    GoRoute(
+        path: '${AppRoutes.payment}/:amount/:bookingData',
+        builder: (context, state) {
+          // Convert the path parameter to an int
+          final amount = int.tryParse(state.pathParameters['amount']!) ?? 0;
+          final bookingData = state.pathParameters['bookingData']!;
+          return PaymentElementExample(amount: amount, bookingData: bookingData);
+        },
+      ),
   ],
 );

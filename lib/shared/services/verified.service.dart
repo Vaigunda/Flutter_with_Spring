@@ -3,8 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:mentor/shared/models/verified.model.dart';
 
 class VerifiedService {
-  //final String apiUrl = 'http://localhost:8080/api/mentors/verified'; // Update with your actual API endpoint
-
   // Method to fetch verified mentors
   Future<List<VerifiedMentor>> fetchVerifiedMentors(String usertoken) async {
 

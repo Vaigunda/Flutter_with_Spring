@@ -42,7 +42,6 @@ class _AdminPageState extends State<AdminPage> {
         'Authorization': 'Bearer $usertoken',
       },
     );
-    //final response = await http.get(Uri.parse('http://localhost:8080/api/mentors/all'));
 
     if (response.statusCode == 200) {
       // Parse the JSON response into a list of ProfileMentor objects

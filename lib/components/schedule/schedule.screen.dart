@@ -79,7 +79,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       List<dynamic> data = jsonDecode(response.body);
 
       // Ensure data is a list and not null
-      if (data != null && data.isNotEmpty) {
+      if (data.isNotEmpty) {
         setState(() {
           bookingList = data;
         });
@@ -98,7 +98,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: Text(
+        title: const Text(
           "My schedule",
         ),
       ),

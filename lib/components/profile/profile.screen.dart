@@ -6,6 +6,8 @@ import '/shared/utils/extensions.dart';
 import '../../navigation/router.dart';
 import '../../shared/views/button.dart';
 import 'models/profile.model.dart';
+import 'package:provider/provider.dart';
+import 'package:mentor/provider/user_data_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -15,8 +17,52 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final MentorProfileModel profile = ProfileProvider.shared.getProfile();
+
+  var provider;
+  late String userId;
+  late String userType;
+  late String usertoken;
+
+  late MentorProfileModel profile;
+
+  late UserProfileModel userProfile;
+
   var isMentor = false; //switch to true to setting teaching schedule
+
+  @override
+  void initState() {
+    super.initState();
+    provider = context.read<UserDataProvider>();
+    userId = provider.userid;
+    userType = provider.usertype;
+    usertoken = provider.usertoken;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userType == 'User') {
+        loadUserProfile();
+      }
+      
+      if (userType == 'Mentor') {
+        loadMentorProfile();
+      }
+    });
+  }
+
+  loadUserProfile() async {
+    userProfile = await ProfileProvider.shared.getUserProfile(userId, usertoken);
+
+    setState(() {
+      userProfile = userProfile;
+    }); // Update the UI once the profile data is available
+  }
+
+  loadMentorProfile() async {
+    profile = await ProfileProvider.shared.getProfile(userId, usertoken);
+
+    setState(() {
+      profile = profile;
+    }); // Update the UI once the profile data is available
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +92,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  _info(),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: _tiles(),
-                  )
+                  if (userType == 'Mentor')
+                    _info(),
+                  if (userType == 'User')
+                    _profileinfo(),
+                  if (userType == 'Mentor')
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: _tiles(),
+                    )
                 ],
               ),
             ),
@@ -60,55 +110,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _tiles() {
-    return Column(
-        // direction: Axis.vertical,
-        // spacing: 16,
-        children: [
-          about(),
-          const SizedBox(
-            height: 10,
-          ),
-          workExperience(),
-          const SizedBox(
-            height: 10,
-          ),
-          buildTile(FontAwesomeIcons.graduationCap, "Education"),
-          const SizedBox(
-            height: 10,
-          ),
-          skills(),
-          const SizedBox(
-            height: 10,
-          ),
-          buildTile(FontAwesomeIcons.certificate, "Certificates"),
-          const SizedBox(
-            height: 10,
-          ),
-          MouseRegion(
-            cursor: SystemMouseCursors.click,
-            child: GestureDetector(
-              onTap: () {
-                GoRouter.of(context).push(AppRoutes.settings);
-              },
-              child: buildTile(FontAwesomeIcons.gears, "Settings",
-                  FontAwesomeIcons.arrowRight),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          )
-        ]);
-  }
-
   Widget _info() {
     return Center(
       child: Column(
         children: [
-          const CircleAvatar(radius: 60),
-          const SizedBox(
-            height: 16,
-          ),
           Text(
             profile.name,
             style: context.titleLarge,
@@ -138,6 +143,83 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     context.push('${AppRoutes.becomeMentor}/1');
                   },
                 ),
+              const SizedBox(
+                width: 10,
+              ),
+              CustomButton(
+                label: "My schedule",
+                onPressed: () {
+                  context.go(AppRoutes.mySchedule);
+                },
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _tiles() {
+    return Column(
+        // direction: Axis.vertical,
+        // spacing: 16,
+        children: [
+          about(),
+          const SizedBox(
+            height: 10,
+          ),
+          workExperience(),
+          /*const SizedBox(
+            height: 10,
+          ),
+          buildTile(FontAwesomeIcons.graduationCap, "Education"),*/
+          const SizedBox(
+            height: 10,
+          ),
+          skills(),
+          const SizedBox(
+            height: 10,
+          ),
+          //buildTile(FontAwesomeIcons.certificate, "Certificates"),
+          certificates(),
+          /*const SizedBox(
+            height: 10,
+          ),
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                GoRouter.of(context).push(AppRoutes.settings);
+              },
+              child: buildTile(FontAwesomeIcons.gears, "Settings",
+                  FontAwesomeIcons.arrowRight),
+            ),
+          ),*/
+          const SizedBox(
+            height: 20,
+          )
+        ]);
+  }
+
+  Widget _profileinfo() {
+    return Center(
+      child: Column(
+        children: [
+          Text(
+            userProfile.name,
+            style: context.titleLarge,
+          ),
+          Text(
+            userProfile.emailId,
+            style: context.bodyMedium,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               const SizedBox(
                 width: 10,
               ),
@@ -186,7 +268,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
-          Padding(
+          /*Padding(
             padding: const EdgeInsets.fromLTRB(10.0, 0, 0, 0),
             child: SizedBox(
               width: 26,
@@ -203,7 +285,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-          )
+          )*/
         ],
       ),
     );
@@ -249,7 +331,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           borderRadius: BorderRadius.circular(20),
           color: Theme.of(context).cardColor),
       child: Column(children: [
-        buildTile(FontAwesomeIcons.bagShopping, "Work experience"),
+        buildTile(FontAwesomeIcons.bagShopping, "Experience"),
         devider(),
         ...profile.experiences.map((exp) => Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -266,11 +348,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           maxLines: 4,
                         ),
                       ),
-                      Icon(
+                      /*Icon(
                         FontAwesomeIcons.pencil,
                         color: Theme.of(context).colorScheme.primary,
                         size: 16,
-                      )
+                      )*/
                     ],
                   ),
                   Text(
@@ -299,7 +381,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           color: Theme.of(context).cardColor),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         buildTile(
-            FontAwesomeIcons.bagShopping, "Skills", FontAwesomeIcons.pencil),
+            FontAwesomeIcons.bagShopping, "Categories", FontAwesomeIcons.pencil),
         devider(),
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -322,6 +404,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
         maxLines: 1,
       ),
       labelStyle: context.bodySmall!.copyWith(fontWeight: FontWeight.w600),
+    );
+  }
+
+  Widget certificates() {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Theme.of(context).cardColor),
+      child: Column(children: [
+        buildTile(FontAwesomeIcons.bagShopping, "Certificates"),
+        devider(),
+        ...profile.certificates.map((cert) => Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          cert.name,
+                          style: context.titleSmall,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 4,
+                        ),
+                      ),
+                      /*Icon(
+                        FontAwesomeIcons.pencil,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 16,
+                      )*/
+                    ],
+                  ),
+                  Text(
+                    cert.provideBy,
+                    style: context.bodySmall,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 4,
+                  ),
+                  Text(
+                    cert.date,
+                    style: context.bodySmall,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 4,
+                  )
+                ],
+              ),
+            ))
+      ]),
     );
   }
 }

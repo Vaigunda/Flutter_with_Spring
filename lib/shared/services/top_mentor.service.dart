@@ -4,8 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:mentor/shared/models/top_mentor.model.dart';
 
 class TopMentorService {
-  //final String apiUrl = 'http://localhost:8080/api/mentors/top-mentor';
-
   // Method to fetch top mentors
   Future<List<TopMentorModel>> fetchTopMentors(String usertoken) async {
 

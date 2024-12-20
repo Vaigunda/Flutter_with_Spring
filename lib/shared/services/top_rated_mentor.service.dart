@@ -6,7 +6,6 @@ import '../models/top_rated_mentor.model.dart';
 
 class MentorService {
   Future<List<TopRatedMentorModel>> fetchTopRatedMentors(String usertoken) async {
-    //final response = await http.get(Uri.parse('http://localhost:8080/api/mentors/top-rated'));
 
     final url = Uri.parse('http://localhost:8080/api/mentors/top-rated');
 

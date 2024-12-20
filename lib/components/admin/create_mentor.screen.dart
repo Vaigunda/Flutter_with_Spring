@@ -433,7 +433,6 @@
 // }
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 // For date formatting
 import 'package:http/http.dart' as http;
 import 'package:hugeicons/hugeicons.dart';
@@ -446,8 +445,6 @@ import 'package:mentor/provider/user_data_provider.dart';
 
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 
 import '../../shared/utils/validator.dart';
 import '../../shared/views/button.dart';
@@ -573,10 +570,10 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Enter Custom Category"),
+          title: const Text("Enter Custom Category"),
           content: TextField(
             controller: othersCategoryController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: "Custom Category Name",
             ),
           ),
@@ -598,7 +595,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                   Navigator.of(context).pop(); // Close the dialog
                 });
               },
-              child: Text("Submit"),
+              child: const Text("Submit"),
             ),
           ],
         );
@@ -833,7 +830,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(bottom: 15),
+                                  padding: const EdgeInsets.only(bottom: 15),
                                   child: Text(
                                     ".",
                                     style: TextStyle(
