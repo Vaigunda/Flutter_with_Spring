@@ -126,7 +126,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildTimeline(), 
+                  bookingList.isNotEmpty
+                    ? _buildTimeline()
+                    : Center(
+                        child: Text(
+                          "No Schedule Events",
+                          style: context.bodyMedium,
+                        ),
+                      ),
                 ],
               ),
             ),

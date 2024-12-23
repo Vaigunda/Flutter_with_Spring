@@ -56,7 +56,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       ? Theme.of(context).colorScheme.onPrimary
                       : null,
                   prefixIcon: const Icon(FontAwesomeIcons.magnifyingGlass),
-                  suffixIcon: Container(
+                  /*suffixIcon: Container(
                       decoration: BoxDecoration(
                         border: Border(
                             left: BorderSide(
@@ -67,7 +67,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           child: IconButton(
                               onPressed: () =>
                                   {context.push(AppRoutes.filter)},
-                              icon: const Icon(FontAwesomeIcons.sliders)))),
+                              icon: const Icon(FontAwesomeIcons.sliders)))),*/
                   focusedBorder: OutlineInputBorder(
                       borderRadius:
                           const BorderRadius.all(Radius.circular(8)),

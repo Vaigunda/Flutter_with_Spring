@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mentor/components/authentication/sign_in/presentation/login.screen.dart';
 import 'package:mentor/components/main_home/widgets/top_rated.dart';
 import 'package:mentor/components/main_home/widgets/verified.dart';
 import 'package:mentor/navigation/router.dart';

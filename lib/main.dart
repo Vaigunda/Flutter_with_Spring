@@ -1,7 +1,6 @@
 import 'package:desktop_window/desktop_window.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:mentor/themes/theme.provider.dart';
 import 'package:universal_platform/universal_platform.dart';
 
@@ -22,8 +21,6 @@ void main() {
   if (UniversalPlatform.isDesktop) {
     setDesktopWindow();
   }
-
-  Stripe.publishableKey = "pk_test_51QU01mAUXckYZtWngp7oTkZpbpxEk5a6WNSyp60iKm8px3ISnP5GGvSd1TMnYUHc55N3upyLRMKzFhV5YSPwC8Rj00MJbYHu0k";
 
   runApp(
     ChangeNotifierProvider(

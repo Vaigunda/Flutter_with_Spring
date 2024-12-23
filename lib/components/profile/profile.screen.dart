@@ -96,6 +96,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _info(),
                   if (userType == 'User')
                     _profileinfo(),
+                  if (userType == 'User')
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: _usertiles(),
+                    ),
                   if (userType == 'Mentor')
                     Padding(
                       padding: const EdgeInsets.only(top: 30),
@@ -201,6 +206,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ]);
   }
 
+  Widget _usertiles() {
+    return Column(
+        // direction: Axis.vertical,
+        // spacing: 16,
+        children: [
+          other(),
+          const SizedBox(
+            height: 20,
+          )
+        ]);
+  }
+
   Widget _profileinfo() {
     return Center(
       child: Column(
@@ -208,10 +225,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Text(
             userProfile.name,
             style: context.titleLarge,
-          ),
-          Text(
-            userProfile.emailId,
-            style: context.bodyMedium,
           ),
           const SizedBox(
             height: 10,
@@ -312,6 +325,75 @@ class _ProfileScreenState extends State<ProfileScreen> {
         )
       ]),
     );
+  }
+
+  Widget other() {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Theme.of(context).cardColor),
+      child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildTile(
+                      FontAwesomeIcons.circleUser, "Other Details", FontAwesomeIcons.pencil),
+                  devider(),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                          'Email ID : ',
+                          style: context.titleSmall,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 4,
+                        ),
+                      Text(
+                        userProfile.emailId,
+                        style: context.bodyMedium,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                          'Age : ',
+                          style: context.titleSmall,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 4,
+                        ),
+                      Text(
+                        userProfile.age.toString(),
+                        style: context.bodySmall,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                          'Gender : ',
+                          style: context.titleSmall,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 4,
+                        ),
+                      Text(
+                        userProfile.gender,
+                        style: context.bodySmall,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+        );
   }
 
   Widget devider() {

@@ -15,6 +15,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
+import 'package:http/http.dart' as http;
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key, required this.profileId});
@@ -392,9 +393,44 @@ class _BookingScreenState extends State<BookingScreen> {
       "connectMethod": method.name, // Connection method selected by user
     });
 
-    String bookingData = Uri.encodeComponent(jsonEncode(requestBody));
-    
-    context.push('${AppRoutes.payment}/${mentor!.free.price}/$bookingData');
+     try {
+        // Send the POST request to your backend API
+        var response = await http.post(
+          Uri.parse('http://localhost:8080/api/bookings'), // Replace with your actual API endpoint
+          headers: {
+            'Authorization': 'Bearer $usertoken',
+            'Content-Type': 'application/json', // Ensure the API expects JSON
+          },
+          body: requestBody,
+        );
+        if (response.statusCode == 200) {
+          // Successfully booked
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Payment and Schedule booking successfully!'),
+              duration: Duration(seconds: 3),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          // Something went wrong, handle the error
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to submit booking. Please try again.'),
+              duration: Duration(seconds: 3),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('An error occurred. Please try again.'),
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
   }
 
 }

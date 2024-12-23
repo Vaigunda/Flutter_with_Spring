@@ -155,9 +155,10 @@ class _HomeCategoriesState extends State<HomeCategories> {
 
             // Display categories in horizontal scrollable list
             return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+              scrollDirection: Axis.vertical,
               child: Wrap(
-                spacing: 10,
+                spacing: 10, // Horizontal spacing
+                runSpacing: 15, // Vertical spacing
                 children: snapshot.data!
                     .map((cat) => _chip(cat, context))
                     .toList(),
