@@ -202,11 +202,12 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 10),
         Text(mentor.name, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 5),
         Text(mentor.categories.join(", "), style: Theme.of(context).textTheme.bodyMedium),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Text("${mentor.numberOfMentoree} mentees", style: Theme.of(context).textTheme.bodySmall),
+        const SizedBox(height: 5),
         Row(
           children: [
             const Icon(Icons.star, size: 12),

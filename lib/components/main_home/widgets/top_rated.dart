@@ -100,29 +100,24 @@ class _HomeTopRatedState extends State<HomeTopRated> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(mentor.name, style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Text(
                       mentor.categories.join(", "),
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 4),
                     Text(
                       "${mentor.numberOfMentoree} mentees",
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
-                        const Icon(FontAwesomeIcons.star, size: 12),
+                        const Icon(Icons.star, size: 12),
                         const SizedBox(width: 6),
-                        Text(
-                          "${mentor.rate}",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          textAlign: TextAlign.start,
-                        )
+                        Text("${mentor.rate}", style: Theme.of(context).textTheme.bodySmall),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),

@@ -19,77 +19,135 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   final validator = Validator();
   TextEditingController emailCtrl = TextEditingController();
 
+  bool isTwoColumn = false;
+
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     emailCtrl.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool isKeyboardVisibility =
-        MediaQuery.of(context).viewInsets.bottom > 0;
 
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SafeArea(
-            child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 25, 20, 25),
-                child: KeyboardDismissOnTap(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      Row(
-                        children: [
-                          IconButton(
-                              onPressed: () => context.pop(),
-                              icon: Icon(Icons.arrow_back,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSecondaryContainer)),
-                        ],
+   return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
+      isTwoColumn = constraints.maxWidth > 800;
+
+      return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 25, 20, 25),
+          child: KeyboardDismissOnTap(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () => context.pop(),
+                      icon: Icon(
+                        Icons.arrow_back,
+                        color: Theme.of(context).colorScheme.onSecondaryContainer,
                       ),
-                      Expanded(
-                          child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          if (!isKeyboardVisibility) ...[
-                            Center(
-                              child: Image.asset(
-                                "assets/images/forget_password.png",
-                                fit: BoxFit.contain,
-                                width: MediaQuery.of(context).size.width * 0.7,
+                    ),
+                    Text("Sign In", style: context.headlineSmall),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                isTwoColumn
+                  ? Padding(
+                      padding: const EdgeInsets.all(60),
+                      child: Material(
+                        elevation: 4,
+                        child: Card(
+                          color: Colors.transparent,
+                          child: Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment.center,
+                            crossAxisAlignment:
+                                CrossAxisAlignment.center,
+                            children: [
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: formRecovery(context),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 40,
-                            ),
-                          ],
-                          Text('Forgot your password?',
-                              style: context.titleLarge),
-                          Text(
-                              'Enter your email address below, we’ll send you a verify code.!',
-                              style: context.bodySmall),
-                          const SizedBox(
-                            height: 20,
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/forget_password.png',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                          formRecovery(context),
-                        ],
-                      )),
-                    ])))));
+                        ),
+                      ),
+                    )
+                  : formRecovery(context),
+            ]))))),
+      );
+    }));
   }
+
 
   Widget formRecovery(BuildContext context) {
     return Form(
         key: _formKey,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Text(
+                    "M",
+                    style: TextStyle(
+                      fontSize: 52,
+                      fontFamily: "Lobster",
+                      fontWeight: FontWeight.w400, // Weight: 400
+                      color: Color(0xFF4ABFE2),
+                      height: 62 / 48,
+                    ),
+                  ),
+                  Text(
+                    "entorboosters",
+                    style: TextStyle(
+                      fontSize: 32, 
+                      fontWeight: FontWeight.w900, 
+                      fontFamily: "Epilogue",
+                      color: Color(0xFF4ABFE2),
+                      height: 42 / 32,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 15),
+                    child: Text(
+                      ".",
+                      style: TextStyle(
+                        fontSize: 62, 
+                        fontWeight: FontWeight.w900, 
+                        fontFamily: "Epilogue",
+                        color: Color(0xFF4ABFE2),
+                        height: 42 / 32,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              Text('Forgot your password?',
+                  style: context.titleLarge),
+              Text(
+                  'Enter your email address below, we’ll send you a verify code.!',
+                  style: context.bodySmall),
             InputField(
               controller: emailCtrl,
               validator: (value) {
@@ -105,7 +163,6 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 minWidth: MediaQuery.of(context).size.width,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    //TODO: Logic here
                     context.push('${AppRoutes.verifyCode}/${emailCtrl.text}');
                   }
                 },

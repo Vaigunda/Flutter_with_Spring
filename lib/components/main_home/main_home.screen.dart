@@ -170,25 +170,34 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                               ],
                             ),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.baseline,
+                              textBaseline: TextBaseline.alphabetic,
+                              children: [
+                                const SizedBox(width: 10),
+                                // Brightness toggle (aligned with baseline)
+                                const BrightnessToggle(),
+                                const SizedBox(width: 10),
 
-                          // Brightness toggle (aligned with baseline)
-                          const BrightnessToggle(),
-                          const SizedBox(width: 10),
-
-                          // Notification icon (aligned with baseline)
-                          // Wrap the IconButton in a Row with baseline alignment
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.baseline,
-                            textBaseline: TextBaseline.alphabetic,
-                            children: [
-                              IconButton(
-                                onPressed: () =>
-                                    context.push(AppRoutes.notifications),
-                                icon: const Icon(FontAwesomeIcons.bell),
-                              ),
-                            ],
+                                // Notification icon (aligned with baseline)
+                                // Wrap the IconButton in a Row with baseline alignment
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                                  textBaseline: TextBaseline.alphabetic,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () =>
+                                          context.push(AppRoutes.notifications),
+                                      icon: const Icon(FontAwesomeIcons.bell),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(width: 10),
+                              ],
+                            ),
                           ),
-                          const SizedBox(width: 10),
                         ],
                       ),
                     ),

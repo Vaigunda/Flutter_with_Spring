@@ -230,7 +230,6 @@ class _HomeVerifiedState extends State<HomeVerified> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        const SizedBox(height: 10),
         Row(
           children: [
             Text(
@@ -248,6 +247,7 @@ class _HomeVerifiedState extends State<HomeVerified> {
             ),
           ],
         ),
+        const SizedBox(height: 5),
         Text(
           mentor.categories.join(", "),
           style: context.bodyMedium,
@@ -255,7 +255,7 @@ class _HomeVerifiedState extends State<HomeVerified> {
           maxLines: 1,
           textAlign: TextAlign.start,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Text(
           "${mentor.numberOfMentoree} mentees",
           style: context.bodySmall,
@@ -263,7 +263,7 @@ class _HomeVerifiedState extends State<HomeVerified> {
           maxLines: 1,
           textAlign: TextAlign.start,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
       ],
     );
   }
