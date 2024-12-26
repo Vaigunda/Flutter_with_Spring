@@ -3,16 +3,9 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:mentor/navigation/router.dart';
-// import 'package:mentor/shared/models/category.model.dart';
-// import 'package:mentor/shared/models/certificate.model.dart';
-// import 'package:mentor/shared/models/experience.model.dart';
 import 'package:mentor/shared/models/profile_mentor.model.dart';
-// import 'package:mentor/shared/models/review.model.dart';
 import 'package:mentor/shared/services/profile_mentor.service.dart';
 import 'package:mentor/shared/shared.dart';
-
-// import '../../shared/models/mentor.model.dart';
-// import '../../shared/providers/mentors.provider.dart';
 import '../../shared/views/button.dart';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
@@ -226,12 +219,12 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
             context.push('${AppRoutes.bookingMentor}/${mentor!.id}');
           },
         ),
-        const SizedBox(width: 10),
+        /*const SizedBox(width: 10),
         CustomButton(
           type: EButtonType.secondary,
           label: "Send message",
           onPressed: () {},
-        )
+        )*/
       ],
     );
   }

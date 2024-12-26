@@ -13,7 +13,6 @@ class CategoriesService {
         'Authorization': 'Bearer $usertoken',
       },
     );
-    //final response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
       // Parse the JSON response and map it to CategoryModel objects

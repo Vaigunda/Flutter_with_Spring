@@ -1,7 +1,6 @@
 // lib/components/main_home/widgets/home_top_rated.dart
 
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mentor/shared/models/top_rated_mentor.model.dart';
 import 'package:mentor/shared/services/top_rated_mentor.service.dart';
 import 'package:provider/provider.dart';

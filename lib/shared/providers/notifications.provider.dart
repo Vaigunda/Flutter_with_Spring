@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:mentor/shared/models/notification.model.dart';
-import 'package:mentor/shared/providers/mentors.provider.dart';
+import 'package:http/http.dart' as http;
 
 class NotificationsProvider {
   static NotificationsProvider get shared => NotificationsProvider();
-  List<NotificationModel> get notifications => [
+  /*List<NotificationModel> get notifications => [
         NotificationModel(
             id: "1",
             title: "Today's Special Offers",
@@ -50,5 +52,42 @@ class NotificationsProvider {
             dateTime: DateTime.now().add(const Duration(days: -10)),
             initiatedUser: MentorsProvider.shared.getMentor("6")!,
             isRead: false)
-      ];
+      ];*/
+
+  Future<List<NotificationModel>> getNotificationsByMentor(int userId, String usertoken) async {
+
+    final url = Uri.parse('http://localhost:8080/api/notify/getAllNotificationByMentorId?mentorId=$userId');
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $usertoken',
+        },
+      );
+
+      List<NotificationModel> expes = [];
+
+      if (response.statusCode == 200) {
+        var parsed = response.body;
+        List<dynamic> notifications = jsonDecode(parsed);
+
+        for (var notification in notifications) {
+          Map<String, dynamic> exp = notification as Map<String, dynamic>;
+          String dateString = exp['createdAt'];
+
+          DateTime date = DateTime.parse(dateString);
+
+          NotificationModel model = NotificationModel(
+            id: exp['id'].toString(),
+            title: exp['title'] ?? 'Unknown Title',
+            message: exp['message'] ?? 'Unknown Message',
+            userName: exp['recipientName'] ?? 'Unknown User',
+            dateTime: date,
+            isRead: exp['isRead'] ?? 'false',
+          );
+          expes.add(model);
+        }
+      }
+      return expes;
+  }
 }

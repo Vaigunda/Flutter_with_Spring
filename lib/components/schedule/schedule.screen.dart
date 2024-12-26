@@ -49,13 +49,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             });
 
     WidgetsBinding.instance.addPostFrameCallback((_){
-      getBookingList();
+      DateTime currentDate = DateTime.now();
+      getBookingList(currentDate);
     });
   }
 
-  getBookingList() async {
+  getBookingList(DateTime currentDate) async {
     int userid = int.parse(userId);
-    DateTime currentDate = DateTime.now();
     String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
 
     late final Uri url;
@@ -152,25 +152,30 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   Widget _day(DateTime date) {
-    final isToday = _isToday(date);
-    return Container(
-      key: isToday ? _todayKey : null,
-      padding: const EdgeInsets.all(6),
-      margin: const EdgeInsets.all(6),
-      width: 60,
-      height: 70,
-      decoration: BoxDecoration(
-          color: isToday ? context.colors.primary : context.colors.onSecondary,
-          borderRadius: BorderRadius.circular(4)),
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text(
-          DateFormat('EEE').format(date),
-          style: context.bodyLarge!.copyWith(
-              color:
-                  isToday ? context.colors.onPrimary : context.colors.tertiary),
-        ),
-        Text(DateFormat('MMM d').format(date))
-      ]),
+    var isToday = _isToday(date);
+    return GestureDetector(
+      onTap: () {
+        getBookingList(date);
+      },
+      child: Container(
+        key: isToday ? _todayKey : null,
+        padding: const EdgeInsets.all(6),
+        margin: const EdgeInsets.all(6),
+        width: 60,
+        height: 70,
+        decoration: BoxDecoration(
+            color: isToday ? context.colors.primary : context.colors.onSecondary,
+            borderRadius: BorderRadius.circular(4)),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Text(
+            DateFormat('EEE').format(date),
+            style: context.bodyLarge!.copyWith(
+                color:
+                    isToday ? context.colors.onPrimary : context.colors.tertiary),
+          ),
+          Text(DateFormat('MMM d').format(date))
+        ]),
+      ),
     );
   }
 

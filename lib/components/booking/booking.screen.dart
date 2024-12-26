@@ -38,6 +38,7 @@ class _BookingScreenState extends State<BookingScreen> {
   late String usertoken;
   late String userid;
   late String usertype;
+  late String username;
   var provider;
 
   List<Map<String, dynamic>> formData = [
@@ -54,6 +55,7 @@ class _BookingScreenState extends State<BookingScreen> {
     usertoken = provider.usertoken;
     userid = provider.userid;
     usertype = provider.usertype;
+    username = provider.name;
 
     ConnectMethodService connectMethodService = ConnectMethodService();
 
@@ -411,15 +413,44 @@ class _BookingScreenState extends State<BookingScreen> {
           body: requestBody,
         );
         if (response.statusCode == 200) {
-          // Successfully booked
+
+          var notifyBody = jsonEncode({
+            "mentorId": mentor!.id,
+            "recipientId": int.parse(userid),
+            "title": "New Booking",
+            "message": "$username booked you",
+          });
+
+          var notifyRes = await http.post(
+            Uri.parse('http://localhost:8080/api/notify/createNotification'), // Replace with your actual API endpoint
+            headers: {
+              'Authorization': 'Bearer $usertoken',
+              'Content-Type': 'application/json', // Ensure the API expects JSON
+            },
+            body: notifyBody,
+          );
+ 
+          if (notifyRes.statusCode == 200) {
+            // Successfully booked
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Payment and Schedule booking successfully!'),
+                duration: Duration(seconds: 3),
+                backgroundColor: Colors.green,
+              ),
+            );
+            context.go(AppRoutes.home);
+          }
+        } else if (response.statusCode == 400) {
+          String output = response.body;
+          // Something went wrong, handle the error
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Payment and Schedule booking successfully!'),
-              duration: Duration(seconds: 3),
-              backgroundColor: Colors.green,
+            SnackBar(
+              content: Text(output),
+              duration: const Duration(seconds: 3),
+              backgroundColor: Colors.red,
             ),
           );
-          context.go(AppRoutes.home);
         } else {
           // Something went wrong, handle the error
           ScaffoldMessenger.of(context).showSnackBar(
@@ -452,3 +483,5 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
 }
+
+

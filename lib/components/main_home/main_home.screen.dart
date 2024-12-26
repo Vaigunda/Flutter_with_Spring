@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +19,7 @@ import 'widgets/categories.dart';
 import 'widgets/explore.dart';
 import 'widgets/top_mentors.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class MainHomeScreen extends StatefulWidget {
   const MainHomeScreen({super.key});
@@ -36,6 +39,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
 
   var provider;
 
+  int notificationCount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -48,8 +53,33 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     topRatedMentors = MentorService().fetchTopRatedMentors(usertoken);
     topMentors = TopMentorService().fetchTopMentors(usertoken);
     verifiedMentors = VerifiedService().fetchVerifiedMentors(usertoken);
+
+    loadMentorNotification();
   }
 
+  loadMentorNotification() async {
+    if (userid.isNotEmpty) {
+      int userId = int.parse(userid);
+      final url = Uri.parse('http://localhost:8080/api/notify/getAllNotificationByMentorId?mentorId=$userId');
+
+        final response = await http.get(
+          url,
+          headers: {
+            'Authorization': 'Bearer $usertoken',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          var parsed = response.body;
+          List<dynamic> notifications = jsonDecode(parsed);
+
+        setState(() {
+          notificationCount = notifications.length;
+        });
+      }
+    }  
+  }
+  
   void signOut() async {
     final userDataProvider = context.read<UserDataProvider>();
 
@@ -192,6 +222,23 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                                           context.push(AppRoutes.notifications),
                                       icon: const Icon(FontAwesomeIcons.bell),
                                     ),
+                                    // Badge to display the number
+                                    if (notificationCount > 0)
+                                      Container(
+                                        padding: const EdgeInsets.all(5),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Text(
+                                          '$notificationCount',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
                                   ],
                                 ),
                                 const SizedBox(width: 10),
