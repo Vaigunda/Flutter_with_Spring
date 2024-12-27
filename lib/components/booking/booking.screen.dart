@@ -26,7 +26,7 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
-  late ProfileMentor? mentor;
+  ProfileMentor? mentor;
   int _index = 0;
   String _errorMessage = "";
   DateTime _focusedDay = DateTime.now(); // Add this
@@ -126,6 +126,11 @@ class _BookingScreenState extends State<BookingScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    if (connectMethods.isEmpty || mentor == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Booking ${mentor?.name ?? ''}"),

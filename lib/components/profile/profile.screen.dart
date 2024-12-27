@@ -23,9 +23,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late String userType;
   late String usertoken;
 
-  late MentorProfileModel profile;
+  MentorProfileModel? profile;
 
-  late UserProfileModel userProfile;
+  UserProfileModel? userProfile;
 
   var isMentor = false; //switch to true to setting teaching schedule
 
@@ -48,20 +48,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  loadUserProfile() async {
-    userProfile = await ProfileProvider.shared.getUserProfile(userId, usertoken);
+  Future<void> loadUserProfile() async {
+    try {
+      final fetchedUserProfile =
+          await ProfileProvider.shared.getUserProfile(userId, usertoken);
 
-    setState(() {
-      userProfile = userProfile;
-    }); // Update the UI once the profile data is available
+      setState(() {
+        userProfile = fetchedUserProfile;
+      });
+    } catch (e) {
+      debugPrint("Error loading user profile: $e");
+    }
   }
 
-  loadMentorProfile() async {
-    profile = await ProfileProvider.shared.getProfile(userId, usertoken);
+  Future<void> loadMentorProfile() async {
+    try {
+      final fetchedProfile =
+          await ProfileProvider.shared.getProfile(userId, usertoken);
 
-    setState(() {
-      profile = profile;
-    }); // Update the UI once the profile data is available
+      setState(() {
+        profile = fetchedProfile;
+      });
+    } catch (e) {
+      debugPrint("Error loading mentor profile: $e");
+    }
   }
 
   @override
@@ -89,19 +99,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   if (userType == 'Mentor')
-                    _info(),
+                    profile == null
+                        ? const CircularProgressIndicator()
+                        : _info(),
                   if (userType == 'User')
-                    _profileinfo(),
-                  if (userType == 'User')
+                    userProfile == null
+                        ? const CircularProgressIndicator()
+                        : _profileinfo(),
+                  if (userType == 'User' && userProfile != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 30),
                       child: _usertiles(),
                     ),
-                  if (userType == 'Mentor')
+                  if (userType == 'Mentor' && profile != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 30),
                       child: _tiles(),
@@ -116,20 +128,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _info() {
+    if (profile == null) {
+      return const CircularProgressIndicator();
+    }
+
     return Center(
       child: Column(
         children: [
           Text(
-            profile.name,
+            profile!.name,
             style: context.titleLarge,
           ),
           Text(
-            profile.title,
+            profile!.title,
             style: context.bodyMedium,
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -148,9 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     context.push('${AppRoutes.becomeMentor}/1');
                   },
                 ),
-              const SizedBox(
-                width: 10,
-              ),
+              const SizedBox(width: 10),
               CustomButton(
                 label: "My schedule",
                 onPressed: () {
@@ -219,23 +231,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _profileinfo() {
+    if (userProfile == null) {
+      return const CircularProgressIndicator();
+    }
+
     return Center(
       child: Column(
         children: [
           Text(
-            userProfile.name,
+            userProfile!.name,
             style: context.titleLarge,
           ),
-          const SizedBox(
-            height: 10,
-          ),
+          const SizedBox(height: 10),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(
-                width: 10,
-              ),
+              const SizedBox(width: 10),
               CustomButton(
                 label: "My schedule",
                 onPressed: () {
@@ -317,7 +329,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
           child: Text(
-            profile.about,
+            profile!.about,
             style: context.bodyMedium,
             overflow: TextOverflow.ellipsis,
             maxLines: 4,
@@ -350,7 +362,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           maxLines: 4,
                         ),
                       Text(
-                        userProfile.emailId,
+                        userProfile!.emailId,
                         style: context.bodyMedium,
                       ),
                     ],
@@ -367,7 +379,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           maxLines: 4,
                         ),
                       Text(
-                        userProfile.age.toString(),
+                        userProfile!.age.toString(),
                         style: context.bodySmall,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -385,7 +397,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           maxLines: 4,
                         ),
                       Text(
-                        userProfile.gender,
+                        userProfile!.gender,
                         style: context.bodySmall,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -415,7 +427,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(children: [
         buildTile(FontAwesomeIcons.bagShopping, "Experience"),
         devider(),
-        ...profile.experiences.map((exp) => Padding(
+        ...profile!.experiences.map((exp) => Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -470,7 +482,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Wrap(
             spacing: 10.0,
             runSpacing: 10.0,
-            children: [...profile.skills.map(chip)],
+            children: [...profile!.skills.map(chip)],
           ),
         )
       ]),
@@ -497,7 +509,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(children: [
         buildTile(FontAwesomeIcons.bagShopping, "Certificates"),
         devider(),
-        ...profile.certificates.map((cert) => Padding(
+        ...profile!.certificates.map((cert) => Padding(
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
