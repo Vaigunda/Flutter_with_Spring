@@ -36,6 +36,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   late String usertoken;
   late String userid;
   late String name;
+  late String usertype;
 
   var provider;
 
@@ -48,35 +49,81 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     usertoken = provider.usertoken;
     userid = provider.userid;
     name = provider.name;
+    usertype = provider.usertype;
 
     // Fetch data from the API
     topRatedMentors = MentorService().fetchTopRatedMentors(usertoken);
     topMentors = TopMentorService().fetchTopMentors(usertoken);
     verifiedMentors = VerifiedService().fetchVerifiedMentors(usertoken);
 
-    loadMentorNotification();
+    if (usertype == 'Admin') {
+      loadAdminNotification();
+    } else if (usertype == 'Mentor') {
+      loadMentorNotification();
+    } else {
+      loadUserNotification();
+    }
   }
 
-  loadMentorNotification() async {
+  loadAdminNotification() async {
     if (userid.isNotEmpty) {
-      int userId = int.parse(userid);
-      final url = Uri.parse('http://localhost:8080/api/notify/getAllNotificationByMentorId?mentorId=$userId');
-
+      final url = Uri.parse('http://localhost:8080/api/notify/getAll');
         final response = await http.get(
           url,
           headers: {
             'Authorization': 'Bearer $usertoken',
           },
         );
-
         if (response.statusCode == 200) {
           var parsed = response.body;
           List<dynamic> notifications = jsonDecode(parsed);
 
-        setState(() {
-          notificationCount = notifications.length;
-        });
-      }
+          setState(() {
+            notificationCount = notifications.length;
+          });
+        }
+    }  
+  }
+
+  loadMentorNotification() async {
+    if (userid.isNotEmpty) {
+      int userId = int.parse(userid);
+      final url = Uri.parse('http://localhost:8080/api/notify/getAllNotificationByMentorId?mentorId=$userId');
+        final response = await http.get(
+          url,
+          headers: {
+            'Authorization': 'Bearer $usertoken',
+          },
+        );
+        if (response.statusCode == 200) {
+          var parsed = response.body;
+          List<dynamic> notifications = jsonDecode(parsed);
+
+          setState(() {
+            notificationCount = notifications.length;
+          });
+        }
+    }  
+  }
+
+  loadUserNotification() async {
+    if (userid.isNotEmpty) {
+      int userId = int.parse(userid);
+      final url = Uri.parse('http://localhost:8080/api/notify/getAllNotificationByUserId?recipientId=$userId');
+        final response = await http.get(
+          url,
+          headers: {
+            'Authorization': 'Bearer $usertoken',
+          },
+        );
+        if (response.statusCode == 200) {
+          var parsed = response.body;
+          List<dynamic> notifications = jsonDecode(parsed);
+
+          setState(() {
+            notificationCount = notifications.length;
+          });
+        }
     }  
   }
   

@@ -413,12 +413,12 @@ class _BookingScreenState extends State<BookingScreen> {
           body: requestBody,
         );
         if (response.statusCode == 200) {
-
+          String mentorName = mentor!.name;        
           var notifyBody = jsonEncode({
             "mentorId": mentor!.id,
             "recipientId": int.parse(userid),
             "title": "New Booking",
-            "message": "$username booked you",
+            "message": "$username booked $mentorName",
           });
 
           var notifyRes = await http.post(

@@ -90,4 +90,79 @@ class NotificationsProvider {
       }
       return expes;
   }
+
+  Future<List<NotificationModel>> getNotificationsByAdmin(String usertoken) async {
+
+    final url = Uri.parse('http://localhost:8080/api/notify/getAll');
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $usertoken',
+        },
+      );
+
+      List<NotificationModel> expes = [];
+
+      if (response.statusCode == 200) {
+        var parsed = response.body;
+        List<dynamic> notifications = jsonDecode(parsed);
+
+        for (var notification in notifications) {
+          Map<String, dynamic> exp = notification as Map<String, dynamic>;
+          String dateString = exp['createdAt'];
+
+          DateTime date = DateTime.parse(dateString);
+
+          NotificationModel model = NotificationModel(
+            id: exp['id'].toString(),
+            title: exp['title'] ?? 'Unknown Title',
+            message: exp['message'] ?? 'Unknown Message',
+            userName: exp['recipientName'] ?? 'Unknown User',
+            dateTime: date,
+            isRead: exp['isRead'] ?? 'false',
+          );
+          expes.add(model);
+        }
+      }
+      return expes;
+  }
+
+  Future<List<NotificationModel>> getNotificationsByUser(int userId, String usertoken) async {
+
+    final url = Uri.parse('http://localhost:8080/api/notify/getAllNotificationByUserId?recipientId=$userId');
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $usertoken',
+        },
+      );
+
+      List<NotificationModel> expes = [];
+
+      if (response.statusCode == 200) {
+        var parsed = response.body;
+        List<dynamic> notifications = jsonDecode(parsed);
+
+        for (var notification in notifications) {
+          Map<String, dynamic> exp = notification as Map<String, dynamic>;
+          String dateString = exp['createdAt'];
+
+          DateTime date = DateTime.parse(dateString);
+
+          NotificationModel model = NotificationModel(
+            id: exp['id'].toString(),
+            title: exp['title'] ?? 'Unknown Title',
+            message: exp['message'] ?? 'Unknown Message',
+            userName: exp['recipientName'] ?? 'Unknown User',
+            dateTime: date,
+            isRead: exp['isRead'] ?? 'false',
+          );
+          expes.add(model);
+        }
+      }
+      return expes;
+  }
+
 }

@@ -35,12 +35,35 @@ class _NotificationScreenState extends State<NotificationScreen> {
     userid = provider.userid;
     usertype = provider.usertype;
 
-    loadMentorNotification();
+    if (usertype == 'Admin') {
+      loadAdminNotification();
+    } else if (usertype == 'Mentor') {
+      loadMentorNotification();
+    } else {
+      loadUserNotification();
+    }
+  }
+
+  loadAdminNotification() async {
+    notifications = await NotificationsProvider.shared.getNotificationsByAdmin(usertoken);
+
+    setState(() {
+      notifications = notifications;
+    });
   }
 
   loadMentorNotification() async {
     int userId = int.parse(userid);
     notifications = await NotificationsProvider.shared.getNotificationsByMentor(userId, usertoken);
+
+    setState(() {
+      notifications = notifications;
+    });
+  }
+
+  loadUserNotification() async {
+    int userId = int.parse(userid);
+    notifications = await NotificationsProvider.shared.getNotificationsByUser(userId, usertoken);
 
     setState(() {
       notifications = notifications;
@@ -72,11 +95,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
           "Notifications",
           style: context.headlineMedium,
         ),
-        actions: [TextButton(
-          onPressed: () async {
-            await setRead();
-          },
-        child: const Text("Clear all"))],
+        actions: [
+          if (usertype == 'Mentor')
+            TextButton(
+              onPressed: () async {
+                await setRead();
+              },
+            child: const Text("Clear all"))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
