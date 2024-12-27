@@ -90,8 +90,6 @@ class _AdminPageState extends State<AdminPage> {
     }
  }
 
-
-
   // Navigate to ViewMentorScreen to view mentor details
   void viewMentor(AllMentors mentor) {
   Navigator.push(
@@ -135,6 +133,18 @@ class _AdminPageState extends State<AdminPage> {
                   margin: const EdgeInsets.all(8.0),
                   child: ListTile(
                     title: Text(mentor.name),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(mentor.role ?? ""),
+                        Text(mentor.bio),
+                      ]),
+                    leading: CircleAvatar(
+                      radius: 26,
+                      backgroundImage: AssetImage(
+                        mentor.avatarUrl,
+                      ),
+                    ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
