@@ -26,6 +26,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController emailCtrl = TextEditingController();
   TextEditingController ageCtrl = TextEditingController();
   TextEditingController genderCtrl = TextEditingController();
+  TextEditingController confirmPasswordCtrl = TextEditingController();
+
 
   TextEditingController otpCtrl = TextEditingController();
 
@@ -42,6 +44,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     passwordCtrl.dispose();
     nameCtrl.dispose();
     emailCtrl.dispose();
+    confirmPasswordCtrl.dispose();
     ageCtrl.dispose();
     genderCtrl.dispose();
   }
@@ -234,6 +237,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
             labelText: 'Password',
+          ),
+          const SizedBox(height: 20),
+          InputField(
+            controller: confirmPasswordCtrl,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please confirm your password';
+              }
+              if (value != passwordCtrl.text) {
+                return 'Passwords do not match';
+              }
+              return null; // Validation passed
+            },
+            obscureText: _passwordVisible,
+            prefixIcon: const Icon(Icons.lock_outline_rounded),
+            suffixIcon: IconButton(
+              onPressed: () {
+                setState(() {
+                  _passwordVisible = !_passwordVisible;
+                });
+              },
+              icon: Icon(
+                _passwordVisible
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+                size: 18,
+              ),
+            ),
+            labelText: 'Confirm Password',
           ),
           const SizedBox(height: 20),
           InputField(
