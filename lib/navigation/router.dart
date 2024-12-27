@@ -11,6 +11,7 @@ import 'package:mentor/components/become_mentor/become_mentor.screen.dart';
 import 'package:mentor/components/booking/booking.screen.dart';
 import 'package:mentor/components/inbox/inbox.screen.dart';
 import 'package:mentor/components/main_home/main_home.screen.dart';
+import 'package:mentor/components/profile/edit_user.screen.dart';
 import 'package:mentor/components/profile/profile.screen.dart';
 import 'package:mentor/components/profile_mentor/profile_mentor.screen.dart';
 import 'package:mentor/components/schedule/schedule.screen.dart';
@@ -56,6 +57,7 @@ class AppRoutes {
   static String adminPage = '/admin'; // Route for Admin Page
   static String editMentor = '/edit-mentor'; // Route for Edit Mentor Page
   static String viewMentor = '/view-mentor'; // Route for View Mentor Page
+  static String editUser = '/edit-user';
 }
 
 // navigation list after login for Admin
@@ -237,6 +239,13 @@ final appRouter = GoRouter(
                 child: ProfileScreen(),
               ),
             )),
+    GoRoute(
+      path: '/edit-user/:userId',  // Define the route with a parameter
+      builder: (BuildContext context, GoRouterState state) {
+        final userId = state.pathParameters['userId']!;
+        return EditUserScreen(userId: int.parse(userId));  // Pass the userId to the screen
+      },
+    ),
     GoRoute(
         path: AppRoutes.signin,
         builder: (context, state) => const LoginScreen()),

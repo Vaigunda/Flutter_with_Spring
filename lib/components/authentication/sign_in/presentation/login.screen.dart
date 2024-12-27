@@ -264,29 +264,30 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 22,
               ),
               InputField(
-                  controller: passwordCtrl,
-                  validator: (value) {
-                    return validator.required(value, 'This field is required');
-                  },
-                  obscureText: _passwordVisible,
-                  prefixIcon: const Icon(Icons.lock_outline_rounded),
-                  suffixIcon: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _passwordVisible = !_passwordVisible;
-                        });
-                      },
-                      icon: Icon(
-                        _passwordVisible
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                        size: 24,
-                      )),
-                  labelText: 'Password'),
+                controller: passwordCtrl,
+                validator: (value) {
+                  return validator.required(value, 'This field is required');
+                },
+                obscureText: _passwordVisible,
+                prefixIcon: const Icon(Icons.lock_outline_rounded),
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                    icon: Icon(
+                      _passwordVisible
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      size: 24,
+                    )),
+                labelText: 'Password'
+              ),
               const SizedBox(
                 height: 20,
               ),
-               Row(
+              /*Row(
                 children: [
                   Checkbox(
                     checkColor: Colors.white,
@@ -305,7 +306,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(
                 height: 20,
-              ),
+              ),*/
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 150, vertical: 18),
@@ -339,7 +340,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
+                    /*Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text("Forget password", style: context.bodySmall),
@@ -349,7 +350,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Text('Recover now!',
                                 style: TextStyle(color: context.colors.primary))),
                       ],
-                    ),
+                    ),*/
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

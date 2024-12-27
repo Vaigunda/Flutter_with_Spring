@@ -148,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (isMentor)
+              /*if (isMentor)
                 CustomButton(
                   label: "Setting schedule",
                   onPressed: () {
@@ -161,7 +161,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onPressed: () {
                     context.push('${AppRoutes.becomeMentor}/1');
                   },
-                ),
+                ),*/
+              /*CustomButton(
+                label: "Edit Mentor",
+                onPressed: () {
+                  context.push('${AppRoutes.editMentor}/1');
+                },
+              ),*/
               const SizedBox(width: 10),
               CustomButton(
                 label: "My schedule",
@@ -316,6 +322,64 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Widget buildOtherTile(IconData leadingIcon, String title,
+      [IconData? trallingIcon]) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Theme.of(context).cardColor),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: const Color(0xFF22D3EE)),
+            height: 48,
+            width: 48,
+            child: Icon(
+              leadingIcon,
+              color: Theme.of(context).cardColor,
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                title,
+                style: context.titleMedium,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10.0, 0, 0, 0),
+            child: SizedBox(
+              width: 26,
+              height: 26,
+              child: FloatingActionButton.small(
+                heroTag: title,
+                elevation: 1,
+                backgroundColor: context.colors.primary,
+                onPressed: () {
+                  // Navigate to EditUserScreen using context.push
+                  context.push('/edit-user/${userId}');
+                },
+                child: Icon(
+                  trallingIcon ?? FontAwesomeIcons.plus,
+                  size: 10,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget about() {
     return Container(
       //padding: const EdgeInsets.all(10),
@@ -347,8 +411,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  buildTile(
+                  buildOtherTile(
                       FontAwesomeIcons.circleUser, "Other Details", FontAwesomeIcons.pencil),
+                  /*IconButton(
+                    icon: Icon(Icons.edit, color: Theme.of(context).primaryColor),
+                    onPressed: () {
+                      // Navigate to EditUserScreen using context.push
+                      context.push('/edit-user/${userId}');
+                    },
+                  ),*/
                   devider(),
                   const SizedBox(
                     width: 20,
