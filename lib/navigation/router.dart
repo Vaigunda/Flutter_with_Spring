@@ -57,7 +57,7 @@ class AppRoutes {
   static String adminPage = '/admin'; // Route for Admin Page
   static String editMentor = '/edit-mentor'; // Route for Edit Mentor Page
   static String viewMentor = '/view-mentor'; // Route for View Mentor Page
-  static String editUser = '/edit-user';
+  static String editUser = '/edit-user'; 
 }
 
 // navigation list after login for Admin
