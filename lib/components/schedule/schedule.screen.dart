@@ -30,7 +30,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   late String userType;
   late String usertoken;
 
-  late List bookingList = [];
+  List bookingList = [];
+
+  late DateTime todayDate;
+  String textDate = "Today";
+  bool isDay = false;
 
   @override
   void initState() {
@@ -54,20 +58,31 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     });
   }
 
-  getBookingList(DateTime currentDate) async {
-    int userid = int.parse(userId);
-    String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
+Future<void> getBookingList(DateTime date) async {
+  int userIdInt = int.tryParse(userId) ?? -1; // Safely parse userId
+  if (userIdInt == -1) {
+    debugPrint('Error: Invalid userId');
+    return;
+  }
 
-    late final Uri url;
+  String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+  late final Uri url;
 
-    if (userType == "Mentor") {
-      url = Uri.parse(
-        'http://localhost:8080/api/bookings/mentor/$userid/$formattedDate');
-    } else if (userType == "User") {
-      url = Uri.parse(
-        'http://localhost:8080/api/bookings/user/$userid/$formattedDate');
-    }
+  // Define the URL based on the userType
+  if (userType == "Mentor") {
+    url = Uri.parse(
+      'http://localhost:8080/api/bookings/mentor/$userIdInt/$formattedDate',
+    );
+  } else if (userType == "User") {
+    url = Uri.parse(
+      'http://localhost:8080/api/bookings/user/$userIdInt/$formattedDate',
+    );
+  } else {
+    debugPrint('Error: Invalid userType');
+    return;
+  }
 
+  try {
     final response = await http.get(
       url,
       headers: {
@@ -76,22 +91,38 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     );
 
     if (response.statusCode == 200) {
+      debugPrint('Response: ${response.body}');
       List<dynamic> data = jsonDecode(response.body);
 
-      // Ensure data is a list and not null
       if (data.isNotEmpty) {
         setState(() {
           bookingList = data;
         });
       } else {
+        debugPrint('No bookings found for the selected date.');
         setState(() {
-          bookingList = []; // Default to empty list
+          bookingList = [];
         });
       }
     } else {
+      debugPrint(
+        'Error: Failed to load bookings. Status Code: ${response.statusCode}',
+      );
       throw Exception('Failed to load bookings');
     }
+  } on FormatException catch (e) {
+    debugPrint('Error parsing JSON: $e');
+    setState(() {
+      bookingList = [];
+    });
+  } on Exception catch (e) {
+    debugPrint('Error: $e');
+    setState(() {
+      bookingList = [];
+    });
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -112,10 +143,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           const SizedBox(
             height: 20,
           ),
-          Text(
-            "Today",
-            style: context.headlineSmall,
-          ),
+          if (isDay)
+            Text(
+              "Today",
+              style: context.headlineSmall,
+            ),
+          if (!isDay)
+            Text(
+              textDate,
+              style: context.headlineSmall,
+            ),
           const SizedBox(
             height: 16,
           ),
@@ -155,7 +192,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     var isToday = _isToday(date);
     return GestureDetector(
       onTap: () {
+        isDay = _isToday(date);
         getBookingList(date);
+        textDate = DateFormat('dd-MM-yyyy').format(date);
       },
       child: Container(
         key: isToday ? _todayKey : null,

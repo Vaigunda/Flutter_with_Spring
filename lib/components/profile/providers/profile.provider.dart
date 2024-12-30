@@ -10,9 +10,10 @@ class ProfileProvider {
     int userid = int.parse(userId);
     final response =
         await http.get(Uri.parse('http://localhost:8080/api/mentors/$userid'),
-            headers: {"content-type": "application/json",
-            'Authorization': 'Bearer $usertoken'},
-            );
+            headers: {
+              "content-type": "application/json",
+              'Authorization': 'Bearer $usertoken'},
+        );
 
     var parsed = response.body;
     Map<String, dynamic> map = jsonDecode(parsed);
@@ -55,7 +56,7 @@ class ProfileProvider {
     
     return MentorProfileModel(
       name: map['name'],
-      avatar: map['avatar_url'],
+      avatar: map['avatarUrl'],
       title: map['role'],
       about:map['bio'],
       experiences: expes,

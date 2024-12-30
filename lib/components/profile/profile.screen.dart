@@ -1,13 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mentor/components/profile/providers/profile.provider.dart';
+import '../../shared/models/all_mentors.model.dart';
+import '../admin/edit_mentor.screen.dart';
 import '/shared/utils/extensions.dart';
 import '../../navigation/router.dart';
 import '../../shared/views/button.dart';
 import 'models/profile.model.dart';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -71,6 +76,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     } catch (e) {
       debugPrint("Error loading mentor profile: $e");
+    }
+  }
+
+  Future<void> loadMentor() async {
+    try {
+      int userid = int.parse(userId);
+      final response = await http.get(
+        Uri.parse('http://localhost:8080/api/mentors/$userid'),
+        headers: {
+          "content-type": "application/json",
+          'Authorization': 'Bearer $usertoken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        var parsed = response.body;
+        Map<String, dynamic> map = jsonDecode(parsed);
+        AllMentors mentor = AllMentors.fromJson(map);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditMentorScreen(mentor: mentor),
+          ),
+        );
+      } else {
+        throw Exception('Failed to load mentor: ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint("Error loading mentor detail: $e");
     }
   }
 
@@ -162,12 +196,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     context.push('${AppRoutes.becomeMentor}/1');
                   },
                 ),*/
-              /*CustomButton(
+              CustomButton(
                 label: "Edit Mentor",
-                onPressed: () {
-                  context.push('${AppRoutes.editMentor}/1');
-                },
-              ),*/
+                onPressed: loadMentor,
+              ),
               const SizedBox(width: 10),
               CustomButton(
                 label: "My schedule",
