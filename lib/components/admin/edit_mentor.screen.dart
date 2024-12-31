@@ -161,6 +161,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
   // Method to handle saving updated mentor data
   Future<void> saveMentor() async {
     final updatedData = {
+      'id': mentorData.id,
       'name': mentorData.name,
       'email': mentorData.email,
       'avatarUrl': mentorData.avatarUrl,
@@ -173,6 +174,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
       'numberOfMentoree': mentorData.numberOfMentoree,
       'certificates': mentorData.certificates.map((certificate) {
         return {
+          'id': certificate.id,
           'name': certificate.name,
           'provideBy': certificate.provideBy,
           'createDate': certificate.createDate != null
@@ -183,6 +185,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
       }).toList(),
       'experiences': mentorData.experiences.map((experience) {
         return {
+          'id': experience.id,
           'role': experience.role,
           'companyName': experience.companyName,
           'startDate': experience.startDate != null
@@ -196,12 +199,14 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
       }).toList(),
       'timeSlots': mentorData.timeSlots.map((schedule) {
         return {
+          'id': schedule.id,
           'timeStart': schedule.timeStart,
           'timeEnd': schedule.timeEnd,
         };  
       }).toList(),
       'categories': mentorData.categories.map((category) {
         return {
+          'id': category.id,
           'name': category.name,
         };
       }).toList(),
