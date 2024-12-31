@@ -32,7 +32,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
   List bookingList = [];
 
-  late DateTime todayDate;
+  DateTime selectedDate = DateTime.now();
   String textDate = "Today";
   bool isDay = false;
 
@@ -61,7 +61,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 Future<void> getBookingList(DateTime date) async {
   int userIdInt = int.tryParse(userId) ?? -1; // Safely parse userId
   if (userIdInt == -1) {
-    debugPrint('Error: Invalid userId');
     return;
   }
 
@@ -78,7 +77,6 @@ Future<void> getBookingList(DateTime date) async {
       'http://localhost:8080/api/bookings/user/$userIdInt/$formattedDate',
     );
   } else {
-    debugPrint('Error: Invalid userType');
     return;
   }
 
@@ -91,7 +89,6 @@ Future<void> getBookingList(DateTime date) async {
     );
 
     if (response.statusCode == 200) {
-      debugPrint('Response: ${response.body}');
       List<dynamic> data = jsonDecode(response.body);
 
       if (data.isNotEmpty) {
@@ -99,24 +96,18 @@ Future<void> getBookingList(DateTime date) async {
           bookingList = data;
         });
       } else {
-        debugPrint('No bookings found for the selected date.');
         setState(() {
           bookingList = [];
         });
       }
     } else {
-      debugPrint(
-        'Error: Failed to load bookings. Status Code: ${response.statusCode}',
-      );
       throw Exception('Failed to load bookings');
     }
   } on FormatException catch (e) {
-    debugPrint('Error parsing JSON: $e');
     setState(() {
       bookingList = [];
     });
   } on Exception catch (e) {
-    debugPrint('Error: $e');
     setState(() {
       bookingList = [];
     });
@@ -135,7 +126,9 @@ Future<void> getBookingList(DateTime date) async {
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start, 
+          children: [
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(children: _days()),
@@ -189,28 +182,32 @@ Future<void> getBookingList(DateTime date) async {
   }
 
   Widget _day(DateTime date) {
-    var isToday = _isToday(date);
+    final isSelected = selectedDate == date;
+
     return GestureDetector(
       onTap: () {
-        isDay = _isToday(date);
+        setState(() {
+          isDay = _isToday(date);
+          selectedDate = date;
+          textDate = DateFormat('dd-MM-yyyy').format(date);
+        });
         getBookingList(date);
-        textDate = DateFormat('dd-MM-yyyy').format(date);
       },
       child: Container(
-        key: isToday ? _todayKey : null,
-        padding: const EdgeInsets.all(6),
-        margin: const EdgeInsets.all(6),
+        key: _isToday(date) ? _todayKey : ValueKey(date),
         width: 60,
         height: 70,
+        padding: const EdgeInsets.all(6),
+        margin: const EdgeInsets.all(6),
         decoration: BoxDecoration(
-            color: isToday ? context.colors.primary : context.colors.onSecondary,
+            color: isSelected ? context.colors.primary : context.colors.onSecondary,
             borderRadius: BorderRadius.circular(4)),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(
             DateFormat('EEE').format(date),
             style: context.bodyLarge!.copyWith(
                 color:
-                    isToday ? context.colors.onPrimary : context.colors.tertiary),
+                    isSelected ? context.colors.onPrimary : context.colors.tertiary),
           ),
           Text(DateFormat('MMM d').format(date))
         ]),
