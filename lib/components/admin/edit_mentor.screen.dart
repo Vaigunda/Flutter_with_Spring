@@ -496,29 +496,64 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
                               'description': value,
                             }, index: index),
                           ),
-                          // Start Date
+                          // Start Date Field
                           TextField(
                             controller: experienceStartDateControllers[index],
                             decoration: const InputDecoration(labelText: 'Start Date YYYY-MM-DD'),
-                            onChanged: (value) => updateField('experiences', {
-                              'role': experience.role,
-                              'companyName': experience.companyName,
-                              'startDate': value,
-                              'endDate': experience.endDate,
-                              'description': experience.description,
-                            }, index: index),
+                            readOnly: true, // Prevent manual editing
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(), // Current date
+                                firstDate: DateTime(1900), // Earliest possible date
+                                lastDate: DateTime(2100), // Latest possible date
+                              );
+
+                              if (pickedDate != null) {
+                                // Update the controller with the selected date
+                                String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                                experienceStartDateControllers[index].text = formattedDate;
+
+                                // Update the experience data
+                                updateField('experiences', {
+                                  'role': experience.role,
+                                  'companyName': experience.companyName,
+                                  'startDate': pickedDate.toIso8601String(),
+                                  'endDate': experience.endDate,
+                                  'description': experience.description,
+                                }, index: index);
+                              }
+                            },
                           ),
-                          // End Date
+
+                          // End Date Field
                           TextField(
                             controller: experienceEndDateControllers[index],
                             decoration: const InputDecoration(labelText: 'End Date YYYY-MM-DD'),
-                            onChanged: (value) => updateField('experiences', {
-                              'role': experience.role,
-                              'companyName': experience.companyName,
-                              'startDate': experience.startDate,
-                              'endDate': value,
-                              'description': experience.description,
-                            }, index: index),
+                            readOnly: true, // Prevent manual editing
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(), // Current date
+                                firstDate: DateTime(1900), // Earliest possible date
+                                lastDate: DateTime(2100), // Latest possible date
+                              );
+
+                              if (pickedDate != null) {
+                                // Update the controller with the selected date
+                                String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                                experienceEndDateControllers[index].text = formattedDate;
+
+                                // Update the experience data
+                                updateField('experiences', {
+                                  'role': experience.role,
+                                  'companyName': experience.companyName,
+                                  'startDate': experience.startDate,
+                                  'endDate': pickedDate.toIso8601String(),
+                                  'description': experience.description,
+                                }, index: index);
+                              }
+                            },
                           ),
                           // Delete Button
                           Align(
@@ -613,12 +648,29 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
                           TextField(
                             controller: certificateDateControllers[index],
                             decoration: const InputDecoration(labelText: 'Create Date YYYY-MM-DD'),
-                            onChanged: (value) => updateField('certificates', {
-                              'name': certificate.name,
-                              'provideBy': certificate.provideBy,
-                              'createDate': DateTime.tryParse(value)?.toIso8601String(),
-                              'imageUrl': certificate.imageUrl,
-                            }, index: index),
+                            readOnly: true, // Prevent manual editing
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(), // Current date
+                                firstDate: DateTime(1900), // Earliest possible date
+                                lastDate: DateTime(2100), // Latest possible date
+                              );
+
+                              if (pickedDate != null) {
+                                // Update the controller with the selected date
+                                String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                                certificateDateControllers[index].text = formattedDate;
+
+                                // Update the mentor data
+                                updateField('certificates', {
+                                  'name': certificate.name,
+                                  'provideBy': certificate.provideBy,
+                                  'createDate': pickedDate.toIso8601String(),
+                                  'imageUrl': certificate.imageUrl,
+                                }, index: index);
+                              }
+                            },
                           ),
                           // Image URL
                           TextField(
@@ -695,26 +747,61 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Time Start
+                          // Time Start Field
                           TextField(
                             controller: timeSlotsTimeStartControllers[index],
                             decoration: const InputDecoration(labelText: 'Time Start HH:MM:SS'),
-                            onChanged: (value) {
-                              updateField('timeSlots', {
-                                'timeStart': value,
-                                'timeEnd': schedule.timeEnd,
-                              }, index: index);
+                            readOnly: true, // Prevent manual editing
+                            onTap: () async {
+                              TimeOfDay? pickedTime = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(), // Current time
+                              );
+
+                              if (pickedTime != null) {
+                                // Format the time as HH:mm:ss
+                                final now = DateTime.now();
+                                String formattedTime = DateFormat('HH:mm:ss').format(
+                                  DateTime(now.year, now.month, now.day, pickedTime.hour, pickedTime.minute),
+                                );
+
+                                timeSlotsTimeStartControllers[index].text = formattedTime;
+
+                                // Update the time slot data
+                                updateField('timeSlots', {
+                                  'timeStart': formattedTime,
+                                  'timeEnd': schedule.timeEnd,
+                                }, index: index);
+                              }
                             },
                           ),
-                          // Time End
+
+                          // Time End Field
                           TextField(
                             controller: timeSlotsTimeEndControllers[index],
                             decoration: const InputDecoration(labelText: 'Time End HH:MM:SS'),
-                            onChanged: (value) {
-                              updateField('timeSlots', {
-                                'timeStart': schedule.timeStart,
-                                'timeEnd': value,
-                              }, index: index);
+                            readOnly: true, // Prevent manual editing
+                            onTap: () async {
+                              TimeOfDay? pickedTime = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(), // Current time
+                              );
+
+                              if (pickedTime != null) {
+                                // Format the time as HH:mm:ss
+                                final now = DateTime.now();
+                                String formattedTime = DateFormat('HH:mm:ss').format(
+                                  DateTime(now.year, now.month, now.day, pickedTime.hour, pickedTime.minute),
+                                );
+
+                                timeSlotsTimeEndControllers[index].text = formattedTime;
+
+                                // Update the time slot data
+                                updateField('timeSlots', {
+                                  'timeStart': schedule.timeStart,
+                                  'timeEnd': formattedTime,
+                                }, index: index);
+                              }
                             },
                           ),
                           // Delete Button
