@@ -103,11 +103,11 @@ Future<void> getBookingList(DateTime date) async {
     } else {
       throw Exception('Failed to load bookings');
     }
-  } on FormatException catch (e) {
+  } on FormatException {
     setState(() {
       bookingList = [];
     });
-  } on Exception catch (e) {
+  } on Exception {
     setState(() {
       bookingList = [];
     });

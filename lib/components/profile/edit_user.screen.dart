@@ -108,7 +108,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Edit User")),
+      appBar: AppBar(title: const Text("Edit User")),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(

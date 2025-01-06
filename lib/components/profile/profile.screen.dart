@@ -397,7 +397,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 backgroundColor: context.colors.primary,
                 onPressed: () {
                   // Navigate to EditUserScreen using context.push
-                  context.push('/edit-user/${userId}');
+                  context.push('/edit-user/$userId');
                 },
                 child: Icon(
                   trallingIcon ?? FontAwesomeIcons.plus,

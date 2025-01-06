@@ -15,7 +15,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
-import 'package:http/http.dart' as http;
+
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key, required this.profileId});
@@ -436,8 +436,6 @@ class _BookingScreenState extends State<BookingScreen> {
 
     var selectedTimeSlot = formData[1]["value"];
 
-    
-
     // Prepare the body for the POST request
     var requestBody = jsonEncode({
       "mentorId": mentor!.id,
@@ -452,7 +450,11 @@ class _BookingScreenState extends State<BookingScreen> {
     });
 
     if (usertype == 'User') {
-      try {
+      //context.go(AppRoutes.payment);
+      String bookingData = Uri.encodeComponent(jsonEncode(requestBody));
+    
+      context.push('${AppRoutes.payment}/${mentor!.free.price}/$bookingData');
+      /*try {
         // Send the POST request to your backend API
         var response = await http.post(
           Uri.parse('http://localhost:8080/api/bookings'), // Replace with your actual API endpoint
@@ -519,7 +521,7 @@ class _BookingScreenState extends State<BookingScreen> {
             backgroundColor: Colors.red,
           ),
         );
-      }
+      }*/
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

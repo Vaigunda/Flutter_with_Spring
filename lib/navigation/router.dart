@@ -11,6 +11,7 @@ import 'package:mentor/components/become_mentor/become_mentor.screen.dart';
 import 'package:mentor/components/booking/booking.screen.dart';
 import 'package:mentor/components/inbox/inbox.screen.dart';
 import 'package:mentor/components/main_home/main_home.screen.dart';
+import 'package:mentor/components/payment/payment_screen.dart';
 import 'package:mentor/components/profile/edit_user.screen.dart';
 import 'package:mentor/components/profile/profile.screen.dart';
 import 'package:mentor/components/profile_mentor/profile_mentor.screen.dart';
@@ -58,6 +59,7 @@ class AppRoutes {
   static String editMentor = '/edit-mentor'; // Route for Edit Mentor Page
   static String viewMentor = '/view-mentor'; // Route for View Mentor Page
   static String editUser = '/edit-user'; 
+  static String payment = '/payment';
 }
 
 // navigation list after login for Admin
@@ -301,7 +303,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.editMentor,
       builder: (context, state) {
-        final mentor = state.extra as AllMentors; // Pass `ProfileMentor` object
+        final mentor = state.extra as AllMentors; // Pass ProfileMentor object
         return EditMentorScreen(mentor: mentor);
       },
     ),
@@ -310,6 +312,15 @@ final appRouter = GoRouter(
       builder: (context, state) {
         final mentor = state.extra as AllMentors; // Expect ProfileMentor instead of Map
         return ViewMentorScreen(mentor: mentor); // Pass the ProfileMentor object
+      },
+    ),
+    GoRoute(
+      path: '${AppRoutes.payment}/:amount/:bookingData',
+      builder: (context, state) {
+        // Convert the path parameter to an int
+        final amount = int.tryParse(state.pathParameters['amount']!) ?? 0;
+        final bookingData = state.pathParameters['bookingData']!;
+        return PaymentScreen(amount: amount, bookingData: bookingData);
       },
     ),
   ],
