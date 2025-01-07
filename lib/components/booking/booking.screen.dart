@@ -348,7 +348,7 @@ class _BookingScreenState extends State<BookingScreen> {
         ),
       ),
       // Conditionally render the text field if the ID for "Google Meet" is selected
-      if (formData[_index]["value"] == '1') // Replace '3' with the correct ID for "Google Meet"
+      if (formData[_index]["value"] == '2') // Replace '3' with the correct ID for "Google Meet"
         Padding(
           padding: const EdgeInsets.only(top: 10),
           child: TextField(

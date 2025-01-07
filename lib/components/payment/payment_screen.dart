@@ -82,14 +82,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
         ),
       );
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Payment and Schedule booking successfully!'),
-          duration: Duration(seconds: 3),
-          backgroundColor: Colors.green,
-        ),
-      );
       await submitBooking();
       context.go(AppRoutes.home);
     } catch (e) {
