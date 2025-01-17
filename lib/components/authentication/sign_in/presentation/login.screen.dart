@@ -29,6 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool isLoading = false;
 
+  
+
   @override
   void dispose() {
     super.dispose();
@@ -95,6 +97,9 @@ class _LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text(e.toString())),
       );
     } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
