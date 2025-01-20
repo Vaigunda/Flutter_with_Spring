@@ -105,7 +105,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
 
   // API endpoint for creating a mentor
   final String apiUrl =
-      "http://192.168.1.12:8080/api/mentors"; // Replace with your actual API URL
+      "http://localhost:8080/api/mentors"; // Replace with your actual API URL
 
   Future<void> _selectTime(
       BuildContext context, TextEditingController controller) async {
