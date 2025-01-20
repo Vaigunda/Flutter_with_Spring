@@ -105,7 +105,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
 
   // API endpoint for creating a mentor
   final String apiUrl =
-      "http://localhost:8080/api/mentors"; // Replace with your actual API URL
+      "http://192.168.1.12:8080/api/mentors"; // Replace with your actual API URL
 
   Future<void> _selectTime(
       BuildContext context, TextEditingController controller) async {
@@ -688,7 +688,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                       // Use the new displayedCategories variable instead of selectedCategories
                       items: displayedCategories
                           .map((category) =>
-                              MultiSelectItem(category, category.name))
+                              MultiSelectItem(category, category.name,))
                           .toList(),
                       onTap: (value) {
                         setState(() {
@@ -707,6 +707,10 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                             ? Colors.white
                             : Colors.black,
                       ),
+                      
+                    ),
+                    itemsTextStyle: TextStyle(
+                      color: Colors.blue, // Uniform color for all dropdown items
                     ),
                   ),
                   if (isFormSubmitted && selectedCategories.isEmpty)
