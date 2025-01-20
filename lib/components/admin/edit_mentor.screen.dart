@@ -3,8 +3,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:mentor/shared/models/all_mentors.model.dart';
 import 'package:intl/intl.dart';
+import 'package:mentor/shared/services/categories.service.dart';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class EditMentorScreen extends StatefulWidget {
   final AllMentors mentor;
@@ -46,6 +48,8 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
   late String usertoken;
   var provider;
 
+  List<Category> allCategories = []; // List to hold all fetched categories
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +57,8 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
     
     provider = context.read<UserDataProvider>();
     usertoken = provider.usertoken;
+
+    _fetchCategories(); // Fetch categories on initialization
 
     nameController = TextEditingController(text: mentorData.name);
     emailController = TextEditingController(text: mentorData.email);
@@ -158,8 +164,231 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
     super.dispose();
   }
 
+  Future<void> _fetchCategories() async {
+    final categoriesService = CategoriesService();
+    final fetchedCategories =
+        await categoriesService.fetchCategories(usertoken);
+
+    setState(() {
+      allCategories = fetchedCategories.map((categoryModel) => Category(
+        id: categoryModel.id,
+        name: categoryModel.name,
+        icon: categoryModel.icon,
+      )).toList();
+    });
+  }
+
+  void _addCategories(List<Category> selectedCategories) {
+    setState(() {
+      for (var category in selectedCategories) {
+        if (!mentorData.categories.any((c) => c.id == category.id)) {
+          mentorData.categories.add(category);
+        }
+      }
+    });
+  }
+
+  void _removeCategory(Category category) {
+    setState(() {
+      mentorData.categories.removeWhere((c) => c.id == category.id);
+    });
+  }
+
   // Method to handle saving updated mentor data
   Future<void> saveMentor() async {
+
+    // Name validation
+    if (nameController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Name cannot be empty.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Exit if name is empty
+    }
+
+    // Email validation
+    if (!(emailController.text.contains('@') && emailController.text.contains('.'))) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid email format.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Exit if email is invalid
+    }
+
+    // Role validation
+    if (roleController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Role cannot be empty.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Exit if role is empty
+    }
+
+    // Bio validation
+    if (bioController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Bio cannot be empty.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Exit if bio is empty
+    }
+
+    // Avatar URL validation
+  if (avatarUrlController.text.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Avatar URL cannot be empty.'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return; // Exit if Avatar URL is empty
+  }
+
+    // Number of Mentees validation
+    int? numberOfMentees = int.tryParse(numberOfMentoreesController.text);
+    if (numberOfMentees == null || numberOfMentees < 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid number of mentees.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Exit if number of mentees is invalid
+    }
+
+    // Rate validation
+    if (rateController.text.isEmpty || double.tryParse(rateController.text) == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid rate input. Please enter a valid number.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Exit if rate is invalid
+    }
+
+    // Free Price validation
+    if (freePriceController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Free Price cannot be empty.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Exit if free price is empty
+    }
+
+    // Free Unit validation
+    if (freeUnitController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Free Unit cannot be empty.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Exit if free unit is empty
+    }
+
+
+
+    // Check if at least one category is selected
+    if (mentorData.categories.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please add at least one category.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Exit the method if no category is selected
+    }
+
+    // Check if at least one experience is provided and all experience fields are filled
+    if (mentorData.experiences.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please add at least one experience.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Exit the method if no experience is selected
+    }
+
+    for (var experience in mentorData.experiences) {
+      if (experience.role.isEmpty ||
+          experience.companyName.isEmpty ||
+          experience.startDate == null ||
+          experience.endDate == null ||
+          (experience.description?.isEmpty ?? true)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('All fields in experience must be filled.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return; // Exit the method if any experience field is empty
+      }
+    }
+
+    // Check if at least one certificate exists and all certificate fields are filled
+    if (mentorData.certificates.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please add at least one certificate.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Exit the method if no certificate is added
+    }
+
+    // Validate each certificate's fields (all fields should be filled)
+    for (int i = 0; i < mentorData.certificates.length; i++) {
+      final certificate = mentorData.certificates[i];
+
+      if (certificate.name.isEmpty || certificate.provideBy.isEmpty ||
+          certificate.createDate == null || certificate.imageUrl.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please fill in all fields for certificate ${i + 1}.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return; // Exit the method if any field is empty
+      }
+    }
+
+    // Check if at least one time slot is provided
+    if (mentorData.timeSlots.isEmpty || timeSlotsTimeStartControllers.isEmpty || timeSlotsTimeEndControllers.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please add at least one time slot.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return; // Exit the method if no time slot is selected
+    }
+
+    // Check if all time slots have both time start and time end filled
+    for (int i = 0; i < timeSlotsTimeStartControllers.length; i++) {
+      if (timeSlotsTimeStartControllers[i].text.isEmpty || timeSlotsTimeEndControllers[i].text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('All fields in the time slots must be filled.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return; // Exit the method if any time slot has empty fields
+      }
+    }
+    
+
     final updatedData = {
       'id': mentorData.id,
       'name': mentorData.name,
@@ -370,7 +599,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
             // Number of Mentorees
             TextField(
               controller: numberOfMentoreesController,
-              decoration: const InputDecoration(labelText: 'Number of Mentorees'),
+              decoration: const InputDecoration(labelText: 'Number of Mentees'),
               onChanged: (value) => updateField('numberOfMentoree', int.tryParse(value)),
             ),
 
@@ -395,6 +624,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
               onChanged: (value) => updateField('freeUnit', value),
             ),
 
+            // Verified
             Row(
               children: [
                 const Text('Verified'),
@@ -407,40 +637,41 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
             // Categories section
             const SizedBox(height: 16),
             const Text('Categories:'),
-            ...mentorData.categories.asMap().entries.map((entry) {
-              final index = entry.key;
-              final controller = categoryControllers[index];
+            Wrap(
+              spacing: 8.0,
+              runSpacing: 4.0,
+              children: mentorData.categories.map((category) {
+                return Chip(
+                  label: Text(category.name),
+                  onDeleted: () => _removeCategory(category),
+                );
+              }).toList(),
+            ),
 
-              return Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: controller,
-                      decoration: const InputDecoration(labelText: 'Category Name'),
-                      onChanged: (value) => updateField('categories', value, index: index),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () async {
+                final selectedCategories = await showDialog<List<Category>>(
+                  context: context,
+                  builder: (_) => MultiSelectDialog<Category>(
+                    items: allCategories
+                        .map((category) => MultiSelectItem<Category>(
+                            category, category.name))
+                        .toList(),
+                    initialValue: mentorData.categories,
+                    title: const Text("Select Categories"),
+                    selectedColor: Colors.blue,
+                    itemsTextStyle: const TextStyle(
+                      color: Colors.blue, // Uniform color for all dropdown items
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      setState(() {
-                        mentorData.categories.removeAt(index); // Remove category from list
-                        categoryControllers.removeAt(index); // Remove associated controller
-                      });
-                    },
-                  ),
-                ],
-              );
-            }),
-            // Add New Category Button
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                setState(() {
-                  mentorData.categories.add(Category(id: '', name: '', icon: '')); // Add a new empty category
-                  categoryControllers.add(TextEditingController()); // Add a new controller
-                });
+                );
+
+                if (selectedCategories != null) {
+                  _addCategories(selectedCategories);
+                }
               },
+              child: const Text('Add Categories'),
             ),
             // Experiences section
             // Experiences section
