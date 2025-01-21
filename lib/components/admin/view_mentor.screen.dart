@@ -72,7 +72,14 @@ class ViewMentorScreen extends StatelessWidget {
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         subtitle: Text('Provided By: ${certificate.provideBy}'),
-        leading: Image.asset(certificate.imageUrl, width: 50, height: 50),
+        leading: certificate.imageUrl != null
+            ? Image.network(
+                certificate.imageUrl,
+                width: 50,
+                height: 50,
+                errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+              )
+            : const Text('No certificates available'),
       ),
     );
   }
@@ -82,10 +89,10 @@ class ViewMentorScreen extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       elevation: 4,
       child: ListTile(
-        title: const Text(
-          'Time Slots',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        // title: const Text(
+        //   'Time Slots',
+        //   style: TextStyle(fontWeight: FontWeight.bold),
+        // ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -148,6 +155,7 @@ class ViewMentorScreen extends StatelessWidget {
                   style: const TextStyle(fontSize: 16),
                 ),
               ),
+              const Divider(),
               // Experiences
               Text(
                 'Experiences',
@@ -162,8 +170,10 @@ class ViewMentorScreen extends StatelessWidget {
                 'Reviews',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(height: 8),
-              ...mentor.reviews.map(_buildReviewCard),
+              if (mentor.reviews.isEmpty)
+                const Text('No reviews available.')
+              else
+                ...mentor.reviews.map(_buildReviewCard),
               const Divider(),
 
               // Certificates
@@ -205,6 +215,7 @@ class ViewMentorScreen extends StatelessWidget {
                   style: const TextStyle(fontSize: 16),
                 ),
               ),
+              const Divider(),
               // Teaching Schedules
               Text(
                 'Time Slots',
