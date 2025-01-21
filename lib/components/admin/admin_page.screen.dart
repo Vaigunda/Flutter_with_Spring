@@ -101,13 +101,18 @@ class _AdminPageState extends State<AdminPage> {
 }
 
   // Navigate to edit screen
-  void editMentor(AllMentors mentor) {
-    Navigator.push(
+  void editMentor(AllMentors mentor) async {
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => EditMentorScreen(mentor: mentor),
       ),
     );
+
+    // If the result is true, reload the mentor list to reflect changes
+    if (result == true) {
+      fetchMentors(); // Reload mentor data after successful update
+    }
   }
 
   @override

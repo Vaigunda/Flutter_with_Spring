@@ -460,7 +460,8 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.pop(context, true); // Return success to the admin page
+      // Pop the current screen and return 'true' to notify the admin page to reload
+      Navigator.pop(context, true);  // This triggers the reload in the admin page
     } else {
       showDialog(
         context: context,

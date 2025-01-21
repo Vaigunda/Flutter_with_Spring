@@ -60,40 +60,42 @@ class _EditUserScreenState extends State<EditUserScreen> {
   }
 
   Future<void> updateUserProfile() async {
-    try {
-      final response = await http.put(
-        Uri.parse('http://localhost:8080/api/user/update-user/${widget.userId}'),
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': 'Bearer $usertoken',
-        },
-        body: jsonEncode({
-          'name': nameCtrl.text,
-          'emailId': emailCtrl.text,
-          'age': ageCtrl.text.isEmpty ? '0' : ageCtrl.text,
-          'gender': genderCtrl.text.isEmpty ? 'Not Specified' : genderCtrl.text,
-          //'password': passwordCtrl.text.isNotEmpty ? passwordCtrl.text : null, // Include password if not empty
-          'userName': userNameCtrl.text, // Include userName in the update request
-        }),
-      );
-
-      if (response.statusCode == 200) {
-         // Successfully updated
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('User updated successfully!'),
-            duration: Duration(seconds: 3),
-            backgroundColor: Colors.green,
-          ),
+    // Validate the form before sending the data
+    if (_formKey.currentState!.validate()) {
+      try {
+        final response = await http.put(
+          Uri.parse('http://localhost::8080/api/user/update-user/${widget.userId}'),
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer $usertoken',
+          },
+          body: jsonEncode({
+            'name': nameCtrl.text,
+            'emailId': emailCtrl.text,
+            'age': ageCtrl.text.isEmpty ? '0' : ageCtrl.text,
+            'gender': genderCtrl.text.isEmpty ? 'Not Specified' : genderCtrl.text,
+            'userName': userNameCtrl.text, // Include userName in the update request
+          }),
         );
-        context.go(AppRoutes.home);
-      } else {
-        throw Exception("Failed to update user");
+
+        if (response.statusCode == 200) {
+          // Successfully updated
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('User updated successfully!'),
+              duration: Duration(seconds: 3),
+              backgroundColor: Colors.green,
+            ),
+          );
+          context.go(AppRoutes.home);
+        } else {
+          throw Exception("Failed to update user");
+        }
+      } catch (error) {
+        print("Error updating user: $error");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Error updating user")));
       }
-    } catch (error) {
-      print("Error updating user: $error");
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Error updating user")));
     }
   }
 
@@ -120,10 +122,32 @@ class _EditUserScreenState extends State<EditUserScreen> {
                     TextFormField(
                       controller: nameCtrl,
                       decoration: const InputDecoration(labelText: "Name"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Name cannot be empty';
+                        }
+                        return null; // Return null if validation is successful
+                      },
+                    ),
+                    TextFormField(
+                      controller: userNameCtrl, // New userName field in the form
+                      decoration: const InputDecoration(labelText: "Username"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Username cannot be empty';
+                        }
+                        return null;
+                      },
                     ),
                     TextFormField(
                       controller: emailCtrl,
                       decoration: const InputDecoration(labelText: "Email ID"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email ID cannot be empty';
+                        }
+                        return null;
+                      },
                     ),
                     TextFormField(
                       controller: ageCtrl,
@@ -134,10 +158,8 @@ class _EditUserScreenState extends State<EditUserScreen> {
                       controller: genderCtrl,
                       decoration: const InputDecoration(labelText: "Gender"),
                     ),
-                    TextFormField(
-                      controller: userNameCtrl, // New userName field in the form
-                      decoration: const InputDecoration(labelText: "Username"),
-                    ),
+        
+                    
                     /*TextFormField(
                       controller: passwordCtrl,
                       decoration: const InputDecoration(labelText: "Password (Leave empty to keep current password)"),
