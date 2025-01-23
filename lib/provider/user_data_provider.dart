@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mentor/constants/values.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class UserDataProvider extends ChangeNotifier {
   var _userid = '';
@@ -8,12 +9,28 @@ class UserDataProvider extends ChangeNotifier {
   var _name = ''; // Added Name field
   var _usertype = ''; // Added Type of the user
 
+  // var _lastVisitedRoute = '';
+
   String get userid => _userid;
   String get usertoken => _usertoken;
   String get name => _name; // Getter for Name
   String get usertype  => _usertype;
 
-  Future<void> loadAsync() async {
+  // String get lastVisitedRoute => _lastVisitedRoute;
+
+  // Save the current route to SharedPreferences
+  // Future<void> saveLastVisitedRoute(String route) async {
+  //   final sharedPref = await SharedPreferences.getInstance();
+  //   await sharedPref.setString('lastVisitedRoute', route);
+  // }
+
+  // Future<void> loadLastVisitedRoute() async {
+  //   final sharedPref = await SharedPreferences.getInstance();
+  //   _lastVisitedRoute = sharedPref.getString('lastVisitedRoute') ?? '/';
+  //   notifyListeners();
+  // }
+
+  Future<UserDataProvider> loadAsync() async {
     final sharedPref = await SharedPreferences.getInstance();
 
     _userid = sharedPref.getString(StorageKeys.userid) ?? '';
@@ -22,6 +39,7 @@ class UserDataProvider extends ChangeNotifier {
     _usertype = sharedPref.getString(StorageKeys.usertype) ?? '';
 
     notifyListeners();
+    return this;  // Return this instance after loading data
   }
 
   Future<void> setUserDataAsync({
@@ -81,4 +99,16 @@ class UserDataProvider extends ChangeNotifier {
   bool isUserLoggedIn() {
     return _userid.isNotEmpty;
   }
+
+  // bool _isTokenExpired() {
+  //   if (_usertoken.isEmpty) return true;
+  //   try {
+  //     final decodedToken = JwtDecoder.decode(_usertoken);
+  //     final expiry = decodedToken['exp'];
+  //     final currentTime = DateTime.now().millisecondsSinceEpoch / 1000;
+  //     return expiry <= currentTime;
+  //   } catch (e) {
+  //     return true;
+  //   }
+  // }
 }
