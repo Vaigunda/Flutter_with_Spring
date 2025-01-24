@@ -11,6 +11,8 @@ import 'package:mentor/shared/views/input_field.dart';
 import 'package:mentor/provider/user_data_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../constants/ui.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -58,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!isNullOrEmpty(email) && !isNullOrEmpty(password)) {
         final response =
-            await http.post(Uri.parse('http://localhost:8080/api/auth/login'),
+            await http.post(Uri.parse('http://192.168.1.12/api/auth/login'),
                 headers: {"content-type": "application/json"},
                 body: jsonEncode(<String, String>{
                   'emailId': email,
@@ -178,43 +180,11 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Row(
+          Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 textBaseline: TextBaseline.alphabetic,
                 children: [
-                  Text(
-                    "M",
-                    style: TextStyle(
-                      fontSize: 52,
-                      fontFamily: "Lobster",
-                      fontWeight: FontWeight.w400, // Weight: 400
-                      color: Color(0xFF4ABFE2),
-                      height: 62 / 48,
-                    ),
-                  ),
-                  Text(
-                    "entorboosters",
-                    style: TextStyle(
-                      fontSize: 32, 
-                      fontWeight: FontWeight.w900, 
-                      fontFamily: "Epilogue",
-                      color: Color(0xFF4ABFE2),
-                      height: 42 / 32,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 15),
-                    child: Text(
-                      ".",
-                      style: TextStyle(
-                        fontSize: 62, 
-                        fontWeight: FontWeight.w900, 
-                        fontFamily: "Epilogue",
-                        color: Color(0xFF4ABFE2),
-                        height: 42 / 32,
-                      ),
-                    ),
-                  ),
+                     buildCustomTextRow(),
                 ],
               ),
               const SizedBox(

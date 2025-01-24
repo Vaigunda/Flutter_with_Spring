@@ -151,12 +151,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                               const SizedBox(width: 40),
                               Expanded(
-                                child: Center(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(16),
-                                    child: Image.asset(
-                                      'assets/images/register.png',
-                                      fit: BoxFit.cover,
+                                child: SizedBox(
+                                  height: 600,
+                                  child: Center(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: Image.asset(
+                                        'assets/images/signup.png',
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -405,7 +408,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
 
     if (isOtpVerified) {
-      final url = Uri.parse('http://localhost:8080/api/auth/sign-up');
+      final url = Uri.parse('http://192.168.1.12/api/auth/sign-up');
       final response = await http.post(
         url,
         headers: {
@@ -459,7 +462,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
     } else {
       final response = await http
-        .get(Uri.parse('http://localhost:8080/api/auth/mail/verify/$email'));
+        .get(Uri.parse('http://ping 192.168.1.12/api/auth/mail/verify/$email'));
 
       if (response.statusCode == 200) {
         var parsed = response.body;

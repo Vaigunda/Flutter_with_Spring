@@ -37,6 +37,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   late String userid;
   late String name;
   late String usertype;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   var provider;
 
@@ -67,66 +68,68 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
 
   loadAdminNotification() async {
     if (userid.isNotEmpty) {
-      final url = Uri.parse('http://localhost:8080/api/notify/getAll');
-        final response = await http.get(
-          url,
-          headers: {
-            'Authorization': 'Bearer $usertoken',
-          },
-        );
-        if (response.statusCode == 200) {
-          var parsed = response.body;
-          List<dynamic> notifications = jsonDecode(parsed);
+      final url = Uri.parse('http://192.168.1.12/api/notify/getAll');
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $usertoken',
+        },
+      );
+      if (response.statusCode == 200) {
+        var parsed = response.body;
+        List<dynamic> notifications = jsonDecode(parsed);
 
-          setState(() {
-            notificationCount = notifications.length;
-          });
-        }
-    }  
+        setState(() {
+          notificationCount = notifications.length;
+        });
+      }
+    }
   }
 
   loadMentorNotification() async {
     if (userid.isNotEmpty) {
       int userId = int.parse(userid);
-      final url = Uri.parse('http://localhost:8080/api/notify/getAllNotificationByMentorId?mentorId=$userId');
-        final response = await http.get(
-          url,
-          headers: {
-            'Authorization': 'Bearer $usertoken',
-          },
-        );
-        if (response.statusCode == 200) {
-          var parsed = response.body;
-          List<dynamic> notifications = jsonDecode(parsed);
+      final url = Uri.parse(
+          'http://192.168.1.12/api/notify/getAllNotificationByMentorId?mentorId=$userId');
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $usertoken',
+        },
+      );
+      if (response.statusCode == 200) {
+        var parsed = response.body;
+        List<dynamic> notifications = jsonDecode(parsed);
 
-          setState(() {
-            notificationCount = notifications.length;
-          });
-        }
-    }  
+        setState(() {
+          notificationCount = notifications.length;
+        });
+      }
+    }
   }
 
   loadUserNotification() async {
     if (userid.isNotEmpty) {
       int userId = int.parse(userid);
-      final url = Uri.parse('http://localhost:8080/api/notify/getAllNotificationByUserId?recipientId=$userId');
-        final response = await http.get(
-          url,
-          headers: {
-            'Authorization': 'Bearer $usertoken',
-          },
-        );
-        if (response.statusCode == 200) {
-          var parsed = response.body;
-          List<dynamic> notifications = jsonDecode(parsed);
+      final url = Uri.parse(
+          'http://192.168.1.12/api/notify/getAllNotificationByUserId?recipientId=$userId');
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $usertoken',
+        },
+      );
+      if (response.statusCode == 200) {
+        var parsed = response.body;
+        List<dynamic> notifications = jsonDecode(parsed);
 
-          setState(() {
-            notificationCount = notifications.length;
-          });
-        }
-    }  
+        setState(() {
+          notificationCount = notifications.length;
+        });
+      }
+    }
   }
-  
+
   void signOut() async {
     final userDataProvider = context.read<UserDataProvider>();
 
@@ -136,186 +139,247 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       name: '',
       usertype: '',
     );
-    
-  context.go(AppRoutes.signin);
-}
+
+    context.go(AppRoutes.signin);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = MediaQuery.of(context).size.width < 600;
     return SafeArea(
-      child: LayoutBuilder(builder: (builderContext, constraints) {
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 25, 0, 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          leading: isMobile
+              ? IconButton(
+                  onPressed: () {
+                    if (isMobile) {
+                      _scaffoldKey.currentState?.openDrawer();
+                    }
+                  },
+                  icon: const Icon(Icons.menu))
+              : null,
+          title: const Padding(
+            padding: EdgeInsets.only(bottom: 20),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
               children: [
-                if (userid.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                      TextButton(onPressed: () async {
-                        signOut();
-                        //context.pop();
-                      },
-                      child: const Text('Sign Out'))
-                    ],),
+                Text(
+                  "m",
+                  style: TextStyle(
+                    fontSize: 48, // Size: 48px
+                    fontFamily: "Lobster", // Font Family: Lobster
+                    fontWeight: FontWeight.w400, // Weight: 400
+                    color: Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
+                    height: 62 / 48, // Line Height: 62px / 48px = ~1.29
                   ),
-                Row(
-                  children: [
-                    if (userid.isEmpty)
-                      TextButton(
-                        onPressed: () => context.go(AppRoutes.signin),
-                        child: const Text("Sign in"),
-                      )
-                    else // If logged in, show welcome message
-                      Text(
-                        "Welcome, $name", // Use the name from provider
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const AboutUs(),
-                                ),
-                              );
-                            },
-                            child: const Text(
-                              'About Us',
-                              style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),
-                            ),
-                          ),
-
-                          const SizedBox(
-                            width: 40,
-                          ),
-                          // Mentorboosters logo (aligned with baseline)
-                          const Padding(
-                            padding: EdgeInsets.only(bottom: 40),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                Text(
-                                  "m",
-                                  style: TextStyle(
-                                    fontSize: 48, // Size: 48px
-                                    fontFamily:
-                                        "Lobster", // Font Family: Lobster
-                                    fontWeight: FontWeight.w400, // Weight: 400
-                                    color: Color(
-                                        0xFF4ABFE2), // Color: rgb(74, 191, 226)
-                                    height: 62 /
-                                        48, // Line Height: 62px / 48px = ~1.29
-                                  ),
-                                ),
-                                Text(
-                                  "entorboosters",
-                                  style: TextStyle(
-                                    fontSize: 32, // Size: 32px
-                                    fontWeight: FontWeight.w900, // Weight: 800
-                                    fontFamily:
-                                        "Epilogue", // Font Family: Epilogue, sans-serif
-                                    color: Color(
-                                        0xFF4ABFE2), // Color: rgb(74, 191, 226)
-                                    height: 42 /
-                                        32, // Line Height: 42px / 32px = ~1.31
-                                  ),
-                                ),
-                                Text(
-                                  ".",
-                                  style: TextStyle(
-                                    fontSize: 72, // Font size for the dot
-                                    fontWeight: FontWeight
-                                        .w800, // Match the same weight as text
-                                    fontFamily: "Epilogue", // Font Family
-                                    color: Color(0xFF4ABFE2), // Match the color
-                                    height: 1, // Default height
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.baseline,
-                              textBaseline: TextBaseline.alphabetic,
-                              children: [
-                                const SizedBox(width: 10),
-                                // Brightness toggle (aligned with baseline)
-                                const BrightnessToggle(),
-                                const SizedBox(width: 10),
-
-                                // Notification icon (aligned with baseline)
-                                // Wrap the IconButton in a Row with baseline alignment
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                                  textBaseline: TextBaseline.alphabetic,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () =>
-                                          context.push(AppRoutes.notifications),
-                                      icon: const Icon(FontAwesomeIcons.bell),
-                                    ),
-                                    // Badge to display the number
-                                    if (notificationCount > 0)
-                                      Container(
-                                        padding: const EdgeInsets.all(5),
-                                        decoration: const BoxDecoration(
-                                          color: Colors.red,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Text(
-                                          '$notificationCount',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                                const SizedBox(width: 10),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
                 ),
-                const SizedBox(height: 30),
-                const SizedBox(height: 10),
-                const ExploreMentor(),
-                const SizedBox(height: 10),
-                const HomeCategories(),
-                const SizedBox(height: 30),
-                HomeTopMentors(topMentors: topMentors),
-                const SizedBox(height: 30),
-                HomeVerified(verifiedMentors: verifiedMentors),
-                const SizedBox(height: 30),
-                HomeTopRated(
-                  topRatedMentors: topRatedMentors,
-                )
-                // Pass the future data for top-rated mentors
+                Text(
+                  "entorboosters",
+                  style: TextStyle(
+                    fontSize: 32, // Size: 32px
+                    fontWeight: FontWeight.w900, // Weight: 800
+                    fontFamily: "Epilogue", // Font Family: Epilogue, sans-serif
+                    color: Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
+                    height: 42 / 32, // Line Height: 42px / 32px = ~1.31
+                  ),
+                ),
+                Text(
+                  ".",
+                  style: TextStyle(
+                    fontSize: 72, // Font size for the dot
+                    fontWeight: FontWeight.w800, // Match the same weight as text
+                    fontFamily: "Epilogue", // Font Family
+                    color: Color(0xFF4ABFE2), // Match the color
+                    height: 1, // Default height
+                  ),
+                ),
               ],
             ),
           ),
-        );
-      }),
+          actions: [
+            if (!isMobile)
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AboutUs(),
+                    ),
+                  );
+                },
+                child: const Text(
+                  'About Us',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+              ),
+            const SizedBox(width: 10),
+            const BrightnessToggle(),
+            const SizedBox(width: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                IconButton(
+                  onPressed: () => context.push(AppRoutes.notifications),
+                  icon: const Icon(FontAwesomeIcons.bell),
+                ),
+                // Badge to display the number
+                if (notificationCount > 0)
+                  Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      '$notificationCount',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(width: 10),
+          ],
+        ),
+        drawer: isMobile ? _buildMobileDrawer(context) : null,
+        body: LayoutBuilder(builder: (builderContext, constraints) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 25, 0, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (userid.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                              onPressed: () async {
+                                signOut();
+                                //context.pop();
+                              },
+                              child: const Text(
+                                'Sign Out',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w600),
+                              ))
+                        ],
+                      ),
+                    ),
+                  Row(
+                    children: [
+                      if (userid.isEmpty)
+                        TextButton(
+                          onPressed: () => context.go(AppRoutes.signin),
+                          child: const Text(
+                            "Sign in",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w600),
+                          ),
+                        )
+                      else
+                        Text(
+                          "Welcome, $name", // Use the name from provider
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  const SizedBox(height: 10),
+                  const ExploreMentor(),
+                  const SizedBox(height: 10),
+                  const HomeCategories(),
+                  const SizedBox(height: 30),
+                  HomeTopMentors(topMentors: topMentors),
+                  const SizedBox(height: 30),
+                  HomeVerified(verifiedMentors: verifiedMentors),
+                  const SizedBox(height: 30),
+                  HomeTopRated(
+                    topRatedMentors: topRatedMentors,
+                  )
+                  // Pass the future data for top-rated mentors
+                ],
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
+  Drawer _buildMobileDrawer(BuildContext context) {
+    return Drawer(
+      width: 200,
+      child: ListView(
+        children: [
+          const SizedBox(
+            height: 50,
+          ),
+          ListTile(
+            leading: const Icon(Icons.home),
+            title: const Text('Home'),
+            onTap: () {},
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          ListTile(
+            leading: const Icon(Icons.person),
+            title: const Text('Profile'),
+            onTap: () {},
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Settings'),
+            onTap: () {},
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          ListTile(
+            leading: const Icon(Icons.info),
+            title: const Text('About Us'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AboutUs(),
+                ),
+              );
+            },
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          ListTile(
+            leading: const Icon(Icons.login),
+            title: const Text('Login'),
+            onTap: () => context.go(AppRoutes.signin),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Logout'),
+            onTap: signOut,
+          ),
+        ],
+      ),
     );
   }
 }
