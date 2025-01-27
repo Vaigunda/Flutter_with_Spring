@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mentor/constants/values.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 
 class UserDataProvider extends ChangeNotifier {
   var _userid = '';

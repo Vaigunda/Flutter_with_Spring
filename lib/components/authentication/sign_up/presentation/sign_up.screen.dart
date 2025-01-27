@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
@@ -27,9 +28,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController ageCtrl = TextEditingController();
   TextEditingController genderCtrl = TextEditingController();
   TextEditingController confirmPasswordCtrl = TextEditingController();
-
-
   TextEditingController otpCtrl = TextEditingController();
+
+  final FocusNode _genderFocusNode = FocusNode();
 
   bool _passwordVisible = true;
   bool isChecked = false;
@@ -47,6 +48,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
     confirmPasswordCtrl.dispose();
     ageCtrl.dispose();
     genderCtrl.dispose();
+    _genderFocusNode.dispose();
+  }
+
+  void _handleEnterKey(RawKeyEvent event) {
+    if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+      if (_formKey.currentState!.validate()) {
+        _signUp();
+      }
+    }
   }
 
   @override
@@ -209,6 +219,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget formSignUp(BuildContext context) {
     return Form(
       key: _formKey,
+      child: RawKeyboardListener(
+      focusNode: _genderFocusNode,
+      onKey: _handleEnterKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -389,7 +402,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ],
       ),
-    );
+    ),);
   }
 
   // Function to send sign-up request to API

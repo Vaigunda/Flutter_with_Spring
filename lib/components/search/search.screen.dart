@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mentor/shared/utils/extensions.dart';
 
@@ -28,6 +29,8 @@ class _SearchScreenState extends State<SearchScreen> {
   ];
 
   List<CategoryModel> categories = [];
+
+  List<bool> _isChecked = List<bool>.filled(5, false);
 
   late String usertoken;
   var provider;
@@ -67,16 +70,26 @@ class _SearchScreenState extends State<SearchScreen> {
       });
     }
   }
+  void _handleEnterKey(RawKeyEvent event) {
+    if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+      if (searchController.text.isNotEmpty) {
+        handleSearch();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
   return SafeArea(
+    child: RawKeyboardListener(
+        focusNode: focusNode,
+        onKey: _handleEnterKey,
       child: Padding(
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
               TextField(
-                focusNode: focusNode,
+                //focusNode: focusNode,
                 controller: searchController,
                 decoration: InputDecoration(
                   filled: focusNode.hasFocus,
@@ -133,7 +146,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ],
               )))
             ],
-          )));
+          ))));
 }
 
   Widget renderPopularList(BuildContext context) {
@@ -170,36 +183,69 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget renderCategories() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Browse Categories", style: context.titleMedium),
-        const SizedBox(height: 16),
-        ...categories
-            .map((item) => ListTile(
-                  tileColor: Colors.transparent,
-                  dense: true,
-                  visualDensity:
-                      const VisualDensity(horizontal: 0, vertical: -4),
-                  minLeadingWidth: 10,
-                  contentPadding: const EdgeInsets.all(0),
-                  leading: Icon(item.getIcon(),
-                      color: Theme.of(context).colorScheme.onSurface),
-                  /*trailing: IconButton(
-                    icon: Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 18,
-                      color: Theme.of(context).colorScheme.outline,
-                    ),
-                    onPressed: () {},
-                  ),*/
-                  title: Text(item.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: context.titleSmall),
-                ))
-            
-      ],
-    );
-  }
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text("Browse Categories", style: context.titleMedium),
+      const SizedBox(height: 16),
+      ...categories.asMap().entries.map((entry) {
+        int index = entry.key;
+        CategoryModel item = entry.value;
+
+        // Ensure _isChecked has the correct size
+        if (_isChecked.length < categories.length) {
+          _isChecked = List<bool>.filled(categories.length, false);
+        }
+
+        return ListTile(
+          tileColor: Colors.transparent,
+          dense: true,
+          visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+          minLeadingWidth: 10,
+          contentPadding: const EdgeInsets.all(0),
+          trailing: Checkbox(
+            value: _isChecked[index],
+            onChanged: (bool? value) {
+              setState(() {
+                _isChecked[index] = value!;
+              });
+            },
+          ),
+          leading: Icon(item.getIcon(),
+              color: Theme.of(context).colorScheme.onSurface),
+          title: Text(
+            item.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: context.titleSmall,
+          ),
+          /*onTap: () {
+            // Toggle checkbox when tapping the tile
+            setState(() {
+              _isChecked[index] = !_isChecked[index];
+              searchController.text = searchController.text.isNotEmpty ? "${searchController.text}, ${categories[index].name}" :
+                                      categories[index].name;
+            });
+          },*/
+          onTap: () {
+            setState(() {
+              _isChecked[index] = !_isChecked[index];
+              if (!_isChecked[index]) {
+                List<String> currentTerms = searchController.text.split(',');
+                currentTerms.remove(categories[index].name);
+                searchController.text = currentTerms.join(',');
+              } else {
+                searchController.text = searchController.text.isNotEmpty
+                    ? "${searchController.text},${categories[index].name}"
+                    : categories[index].name;
+              }
+            }
+          );
+        },
+        );
+      }).toList(),
+    ],
+  );
+}
+
 }

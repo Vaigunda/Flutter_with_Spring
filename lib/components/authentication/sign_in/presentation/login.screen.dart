@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -25,19 +26,20 @@ class _LoginScreenState extends State<LoginScreen> {
   final validator = Validator();
   TextEditingController emailCtrl = TextEditingController();
   TextEditingController passwordCtrl = TextEditingController();
+  final FocusNode _passwordFocusNode = FocusNode();
+
   bool _passwordVisible = true;
   bool isChecked = false;
   bool isTwoColumn = false;
 
   bool isLoading = false;
 
-  
-
   @override
   void dispose() {
     super.dispose();
     emailCtrl.dispose();
     passwordCtrl.dispose();
+    _passwordFocusNode.dispose();
   }
 
   bool isNullOrEmpty(String? value) {
@@ -102,6 +104,14 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  void _handleEnterKey(RawKeyEvent event) {
+    if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+      if (_formKey.currentState!.validate()) {
+        login(context);
+      }
     }
   }
 
@@ -176,11 +186,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget formSignIn(BuildContext context) {
     return Form(
         key: _formKey,
+        child: RawKeyboardListener(
+        focusNode: _passwordFocusNode,
+        onKey: _handleEnterKey,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-          Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 textBaseline: TextBaseline.alphabetic,
                 children: [
@@ -407,6 +420,6 @@ class _LoginScreenState extends State<LoginScreen> {
               )*/
             ],
           ),
-        ));
+        )));
   }
 }
