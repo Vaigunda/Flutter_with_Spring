@@ -117,13 +117,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           "Profile",
           style: context.headlineMedium,
         ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                context.push(AppRoutes.settings);
-              },
-              icon: const Icon(FontAwesomeIcons.gear))
-        ],
+        // actions: [
+        //   IconButton(
+        //       onPressed: () {
+        //         context.push(AppRoutes.settings);
+        //       },
+        //       icon: const Icon(FontAwesomeIcons.gear))
+        // ],
       ),
       body: Center(
         child: ConstrainedBox(

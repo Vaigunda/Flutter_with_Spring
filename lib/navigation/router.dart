@@ -25,6 +25,7 @@ import 'package:mentor/components/admin/create_mentor.screen.dart';
 import 'package:mentor/components/admin/admin_page.screen.dart';
 import 'package:mentor/components/admin/edit_mentor.screen.dart';
 import 'package:mentor/components/admin/view_mentor.screen.dart';
+import 'package:mentor/components/custom_category/category.screen.dart';
 
 import 'package:mentor/shared/models/all_mentors.model.dart';
 
@@ -60,6 +61,7 @@ class AppRoutes {
   static String viewMentor = '/view-mentor'; // Route for View Mentor Page
   static String editUser = '/edit-user'; 
   static String payment = '/payment';
+  static String categoryPage = '/category-page';
 }
 
 // navigation list after login for Admin
@@ -103,6 +105,14 @@ List<NavigationDestination> adminDestinations = [
       size: 20,
     ),
     route: AppRoutes.adminPage,  // Use the new route for Admin Page
+  ),
+  NavigationDestination(
+    label: 'Category',  // Add the 'Admin' option
+    icon: const Icon(
+      FontAwesomeIcons.folderOpen,
+      size: 20,
+    ),
+    route: AppRoutes.categoryPage,  // Use the new route for Admin Page
   ),
 ];
 
@@ -300,6 +310,7 @@ final appRouter = GoRouter(
       path: AppRoutes.adminPage, // Admin Page Route
       builder: (context, state) => AdminPage(),
     ),
+    GoRoute(path: AppRoutes.categoryPage, builder: (context, state) => CategoryScreen()), 
     GoRoute(
       path: AppRoutes.editMentor,
       builder: (context, state) {
