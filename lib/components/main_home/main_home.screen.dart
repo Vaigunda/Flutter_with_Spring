@@ -68,7 +68,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
 
   loadAdminNotification() async {
     if (userid.isNotEmpty) {
-      final url = Uri.parse('http://192.168.1.12/api/notify/getAll');
+      final url = Uri.parse('http://localhost:8080/api/notify/getAll');
       final response = await http.get(
         url,
         headers: {
@@ -90,7 +90,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     if (userid.isNotEmpty) {
       int userId = int.parse(userid);
       final url = Uri.parse(
-          'http://192.168.1.12/api/notify/getAllNotificationByMentorId?mentorId=$userId');
+          'http://localhost:8080/api/notify/getAllNotificationByMentorId?mentorId=$userId');
       final response = await http.get(
         url,
         headers: {
@@ -112,7 +112,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
     if (userid.isNotEmpty) {
       int userId = int.parse(userid);
       final url = Uri.parse(
-          'http://192.168.1.12/api/notify/getAllNotificationByUserId?recipientId=$userId');
+          'http://localhost:8080/api/notify/getAllNotificationByUserId?recipientId=$userId');
       final response = await http.get(
         url,
         headers: {
