@@ -8,10 +8,7 @@ class CategoriesService {
   Future<List<CategoryModel>> fetchCategories(String usertoken) async {
     final url = Uri.parse('http://localhost:8080/api/mentors/categories');
     final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $usertoken',
-      },
+      url
     );
 
     if (response.statusCode == 200) {

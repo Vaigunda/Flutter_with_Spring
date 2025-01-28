@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 // For date formatting
 import 'package:http/http.dart' as http;
 import 'package:hugeicons/hugeicons.dart';
@@ -10,8 +11,11 @@ import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
 
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 
+import '../../navigation/router.dart';
+import '../../shared/services/token.service.dart';
 import '../../shared/utils/validator.dart';
 import '../../shared/views/button.dart';
 import '../../shared/views/input_field.dart';
@@ -181,8 +185,6 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
   Future<void> submitMentor() async {
     if (isSubmitting) return; // Prevent duplicate submissions
 
-    
-
     setState(() {
       isSubmitting = true;
     });
@@ -233,37 +235,44 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     };
 
     try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {
-          'Authorization': 'Bearer $usertoken',
-          "Content-Type": "application/json",
-        },
-        body: json.encode(mentorData),
-      );
-
-      if (response.statusCode == 201) {
-        // Mentor created successfully
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Mentor created successfully!'),
-            duration: Duration(seconds: 3),
-            backgroundColor: Colors.green,
-          ),
-        );
-        // Clear the form after success
-        _clearForm();
-        // Redirect to admin page
-        // context.go(AppRoutes.adminPage);
+      // Check if token has expired
+      bool isExpired = JwtDecoder.isExpired(usertoken);
+      if (isExpired) {
+        final tokenService = TokenService();
+        tokenService.checkToken(usertoken, context);
       } else {
-        // Handle failure
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to create mentor. Please try again.'),
-            duration: Duration(seconds: 3),
-            backgroundColor: Colors.red,
-          ),
+        final response = await http.post(
+          Uri.parse(apiUrl),
+          headers: {
+            'Authorization': 'Bearer $usertoken',
+            "Content-Type": "application/json",
+          },
+          body: json.encode(mentorData),
         );
+
+        if (response.statusCode == 201) {
+          // Mentor created successfully
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Mentor created successfully!'),
+              duration: Duration(seconds: 3),
+              backgroundColor: Colors.green,
+            ),
+          );
+          // Clear the form after success
+          _clearForm();
+          // Redirect to admin page
+          // context.go(AppRoutes.adminPage);
+        } else {
+          // Handle failure
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Failed to create mentor. Please try again.'),
+              duration: Duration(seconds: 3),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -709,7 +718,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                       ),
                       
                     ),
-                    itemsTextStyle: TextStyle(
+                    itemsTextStyle: const TextStyle(
                       color: Colors.blue, // Uniform color for all dropdown items
                     ),
                   ),

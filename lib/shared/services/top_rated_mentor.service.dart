@@ -10,10 +10,7 @@ class MentorService {
     final url = Uri.parse('http://localhost:8080/api/mentors/top-rated');
 
     final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $usertoken',
-      },
+      url
     );
 
     if (response.statusCode == 200) {

@@ -10,10 +10,7 @@ class TopMentorService {
     final url = Uri.parse('http://localhost:8080/api/mentors/top-mentor');
 
     final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $usertoken',
-      },
+      url
     );
 
     //final response = await http.get(Uri.parse(apiUrl));

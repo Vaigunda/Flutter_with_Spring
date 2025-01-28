@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
 import 'package:mentor/navigation/router.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +9,8 @@ import 'package:mentor/components/admin/edit_mentor.screen.dart';
 import 'package:mentor/components/admin/view_mentor.screen.dart';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
+
+import '../../shared/services/token.service.dart';
 
 class AdminPage extends StatefulWidget {
   @override
@@ -34,62 +37,74 @@ class _AdminPageState extends State<AdminPage> {
 
   // Fetch mentors from the API
   Future<void> fetchMentors() async {
-    final url = Uri.parse('http://localhost:8080/api/mentors/all');
-
-    final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $usertoken',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      // Parse the JSON response into a list of ProfileMentor objects
-      List<dynamic> mentorList = json.decode(response.body);
-      setState(() {
-        // Convert each item in the list to a ProfileMentor object using the factory constructor
-        mentors = mentorList
-            .map((mentorJson) => AllMentors.fromJson(mentorJson))
-            .toList();
-      });
+    // Check if token has expired
+    bool isExpired = JwtDecoder.isExpired(usertoken);
+    if (isExpired) {
+      final tokenService = TokenService();
+      tokenService.checkToken(usertoken, context);
     } else {
-      throw Exception('Failed to load mentors');
+      final url = Uri.parse('http://localhost:8080/api/mentors/all');
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $usertoken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Parse the JSON response into a list of ProfileMentor objects
+        List<dynamic> mentorList = json.decode(response.body);
+        setState(() {
+          // Convert each item in the list to a ProfileMentor object using the factory constructor
+          mentors = mentorList
+              .map((mentorJson) => AllMentors.fromJson(mentorJson))
+              .toList();
+        });
+      } else {
+        throw Exception('Failed to load mentors');
+      }
     }
   }
 
   // Updated deleteMentor function
   Future<void> deleteMentor(int id) async {
-    final url = Uri.parse('http://localhost:8080/api/mentors/$id');
-
-    final response = await http.delete(
-      url,
-      headers: {
-        'Authorization': 'Bearer $usertoken',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      setState(() {
-        mentors.removeWhere(
-            (mentor) => mentor.id == id); // Access id as an object property
-      });
-
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Mentor deleted successfully!'),
-          duration: Duration(seconds: 3),
-        ),
-      );
+    // Check if token has expired
+    bool isExpired = JwtDecoder.isExpired(usertoken);
+    if (isExpired) {
+      final tokenService = TokenService();
+      tokenService.checkToken(usertoken, context);
     } else {
-      // Handle errors (optional)
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to delete mentor. Please try again.'),
-          duration: Duration(seconds: 3),
-          backgroundColor: Colors.red,
-        ),
+      final url = Uri.parse('http://localhost:8080/api/mentors/$id');
+      final response = await http.delete(
+        url,
+        headers: {
+          'Authorization': 'Bearer $usertoken',
+        },
       );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          mentors.removeWhere(
+              (mentor) => mentor.id == id); // Access id as an object property
+        });
+
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mentor deleted successfully!'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      } else {
+        // Handle errors (optional)
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to delete mentor. Please try again.'),
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 

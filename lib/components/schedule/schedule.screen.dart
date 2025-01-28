@@ -9,6 +9,8 @@ import 'package:flutter_timeline/timeline_theme.dart';
 import 'package:flutter_timeline/timeline_theme_data.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:mentor/shared/services/token.service.dart';
 import 'package:mentor/shared/shared.dart';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
@@ -81,27 +83,34 @@ Future<void> getBookingList(DateTime date) async {
   }
 
   try {
-    final response = await http.get(
-      url,
-      headers: {
-        'Authorization': 'Bearer $usertoken',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      List<dynamic> data = jsonDecode(response.body);
-
-      if (data.isNotEmpty) {
-        setState(() {
-          bookingList = data;
-        });
-      } else {
-        setState(() {
-          bookingList = [];
-        });
-      }
+    // Check if token has expired
+    bool isExpired = JwtDecoder.isExpired(usertoken);
+    if (isExpired) {
+      final tokenService = TokenService();
+      tokenService.checkToken(usertoken, context);
     } else {
-      throw Exception('Failed to load bookings');
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $usertoken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = jsonDecode(response.body);
+
+        if (data.isNotEmpty) {
+          setState(() {
+            bookingList = data;
+          });
+        } else {
+          setState(() {
+            bookingList = [];
+          });
+        }
+      } else {
+        throw Exception('Failed to load bookings');
+      }
     }
   } on FormatException {
     setState(() {

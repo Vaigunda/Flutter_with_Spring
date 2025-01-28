@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mentor/navigation/router.dart';
 import 'package:mentor/shared/models/connect_method.model.dart';
 import 'package:mentor/shared/models/fixed_time_slot.model.dart';
 import 'package:mentor/shared/models/profile_mentor.model.dart';
+import 'package:mentor/shared/services/token.service.dart';
 import 'package:mentor/shared/shared.dart';
 import 'package:mentor/shared/views/button.dart';
 import 'package:mentor/shared/services/connect_method.service.dart';
@@ -505,7 +507,14 @@ class _BookingScreenState extends State<BookingScreen> {
       //context.go(AppRoutes.payment);
       String bookingData = Uri.encodeComponent(jsonEncode(requestBody));
 
-      context.push('${AppRoutes.payment}/${mentor!.free.price}/$bookingData');
+      // Check if token has expired
+      bool isExpired = JwtDecoder.isExpired(usertoken);
+      if (isExpired) {
+        final tokenService = TokenService();
+        tokenService.checkToken(usertoken, context);
+      } else {
+        context.push('${AppRoutes.payment}/${mentor!.free.price}/$bookingData');
+      }
       /*try {
         // Send the POST request to your backend API
         var response = await http.post(

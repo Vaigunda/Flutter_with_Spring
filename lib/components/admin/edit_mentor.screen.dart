@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
 import 'package:mentor/shared/models/all_mentors.model.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +8,8 @@ import 'package:mentor/shared/services/categories.service.dart';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+
+import '../../shared/services/token.service.dart';
 
 class EditMentorScreen extends StatefulWidget {
   final AllMentors mentor;
@@ -441,41 +444,46 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
       }).toList(),
     };
 
-    print('Request Body: ${json.encode(updatedData)}');
-
-    final response = await http.put(
-      Uri.parse('http://localhost:8080/api/mentors/${mentorData.id}'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $usertoken',
-        },
-      body: json.encode(updatedData),
-    );
-
-    if (response.statusCode == 200) {
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Mentor updated successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      // Pop the current screen and return 'true' to notify the admin page to reload
-      Navigator.pop(context, true);  // This triggers the reload in the admin page
+    // Check if token has expired
+    bool isExpired = JwtDecoder.isExpired(usertoken);
+    if (isExpired) {
+      final tokenService = TokenService();
+      tokenService.checkToken(usertoken, context);
     } else {
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text('Error'),
-          content: const Text('Failed to update mentor.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
+      final response = await http.put(
+        Uri.parse('http://localhost:8080/api/mentors/${mentorData.id}'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $usertoken',
+          },
+        body: json.encode(updatedData),
       );
+
+      if (response.statusCode == 200) {
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Mentor updated successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        // Pop the current screen and return 'true' to notify the admin page to reload
+        Navigator.pop(context, true);  // This triggers the reload in the admin page
+      } else {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Error'),
+            content: const Text('Failed to update mentor.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
     }
   }
 
