@@ -1,11 +1,15 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mentor/navigation/router.dart';
 import 'package:mentor/shared/models/profile_mentor.model.dart';
 import 'package:mentor/shared/services/profile_mentor.service.dart';
 import 'package:mentor/shared/shared.dart';
+import '../../shared/services/token.service.dart';
 import '../../shared/views/button.dart';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
@@ -26,6 +30,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
   List<String> tab = ["Overview", "Reviews", "Certificates"];
 
   late String usertoken;
+  late String userid;
   var provider;
 
   TabBar get _tabBar => TabBar(
@@ -61,6 +66,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
 
     provider = context.read<UserDataProvider>();
     usertoken = provider.usertoken;
+    userid = provider.userid;
 
     _fetchMentorData();
     _tabController = TabController(length: tab.length, vsync: this);
@@ -77,7 +83,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
   Future<void> _fetchMentorData() async {
     try {
       ProfileMentor? fetchedMentor = await ProfileMentorService.fetchMentorById(widget.profileId, usertoken);
-      print("Fetched mentor data: $fetchedMentor");
+      
       setState(() {
         mentor = fetchedMentor;
       });
@@ -85,6 +91,79 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
       // Handle the error, maybe show a message to the user
       print("Error fetching mentor: $e");
     }
+  }
+
+  Future<void> saveReviews(String message, String rating) async {
+    // Check if token has expired
+    bool isExpired = JwtDecoder.isExpired(usertoken);
+    if (isExpired) {
+      final tokenService = TokenService();
+      tokenService.checkToken(usertoken, context);
+    } else {
+      final url = Uri.parse('http://localhost:8080/api/reviews/create');
+        final response = await http.post(
+          url,
+          headers: {
+            'Authorization': 'Bearer $usertoken',
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'message': message,
+            'rating': int.parse(rating),
+            'mentorId': widget.profileId,
+            'userId': userid,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Review is submitted successfully'),
+            duration: Duration(seconds: 2),),
+          );
+        } else {
+          throw Exception('Failed to add reviews');
+        }
+    }
+  }
+
+  void _showAddReviewsDialog() {
+    TextEditingController messageCtrl = TextEditingController();
+    TextEditingController ratingCtrl = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Feedback'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min, // Ensures the dialog doesn't take up unnecessary space
+            children: [
+              TextField(
+                controller: messageCtrl,
+                decoration: const InputDecoration(labelText: 'Message'),
+              ),
+              TextField(
+                controller: ratingCtrl,
+                decoration: const InputDecoration(labelText: 'Rating'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                saveReviews(messageCtrl.text, ratingCtrl.text); // Use the messageCtrl text
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -215,16 +294,17 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
         CustomButton(
           label: "Booking",
           onPressed: () {
-            print('Mentor ID: ${mentor!.id}');
             context.push('${AppRoutes.bookingMentor}/${mentor!.id}');
           },
         ),
-        /*const SizedBox(width: 10),
+        const SizedBox(width: 10),
         CustomButton(
           type: EButtonType.secondary,
-          label: "Send message",
-          onPressed: () {},
-        )*/
+          label: "Review",
+          onPressed: () async {
+            _showAddReviewsDialog();
+          },
+        )
       ],
     );
   }
@@ -363,65 +443,65 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
   }
 
   Widget itemReview(Review review) {
-  return FutureBuilder<ProfileMentor?>(
-    future: ProfileMentorService.fetchMentorById(int.parse(review.createdById), usertoken),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return const CircularProgressIndicator(); // Loading indicator
-      } else if (snapshot.hasError) {
-        return Text('Error: ${snapshot.error}'); // Display error
-      } else {
-        final mentor = snapshot.data;
-        return Container(
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: Theme.of(context).colorScheme.tertiary),
+    return FutureBuilder<ProfileMentor?>(
+      future: ProfileMentorService.fetchMentorById(int.parse(review.createdById), usertoken),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator(); // Loading indicator
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}'); // Display error
+        } else {
+          final mentor = snapshot.data;
+          return Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Theme.of(context).colorScheme.tertiary),
+              ),
             ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundImage: mentor != null
-                          ? AssetImage(mentor.avatarUrl)
-                          : null,
-                    ),
-                    const SizedBox(width: 5),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          mentor != null ? mentor.name : "Unknown",
-                          style: context.titleSmall,
-                        ),
-                        Text(
-                          review.createDate != null
-                              ? DateFormat("yyyy/MM/dd").format(review.createDate!)
-                              : "No Date",
-                          style: context.bodySmall,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  review.message,
-                  style: context.bodyMedium,
-                  softWrap: true,
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundImage: mentor != null
+                            ? AssetImage(mentor.avatarUrl)
+                            : null,
+                      ),
+                      const SizedBox(width: 5),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            review.userName,
+                            style: context.titleSmall,
+                          ),
+                          Text(
+                            review.createDate != null
+                                ? DateFormat("yyyy/MM/dd").format(review.createDate!)
+                                : "No Date",
+                            style: context.bodySmall,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    review.message,
+                    style: context.bodyMedium,
+                    softWrap: true,
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      }
-    },
-  );
+          );
+        }
+      },
+    );
 }
 
 //--------------------END--------------------------------

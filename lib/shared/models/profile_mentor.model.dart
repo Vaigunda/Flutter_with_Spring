@@ -189,16 +189,20 @@ class Experience {
 class Review {
   final int id;
   final int mentorId;
+  final int rating;
   final String message;
   final DateTime? createDate;
   final String createdById;
+  final String userName;
 
   Review({
     required this.id,
     required this.mentorId,
+    required this.rating,
     required this.message,
     required this.createDate,
     required this.createdById,
+    required this.userName,
   });
 
   // toJson method to convert to a map
@@ -206,9 +210,11 @@ class Review {
     return {
       'id': id,
       'mentor_id': mentorId,
+      'rating': rating,
       'message': message,
       'create_date': createDate?.toIso8601String(),
       'created_by_id': createdById,
+      'user_name': userName,
     };
   }
 
@@ -216,16 +222,20 @@ class Review {
   Review copyWith({
     int? id,
     int? mentorId,
+    int? rating,
     String? message,
     DateTime? createDate,
     String? createdById,
+    String? userName,
   }) {
     return Review(
       id: id ?? this.id,
       mentorId: mentorId ?? this.mentorId,
+      rating: rating ?? this.rating,
       message: message ?? this.message,
       createDate: createDate ?? this.createDate,
       createdById: createdById ?? this.createdById,
+      userName: userName ?? this.userName,
     );
   }
 
@@ -233,11 +243,13 @@ class Review {
     return Review(
       id: json['id'],
       mentorId: json['mentor_id'],
+      rating: json['rating'],
       message: json['message'],
       createDate: json['create_date'] != null
           ? DateTime.parse(json['create_date']) // Parse the string into DateTime
           : null,
       createdById: json['created_by_id'],
+      userName: json['user_name'],
     );
   }
 }

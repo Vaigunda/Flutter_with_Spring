@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
@@ -7,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:mentor/shared/models/category.model.dart';
 import 'package:mentor/provider/user_data_provider.dart';
 import 'package:mentor/shared/services/token.service.dart';
-import '../../navigation/router.dart';
 
 class CategoryScreen extends StatefulWidget {
   @override
