@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../constants/ui.dart';
-
 class AboutUs extends StatefulWidget {
   const AboutUs({super.key});
 
@@ -22,8 +20,8 @@ class _AboutUsState extends State<AboutUs> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Why Choose Us?',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 46),
+                  'Why choose us?',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
                 ),
               ],
             ),
@@ -36,18 +34,13 @@ class _AboutUsState extends State<AboutUs> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Flexible(
-                      child: Text(
-                        'We believe in your success and that Data-driven Mentorship \n can help you achieve the best results for your business, \n regardless of your field or target market.',
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 4,
-                        style: TextStyle(
+                    Text(
+                      textAlign: TextAlign.center,
+                      'We believe in your success and that Data-driven Mentorship \n can help you achieve the best results for your business, \n regardless of your field or target market. ',
+                      style: TextStyle(
                           fontWeight: FontWeight.w400,
-                          fontSize: 16,
-                          letterSpacing: 1,
-                        ),
-                      ),
+                          fontSize: 15,
+                          letterSpacing: 1),
                     ),
                   ],
                 ),
@@ -57,11 +50,10 @@ class _AboutUsState extends State<AboutUs> {
               height: 40,
             ),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: GridView.count(
                 shrinkWrap: true,
-                crossAxisCount: getCrossAxisCount(context),
+                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 2 : 1,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 50,
                 childAspectRatio: getChildAspectRatioFromWidth(width),
@@ -90,9 +82,6 @@ class _AboutUsState extends State<AboutUs> {
                     description:
                         "We take data seriously, meaning that we only\ndeliver work that we can be proud of.",
                   ),
-                  SizedBox(
-                    height: 10,
-                  )
                 ],
               ),
             ),
@@ -102,11 +91,11 @@ class _AboutUsState extends State<AboutUs> {
     );
   }
 
-  static double getChildAspectRatioFromWidth(double width) {
+ static double getChildAspectRatioFromWidth(double width) {
     if (width > 1200) {
-      return 0.8;
+      return 2;
     } else if (width > 800) {
-      return 1.2;
+      return 1.3;
     } else if (width > 750) {
       return 1.1;
     } else if (width > 700) {
@@ -116,7 +105,7 @@ class _AboutUsState extends State<AboutUs> {
     } else if (width > 600) {
       return 0.8;
     } else {
-      return 1.5;
+      return 1.7;
     }
   }
 }
@@ -135,63 +124,41 @@ class AboutusCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: Card(
-        elevation: 10,
-        shadowColor: Colors.black,
-        color: const Color.fromARGB(255, 251, 236, 212),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              backgroundColor: Colors.orange,
-              radius: 80,
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: 78,
-                child: ShaderMask(
-                  shaderCallback: (Rect bounds) {
-                    return const LinearGradient(
-                      colors: [Colors.pinkAccent, Colors.orangeAccent],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ).createShader(bounds);
-                  },
-                  blendMode: BlendMode.srcIn,
-                  child: Icon(
-                    icon,
-                    size: 100,
-                    color: Colors.white, // Adjust icon color if needed
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              description,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 15,
-                letterSpacing: 1.5,
-                color: Colors.black
-              ),
-            ),
-          ],
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        ShaderMask(
+          shaderCallback: (Rect bounds) {
+            return const LinearGradient(
+              colors: [Colors.pinkAccent, Colors.orangeAccent],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ).createShader(bounds);
+          },
+          blendMode: BlendMode.srcIn,
+          child: Icon(
+            icon,
+            size: 160,
+          ),
         ),
-      ),
+        const SizedBox(height: 12),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          description,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              fontWeight: FontWeight.w400, fontSize: 15, letterSpacing: 1.5),
+        ),
+      ],
     );
   }
 }

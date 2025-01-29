@@ -199,6 +199,19 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             ),
           ),
           actions: [
+            if (userid.isNotEmpty)
+              TextButton(
+                onPressed: () async {
+                  signOut();
+                  //context.pop();
+                },
+                child: const Text(
+                  'Sign Out',
+                  style: TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w600),
+                )
+              ),
+            const SizedBox(width: 10),
             if (!isMobile)
               TextButton(
                 onPressed: () {
@@ -255,25 +268,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (userid.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                              onPressed: () async {
-                                signOut();
-                                //context.pop();
-                              },
-                              child: const Text(
-                                'Sign Out',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w600),
-                              ))
-                        ],
-                      ),
-                    ),
                   Row(
                     children: [
                       if (userid.isEmpty)
