@@ -513,76 +513,8 @@ class _BookingScreenState extends State<BookingScreen> {
         final tokenService = TokenService();
         tokenService.checkToken(usertoken, context);
       } else {
-        context.push('${AppRoutes.payment}/${mentor!.free.price}/$bookingData');
+        context.push('${AppRoutes.payment}/${mentor!.free.price}/${mentor!.id}/${mentor!.name}/$bookingData');
       }
-      /*try {
-        // Send the POST request to your backend API
-        var response = await http.post(
-          Uri.parse('http://localhost:8080/api/bookings'), // Replace with your actual API endpoint
-          headers: {
-            'Authorization': 'Bearer $usertoken',
-            'Content-Type': 'application/json', // Ensure the API expects JSON
-          },
-          body: requestBody,
-        );
-        if (response.statusCode == 200) {
-          String mentorName = mentor!.name;        
-          var notifyBody = jsonEncode({
-            "mentorId": mentor!.id,
-            "recipientId": int.parse(userid),
-            "title": "New Booking",
-            "message": "$username booked $mentorName",
-          });
-
-          var notifyRes = await http.post(
-            Uri.parse('http://localhost:8080/api/notify/createNotification'), // Replace with your actual API endpoint
-            headers: {
-              'Authorization': 'Bearer $usertoken',
-              'Content-Type': 'application/json', // Ensure the API expects JSON
-            },
-            body: notifyBody,
-          );
- 
-          if (notifyRes.statusCode == 200) {
-            // Successfully booked
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Payment and Schedule booking successfully!'),
-                duration: Duration(seconds: 3),
-                backgroundColor: Colors.green,
-              ),
-            );
-            context.go(AppRoutes.home);
-          }
-        } else if (response.statusCode == 400) {
-          String output = response.body;
-          // Something went wrong, handle the error
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(output),
-              duration: const Duration(seconds: 3),
-              backgroundColor: Colors.red,
-            ),
-          );
-        } else {
-          // Something went wrong, handle the error
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Failed to submit booking. Please try again.'),
-              duration: Duration(seconds: 3),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('An error occurred. Please try again.'),
-            duration: Duration(seconds: 3),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }*/
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

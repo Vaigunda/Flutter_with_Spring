@@ -226,7 +226,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                   icon: const Icon(FontAwesomeIcons.bell),
                 ),
                 // Badge to display the number
-                if (notificationCount > 0)
+                if (notificationCount > 0 && usertype != 'Admin')
                   Container(
                     padding: const EdgeInsets.all(5),
                     decoration: const BoxDecoration(

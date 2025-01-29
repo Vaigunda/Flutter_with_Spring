@@ -109,7 +109,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
           },
           body: jsonEncode({
             'message': message,
-            'rating': int.parse(rating),
+            'rating': rating.isNotEmpty ? int.parse(rating) : 0,
             'mentorId': widget.profileId,
             'userId': userid,
           }),

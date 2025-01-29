@@ -9,9 +9,11 @@ import '../../provider/user_data_provider.dart';
 
 class PaymentScreen extends StatefulWidget {
 
-  const PaymentScreen({super.key, required this.amount,
-  required this.bookingData});
+  const PaymentScreen({super.key, required this.amount, required this.id,
+  required this.name, required this.bookingData});
   final int amount;
+  final int id;
+  final String name;
   final String bookingData;
 
   @override
@@ -23,6 +25,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   var provider;
   late String usertoken;
   late String userid;
+  late String username;
 
   late Map<String, dynamic> userData;
 
@@ -32,6 +35,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     provider = context.read<UserDataProvider>();
     usertoken = provider.usertoken;
     userid = provider.userid;
+    username = provider.name;
 
     getUserDetails();
     super.initState();
@@ -109,6 +113,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   _card = card;
                 });
               },
+              decoration: const InputDecoration(
+                labelText: 'Card Number',
+                fillColor: Colors.white, // Set background color to white
+                filled: true, // Fill the background with the color
+                hintStyle: TextStyle(color: Colors.black), // Set hint text color
+              ),
+              style: TextStyle(color: Colors.black), // Set text color for card number
             ),
             const SizedBox(height: 50),
             ElevatedButton(
@@ -133,12 +144,42 @@ class _PaymentScreenState extends State<PaymentScreen> {
           body: jsonDecode(widget.bookingData),
         );
         if (response.statusCode == 200) {
-          // Successfully booked
+          String mentorName = widget.name;        
+          var notifyBody = jsonEncode({
+            "mentorId": widget.id,
+            "recipientId": int.parse(userid),
+            "title": "New Booking",
+            "message": "$username booked $mentorName",
+          });
+
+          var notifyRes = await http.post(
+            Uri.parse('http://localhost:8080/api/notify/createNotification'), // Replace with your actual API endpoint
+            headers: {
+              'Authorization': 'Bearer $usertoken',
+              'Content-Type': 'application/json', // Ensure the API expects JSON
+            },
+            body: notifyBody,
+          );
+ 
+          if (notifyRes.statusCode == 200) {
+            // Successfully booked
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Payment and Schedule booking successfully!'),
+                duration: Duration(seconds: 3),
+                backgroundColor: Colors.green,
+              ),
+            );
+            context.go(AppRoutes.home);
+          }
+        } else if (response.statusCode == 400) {
+          String output = response.body;
+          // Something went wrong, handle the error
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Payment and Schedule booking successfully!'),
-              duration: Duration(seconds: 3),
-              backgroundColor: Colors.green,
+            SnackBar(
+              content: Text(output),
+              duration: const Duration(seconds: 3),
+              backgroundColor: Colors.red,
             ),
           );
         } else {

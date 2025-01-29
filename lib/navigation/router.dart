@@ -326,12 +326,14 @@ final appRouter = GoRouter(
       },
     ),
     GoRoute(
-      path: '${AppRoutes.payment}/:amount/:bookingData',
+      path: '${AppRoutes.payment}/:amount/:id/:name/:bookingData',
       builder: (context, state) {
         // Convert the path parameter to an int
         final amount = int.tryParse(state.pathParameters['amount']!) ?? 0;
+        final id = int.tryParse(state.pathParameters['id']!) ?? 0;
+        final name = state.pathParameters['name']!;
         final bookingData = state.pathParameters['bookingData']!;
-        return PaymentScreen(amount: amount, bookingData: bookingData);
+        return PaymentScreen(amount: amount, id: id, name: name, bookingData: bookingData);
       },
     ),
   ],
