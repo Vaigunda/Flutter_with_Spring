@@ -16,6 +16,63 @@ class _AboutUsState extends State<AboutUs> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // ABOUT US Section
+            const Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: const [
+                  Text(
+                    'ABOUT US',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'At Mentor Boosters, we are dedicated to empowering small and medium-sized business \n owners by connecting them with expert mentors who provide personalized guidance for success. \n Our mission is to bridge the gap between ambition and achievement, \n fostering a community where entrepreneurs can thrive.',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 15,
+                        letterSpacing: 1),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 40),
+                  Text(
+                    'Our Story',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+                     textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Mentor Boosters was founded by two dynamic professionals who recognized a critical gap in mentorship  \n resources for entrepreneurs and small business owners.',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 15,
+                      letterSpacing: 1,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 40),
+                  Text(
+                    'Visionaries Behind Mentor Boosters.',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      'Mr. Nurudeen Osidipe, our CEO, brings over 14 years of experience in financial planning and strategic management. As a Certified Chartered Accountant, he has a proven track record of enhancing profitability and operational efficiency for various organizations. His leadership ensures that Mentor Boosters remains aligned with its mission to drive impactful mentormentee relationships. Mrs.Azeezat Omowunmi Ojekunle, our COO, is a financial expert with over 14 years of experience in tax advisory, compliance, and corporate strategy. She holds a degree in Animal Production and Health and has furthered  her expertise with an online certification in Business Analytics from Harvard Business School in 2020. Her focus on operational excellence ensures a seamless experience for both mentors and mentees. Together, they have combined their expertise and resources to create a trusted platform for entrepreneurs seeking mentorship in diverse areas such as finance, leadership, marketing, and business strategy. ',
+                      style: TextStyle(fontSize: 16),
+                      textAlign: TextAlign.justify,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            // "Why choose us?" Section
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -91,7 +148,7 @@ class _AboutUsState extends State<AboutUs> {
     );
   }
 
- static double getChildAspectRatioFromWidth(double width) {
+  static double getChildAspectRatioFromWidth(double width) {
     if (width > 1200) {
       return 2;
     } else if (width > 800) {

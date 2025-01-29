@@ -9,6 +9,8 @@ import 'package:mentor/navigation/router.dart';
 import 'package:mentor/shared/models/verified.model.dart';
 import 'package:mentor/shared/services/verified.service.dart';
 import 'package:mentor/provider/user_data_provider.dart';
+import 'package:mentor/shared/shared.dart';
+import 'package:mentor/shared/widgets/gradient_button.dart';
 import '../../shared/services/top_rated_mentor.service.dart';
 import '../../shared/services/top_mentor.service.dart';
 import '../../shared/models/top_rated_mentor.model.dart';
@@ -296,6 +298,29 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                   const HomeCategories(),
                   const SizedBox(height: 30),
                   HomeTopMentors(topMentors: topMentors),
+                  const SizedBox(height: 30),
+                  if (userid.isEmpty) // Show button only if user is not logged in
+                    Center(
+                      child: Container(
+                        width:240,
+                        alignment: Alignment.center,
+                        child: GradientButton(
+                          label: Text(
+                            "Discover More Mentors",
+                            style: context.labelLarge!.copyWith(fontWeight: FontWeight.w900),
+                          ),
+                          onPressed: () {
+                            context.go(AppRoutes.signin);
+                          },
+                          trailingIcon: Icon(
+                            FontAwesomeIcons.arrowRight,
+                            color: Theme.of(context).cardColor,
+                            size: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+
                   const SizedBox(height: 30),
                   HomeVerified(verifiedMentors: verifiedMentors),
                   const SizedBox(height: 30),
