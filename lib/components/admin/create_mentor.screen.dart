@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 // For date formatting
 import 'package:http/http.dart' as http;
 import 'package:hugeicons/hugeicons.dart';
@@ -14,7 +13,6 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 
-import '../../navigation/router.dart';
 import '../../shared/services/token.service.dart';
 import '../../shared/utils/validator.dart';
 import '../../shared/views/button.dart';
@@ -720,6 +718,9 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
                     ),
                     itemsTextStyle: const TextStyle(
                       color: Colors.blue, // Uniform color for all dropdown items
+                    ),
+                    selectedItemsTextStyle: const TextStyle(
+                      color: Colors.blue,
                     ),
                   ),
                   if (isFormSubmitted && selectedCategories.isEmpty)

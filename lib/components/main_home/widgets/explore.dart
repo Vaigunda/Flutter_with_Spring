@@ -33,7 +33,7 @@ class _ExploreMentorState extends State<ExploreMentor> {
             children: [
               headingLine(),
               Text(
-                "Book and meet mentors for 1:1 mentorship in our global community",
+                "Unlock your company's potential by connecting with seasoned mentors and gaining valuable insights.",
                 style: context.bodyLarge,
               ),
               const SizedBox(
@@ -96,7 +96,7 @@ class _ExploreMentorState extends State<ExploreMentor> {
       children: <Widget>[
         // Stroked text as border.
         Text(
-          'Learn and grow with help from world-class mentors',
+          'Empower Your Business with Expert Mentorship',
           style: context.headlineLarge!.copyWith(
               foreground: Paint()
                 ..style = PaintingStyle.stroke
@@ -105,7 +105,7 @@ class _ExploreMentorState extends State<ExploreMentor> {
         ),
         // Solid text as fill.
         Text(
-          'Learn and grow with help from world-class mentors',
+          'Empower Your Business with Expert Mentorship',
           style: context.headlineLarge,
         ),
       ],

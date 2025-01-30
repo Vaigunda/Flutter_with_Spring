@@ -673,6 +673,9 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
                     itemsTextStyle: const TextStyle(
                       color: Colors.blue, // Uniform color for all dropdown items
                     ),
+                    selectedItemsTextStyle: const TextStyle(
+                      color: Colors.blue,
+                    ),
                   ),
                 );
 
