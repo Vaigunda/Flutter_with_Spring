@@ -17,6 +17,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'dart:convert';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key, required this.profileId});
@@ -514,6 +515,12 @@ class _BookingScreenState extends State<BookingScreen> {
         tokenService.checkToken(usertoken, context);
       } else {
         context.push('${AppRoutes.payment}/${mentor!.free.price}/${mentor!.id}/${mentor!.name}/$bookingData');
+        /*final Uri url = Uri.parse('https://buy.stripe.com/00g01G2nT8kdbao5kk');
+        if (await canLaunchUrl(url)) {
+          await launchUrl(url);
+        } else {
+          throw 'Could not launch $url';
+        }*/
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

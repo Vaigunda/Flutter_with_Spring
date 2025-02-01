@@ -64,7 +64,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
     if (_formKey.currentState!.validate()) {
       try {
         final response = await http.put(
-          Uri.parse('http://localhost::8080/api/user/update-user/${widget.userId}'),
+          Uri.parse('http://localhost:8080/api/user/update-user/${widget.userId}'),
           headers: {
             "Content-Type": "application/json",
             'Authorization': 'Bearer $usertoken',

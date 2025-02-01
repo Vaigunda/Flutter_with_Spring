@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_timeline/event_item.dart';
 import 'package:flutter_timeline/indicator_position.dart';
@@ -211,7 +212,9 @@ Future<void> fetchHistoryMessages(int userId, int mentorId) async {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return GestureDetector(
+     onTap: closeChatBox,
+    child: Scaffold(
       appBar: AppBar(
         centerTitle: false,
         title: const Text(
@@ -264,6 +267,7 @@ Future<void> fetchHistoryMessages(int userId, int mentorId) async {
           )
         ]),
       ),
+    ),
     );
   }
 
@@ -481,6 +485,20 @@ void openChatBox(int userId, int mentorId) {
 
 Widget _buildChatPanel(int userId, int mentorId, void Function(void Function()) setState, 
   TextEditingController chatController, ScrollController scrollController) {
+
+  final FocusNode rawKeyboardFocusNode = FocusNode();
+  final FocusNode textFieldFocusNode = FocusNode();
+    
+    Future<void> handleEnterKey(RawKeyEvent event) async {
+      if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
+        await _sendMessage(chatController.text, userId, mentorId);
+        chatController.clear();
+        _scrollToBottom(scrollController);
+        textFieldFocusNode.requestFocus();
+        setState(() {});
+      }
+    }
+
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -534,12 +552,16 @@ Widget _buildChatPanel(int userId, int mentorId, void Function(void Function()) 
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8),
+             padding: const EdgeInsets.all(8),
+             child: RawKeyboardListener(
+              focusNode: rawKeyboardFocusNode,
+              onKey: handleEnterKey,
               child: Row(
                 children: [
                   Expanded(
                     child: TextField(
-                      controller: chatController, // Use the new controller
+                      controller: chatController,
+                      focusNode: textFieldFocusNode,
                       decoration: const InputDecoration(
                         hintText: "Type a message...",
                         border: OutlineInputBorder(),
@@ -550,7 +572,7 @@ Widget _buildChatPanel(int userId, int mentorId, void Function(void Function()) 
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.send, color: Color.fromARGB(255, 4, 107, 192)),
+                    icon: const Icon(Icons.send, color: Color.fromARGB(255, 0, 0, 0)),
                     onPressed: () async {
                       await _sendMessage(chatController.text, userId, mentorId);
                       chatController.clear();
@@ -560,6 +582,7 @@ Widget _buildChatPanel(int userId, int mentorId, void Function(void Function()) 
                   ),
                 ],
               ),
+             ),
             ),
           ],
         ),
