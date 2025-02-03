@@ -6,12 +6,12 @@ class ViewMentorScreen extends StatelessWidget {
 
   const ViewMentorScreen({required this.mentor});
 
-  
   // Helper function to map category icon names to IconData
   IconData _getIconFromName(String iconName) {
     switch (iconName) {
       case 'FontAwesomeIcons.code':
-        return Icons.code; // Replace with the FontAwesome icon if using the package
+        return Icons
+            .code; // Replace with the FontAwesome icon if using the package
       case 'FontAwesomeIcons.penNib':
         return Icons.edit; // Replace with another relevant icon
       default:
@@ -77,7 +77,8 @@ class ViewMentorScreen extends StatelessWidget {
                 certificate.imageUrl,
                 width: 50,
                 height: 50,
-                errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+                errorBuilder: (context, error, stackTrace) =>
+                    const Icon(Icons.broken_image),
               )
             : const Text('No certificates available'),
       ),
@@ -110,122 +111,346 @@ class ViewMentorScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(mentor.name),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Avatar and Basic Details
-              Center(
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: AssetImage(mentor.avatarUrl),
-                      radius: 50,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      mentor.name,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          bool isWideScreen = constraints.maxWidth > 600;
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Material(
+                elevation: 2,
+                child: isWideScreen
+                    ? SingleChildScrollView(
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                CircleAvatar(
+                                  backgroundImage: AssetImage(mentor.avatarUrl),
+                                  radius: 80,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  mentor.name,
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  mentor.role,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ])),
+                            ),
+                            VerticalDivider(),
+                            Expanded(
+                                child: Column(
+                          children: [
+                            Text(
+                              'Bio',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 8.0, bottom: 16.0),
+                              child: Text(
+                                mentor.bio,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            const Divider(),
+                            // Experiences
+                            Text(
+                              'Experiences',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: 8),
+                            ...mentor.experiences.map(_buildExperienceCard),
+                            const Divider(),
+                                
+                            // Reviews
+                            Text(
+                              'Reviews',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            if (mentor.reviews.isEmpty)
+                              const Text('No reviews available.')
+                            else
+                              ...mentor.reviews.map(_buildReviewCard),
+                            const Divider(),
+                                
+                            // Certificates
+                            Text(
+                              'Certificates',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: 8),
+                            ...mentor.certificates.map(_buildCertificateCard),
+                            const Divider(),
+                            // Categories
+                            Text(
+                              'Categories',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: 8),
+                            Wrap(
+                              spacing: 8,
+                              children: mentor.categories.map((category) {
+                                return Chip(
+                                  label: Text(category
+                                      .name), // Use dot notation for `name`
+                                  avatar: Icon(
+                                    _getIconFromName(category
+                                        .icon), // Use helper function for `icon`
+                                    size: 16,
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                            const Divider(),
+                            // Pricing Info
+                            Text(
+                              'Pricing',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                '${mentor.free.price} ${mentor.free.unit.name}', // Use dot notation for nested objects
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            const Divider(),
+                            // Teaching Schedules
+                            Text(
+                              'Time Slots',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: 8),
+                            ...mentor.timeSlots.map(_buildTeachingScheduleCard),
+                          ],
+                        ),),
+                          ],
+                        ),
+                    )
+                    : Column(
+                        children: [
+                          CircleAvatar(
+                                backgroundImage: AssetImage(mentor.avatarUrl),
+                                radius: 80,
+                              ),
+                          Text(
+                            'Bio',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(top: 8.0, bottom: 16.0),
+                            child: Text(
+                              mentor.bio,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          const Divider(),
+                          // Experiences
+                          Text(
+                            'Experiences',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          ...mentor.experiences.map(_buildExperienceCard),
+                          const Divider(),
+                              
+                          // Reviews
+                          Text(
+                            'Reviews',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          if (mentor.reviews.isEmpty)
+                            const Text('No reviews available.')
+                          else
+                            ...mentor.reviews.map(_buildReviewCard),
+                          const Divider(),
+                              
+                          // Certificates
+                          Text(
+                            'Certificates',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          ...mentor.certificates.map(_buildCertificateCard),
+                          const Divider(),
+                          // Categories
+                          Text(
+                            'Categories',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 8,
+                            children: mentor.categories.map((category) {
+                              return Chip(
+                                label: Text(category
+                                    .name), // Use dot notation for `name`
+                                avatar: Icon(
+                                  _getIconFromName(category
+                                      .icon), // Use helper function for `icon`
+                                  size: 16,
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                          const Divider(),
+                          // Pricing Info
+                          Text(
+                            'Pricing',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              '${mentor.free.price} ${mentor.free.unit.name}', // Use dot notation for nested objects
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          const Divider(),
+                          // Teaching Schedules
+                          Text(
+                            'Time Slots',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          ...mentor.timeSlots.map(_buildTeachingScheduleCard),
+                        ],
                       ),
-                    ),
-                    Text(
-                      mentor.role,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
               ),
-              const Divider(),
-              // Bio
-              Text(
-                'Bio',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
-                child: Text(
-                  mentor.bio,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-              const Divider(),
-              // Experiences
-              Text(
-                'Experiences',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              ...mentor.experiences.map(_buildExperienceCard),
-              const Divider(),
+            ),
+          );
+        },
 
-              // Reviews
-              Text(
-                'Reviews',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              if (mentor.reviews.isEmpty)
-                const Text('No reviews available.')
-              else
-                ...mentor.reviews.map(_buildReviewCard),
-              const Divider(),
+        // Padding(
+        //   padding: const EdgeInsets.all(16.0),
+        //   child: SingleChildScrollView(
+        //     child: Column(
+        //       crossAxisAlignment: CrossAxisAlignment.start,
+        //       children: [
+        //         // Avatar and Basic Details
+        //         Center(
+        //           child: Column(
+        //             children: [
+        //               CircleAvatar(
+        //                 backgroundImage: AssetImage(mentor.avatarUrl),
+        //                 radius: 50,
+        //               ),
+        //               const SizedBox(height: 8),
+        //               Text(
+        //                 mentor.name,
+        //                 style: const TextStyle(
+        //                   fontSize: 24,
+        //                   fontWeight: FontWeight.bold,
+        //                 ),
+        //               ),
+        //               Text(
+        //                 mentor.role,
+        //                 style: const TextStyle(
+        //                   fontSize: 16,
+        //                   color: Colors.grey,
+        //                 ),
+        //               ),
+        //             ],
+        //           ),
+        //         ),
+        //         const Divider(),
+        //         // Bio
+        //         Text(
+        //           'Bio',
+        //           style: Theme.of(context).textTheme.titleMedium,
+        //         ),
+        //         Padding(
+        //           padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
+        //           child: Text(
+        //             mentor.bio,
+        //             style: const TextStyle(fontSize: 16),
+        //           ),
+        //         ),
+        //         const Divider(),
+        //         // Experiences
+        //         Text(
+        //           'Experiences',
+        //           style: Theme.of(context).textTheme.titleMedium,
+        //         ),
+        //         const SizedBox(height: 8),
+        //         ...mentor.experiences.map(_buildExperienceCard),
+        //         const Divider(),
 
-              // Certificates
-              Text(
-                'Certificates',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              ...mentor.certificates.map(_buildCertificateCard),
-              const Divider(),
-              // Categories
-              Text(
-                'Categories',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                children: mentor.categories.map((category) {
-                  return Chip(
-                    label: Text(category.name), // Use dot notation for `name`
-                    avatar: Icon(
-                      _getIconFromName(category.icon), // Use helper function for `icon`
-                      size: 16,
-                    ),
-                  );
-                }).toList(),
-              ),
-              const Divider(),
-              // Pricing Info
-              Text(
-                'Pricing',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Text(
-                  '${mentor.free.price} ${mentor.free.unit.name}', // Use dot notation for nested objects
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-              const Divider(),
-              // Teaching Schedules
-              Text(
-                'Time Slots',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 8),
-              ...mentor.timeSlots.map(_buildTeachingScheduleCard),
-            ],
-          ),
-        ),
+        //         // Reviews
+        //         Text(
+        //           'Reviews',
+        //           style: Theme.of(context).textTheme.titleMedium,
+        //         ),
+        //         if (mentor.reviews.isEmpty)
+        //           const Text('No reviews available.')
+        //         else
+        //           ...mentor.reviews.map(_buildReviewCard),
+        //         const Divider(),
+
+        //         // Certificates
+        //         Text(
+        //           'Certificates',
+        //           style: Theme.of(context).textTheme.titleMedium,
+        //         ),
+        //         const SizedBox(height: 8),
+        //         ...mentor.certificates.map(_buildCertificateCard),
+        //         const Divider(),
+        //         // Categories
+        //         Text(
+        //           'Categories',
+        //           style: Theme.of(context).textTheme.titleMedium,
+        //         ),
+        //         const SizedBox(height: 8),
+        //         Wrap(
+        //           spacing: 8,
+        //           children: mentor.categories.map((category) {
+        //             return Chip(
+        //               label: Text(category.name), // Use dot notation for `name`
+        //               avatar: Icon(
+        //                 _getIconFromName(category.icon), // Use helper function for `icon`
+        //                 size: 16,
+        //               ),
+        //             );
+        //           }).toList(),
+        //         ),
+        //         const Divider(),
+        //         // Pricing Info
+        //         Text(
+        //           'Pricing',
+        //           style: Theme.of(context).textTheme.titleMedium,
+        //         ),
+        //         Padding(
+        //           padding: const EdgeInsets.only(top: 8.0),
+        //           child: Text(
+        //             '${mentor.free.price} ${mentor.free.unit.name}', // Use dot notation for nested objects
+        //             style: const TextStyle(fontSize: 16),
+        //           ),
+        //         ),
+        //         const Divider(),
+        //         // Teaching Schedules
+        //         Text(
+        //           'Time Slots',
+        //           style: Theme.of(context).textTheme.titleMedium,
+        //         ),
+        //         const SizedBox(height: 8),
+        //         ...mentor.timeSlots.map(_buildTeachingScheduleCard),
+        //       ],
+        //     ),
+        //   ),
       ),
     );
   }

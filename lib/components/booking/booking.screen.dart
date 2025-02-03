@@ -174,15 +174,19 @@ class _BookingScreenState extends State<BookingScreen> {
               if (_index != 0)
                 CustomButton(
                   label: "Previous",
+                  
                   onPressed: onStepCancel,
+                  borderRadius: 10,
                   
                 ),
               const SizedBox(width: 10),
               if (_index < 3)
-                CustomButton(label: "Next", onPressed: onStepContinue),
+                CustomButton(label: "Next", onPressed: onStepContinue,borderRadius: 10,),
               if (_index == 3)
                 CustomButton(
                   label: "Booking",
+                  borderRadius: 10,
+                  
                   onPressed: () async {
                     await submitBooking();
                     //context.pop();

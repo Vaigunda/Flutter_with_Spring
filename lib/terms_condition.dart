@@ -54,61 +54,110 @@ class TermsAndConditionsPage extends StatelessWidget {
             // Terms content section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 60),
-              child:Column(
-                      children: [
-                        _buildColumn(
-                          title: 'Introduction',
-                          content:
-                              'Welcome to Mentor Booster! These Terms and Conditions govern your use of our platform, which connects learners with expert mentors for online courses and guidance. By accessing or using our services, you agree to comply with these terms. If you do not agree with any part of these terms, please refrain from using our platform.',
-                        ),
-                       const SizedBox(height: 40),
-                         _buildColumn(
-                          title: 'User Eligibility',
-                          content:
-                              'To use Mentor Booster, you must be at least 18 years old or have the consent of a parent or legal guardian. By registering, you confirm that the information provided is accurate and that you are legally capable of entering into this agreement.',
-                        ),
-                       const SizedBox(height: 40),
-                        _buildColumn(
-                          title: 'Account Registration',
-                          content:
-                              'Users must provide accurate and complete details during registration.You are responsible for maintaining the confidentiality of your account credentials.Any unauthorized use of your account should be reported immediately. Mentor Booster is not liable for losses resulting from unauthorized access.',
-                        ),
-                       const SizedBox(height: 40),
-                        _buildColumn(
-                          title: 'Booking and Payments',
-                          content:
-                              'Users can book mentors for online classes based on availability.Payment for sessions must be completed through our platform before the scheduled session.Refunds and cancellations are subject to our Cancellation Policy.',
-                        ),
-                       const SizedBox(height: 40),
-                         _buildColumn(
-                          title: 'Mentor Responsibilities',
-                          content:
-                              'Mentors on Mentor Booster are expected to deliver high-quality, professional instruction while upholding ethical standards. They should provide accurate information, engage with learners responsibly, and create a positive learning environment. Any form of misleading information, unprofessional behavior, or violation of ethical guidelines may lead to immediate removal from the platform. Mentor Booster strives to maintain a trusted learning space, and mentors are required to adhere to the highest standards of professionalism.',
-                        ),
-                       const SizedBox(height: 40),
-                        _buildColumn(
-                          title: 'User Conduct',
-                          content:
-                              'Users are expected to interact respectfully with mentors and follow all platform guidelines while using Mentor Booster. A positive, respectful atmosphere is essential for effective learning, and any form of harassment, abuse, or inappropriate behavior will not be tolerated. Such actions will result in immediate suspension or termination of the user’s account. Mentor Booster is committed to providing a safe and supportive environment for both learners and mentors.',
-                        ),
-                       const SizedBox(height: 40),
-                         _buildColumn(
-                          title: 'Intellectual Property',
-                          content:
-                              'All course materials, videos, and content provided by mentors on Mentor Booster remain the intellectual property of the respective mentors. Users are prohibited from recording, distributing, or reproducing any content without explicit permission from the mentor. This ensures that the rights of content creators are respected and that the materials are used solely for the intended purpose of learning. ',
-                        ),
-                       const SizedBox(height: 40),
-                         _buildColumn(
-                          title: ' Amendments to Terms',
-                          content:
-                              'We reserve the right to modify these Terms and Conditions at any time. Changes will be updated on this page, and continued use of the platform implies acceptance of the revised terms.',
-                        ),
-                        
-                      ],
-                    ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                      'Terms and Conditions for MentorBoosters.com Application',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  const SizedBox(height: 20),
+                  const Text('Last Updated: 03-02-25',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  const SizedBox(height: 80),
+                  _buildColumn(
+                    title: '1. Introduction',
+                    content:
+                        'Welcome to MentorBoosters.com, an online platform that connects mentors with small and medium-sized enterprises (SMEs) for mentorship and training. By accessing or using our application, you agree to comply with and be bound by these Terms and Conditions.',
+                  ),
+                  const SizedBox(height: 40),
+                  _buildColumn(
+                    title: '2. Definitions',
+                    content:
+                        ' • "Platform" refers to MentorBoosters.com and its associated mobile application. \n • "User" refers to any individual or entity that registers or uses the platform. \n • "Mentor" refers to individuals providing mentorship services.\n • "Mentee" refers to SMEs or individuals receiving mentorship services.\n • "Content" includes text, data, graphics, audio, video, and other materials shared on the platform.',
+                  ),
+                  const SizedBox(height: 40),
+                  _buildColumn(
+                    title: '3. User Eligibility',
+                    content:
+                        ' • Users must be at least 18 years old to create an account.\n • By registering, users confirm that they have the legal ability to enter into agreements.\n • MentorBoosters.com reserves the right to suspend or terminate accounts if false information is provided.',
+                  ),
+                  const SizedBox(height: 40),
+                  _buildColumn(
+                    title: '4. Registration and Account Management',
+                    content:
+                        ' • Users must provide accurate and complete information during registration.\n • Users are responsible for maintaining the confidentiality of their login credentials.\n • MentorBoosters.com is not liable for unauthorized access resulting from user negligence',
+                  ),
+                  const SizedBox(height: 40),
+                  _buildColumn(
+                    title: '5. Mentor and Mentee Responsibilities',
+                    content:
+                        ' • Mentors must provide accurate and professional guidance within their expertise.\n • Mentees agree to actively engage in mentorship programs and respect scheduled sessions.\n • Users must not engage in fraudulent, misleading, or unethical behavior.',
+                  ),
+                  const SizedBox(height: 40),
+                  _buildColumn(
+                    title: '6. Fees and Payments',
+                    content:
+                        ' • Some services may require payment, which will be communicated to users.\n • Payment transactions will be processed securely through third-party payment providers.\n • MentorBoosters.com is not responsible for payment disputes between mentors and mentees.',
+                  ),
+                  const SizedBox(height: 40),
+                  _buildColumn(
+                    title: '7. Content Ownership and Usage',
+                    content:
+                        ' • Users retain ownership of the content they upload but grant MentorBoosters.com a nonexclusive, royalty-free license to use, \n modify, and display such content for platformrelated purposes.\n • Users must not post copyrighted or infringing content without appropriate rights ',
+                  ),
+                  const SizedBox(height: 40),
+                  _buildColumn(
+                    title: ' 8. Privacy and Data Protection',
+                    content:
+                        ' • MentorBoosters.com adheres to applicable data protection laws.\n • User data will not be sold or shared with third parties without consent, except asrequired by law.\n • Users agree to the collection and processing of their data as described in the Privacy Policy.',
+                  ),
+                  const SizedBox(height: 40),
+                  _buildColumn(
+                    title: '9. Code of Conduct',
+                    content:
+                        ' • Users must interact respectfully and professionally.\n • Hate speech, harassment, discrimination, and any illegal activities are strictly prohibited.\n • MentorBoosters.com reserves the right to suspend or remove users violating these terms.',
+                  ),
+                  const SizedBox(height: 40),
+                  _buildColumn(
+                    title: '10. Limitation of Liability',
+                    content:
+                        ' • MentorBoosters.com is a facilitator and does not guarantee specific outcomes from mentorship.\n • The platform is not liable for any direct, indirect, or consequential damages arising from mentorship interactions.\n • Users agree to hold MentorBoosters.com harmless from claims resulting from their use of the platform.',
+                  ),
+                  const SizedBox(height: 40),
+                  _buildColumn(
+                    title: '11. Termination and Suspension',
+                    content:
+                        ' • MentorBoosters.com reserves the right to suspend or terminate accounts for violations of these terms.\n • Users may terminate their accounts at any time, but fees paid are non-refundable.',
+                  ),
+                  const SizedBox(height: 40),
+                  _buildColumn(
+                    title: '12. Amendments to Terms',
+                    content:
+                        ' • MentorBoosters.com may update these terms from time to time.\n • Users will be notified of significant changes and continued use of the platform constitutes acceptance.',
+                  ),
+                  const SizedBox(height: 40),
+                  _buildColumn(
+                    title: '13. Governing Law and Dispute Resolution',
+                    content:
+                        ' • These terms shall be governed by the laws of [Insert Jurisdiction].\n • Any disputes shall first be attempted to be resolved through negotiation; if unsuccessful,they will be subject to arbitration or court \n  proceedings in the applicable jurisdiction.',
+                  ),
+                  const SizedBox(height: 40),
+                  _buildColumn(
+                    title: '14. Contact Information',
+                    content:
+                        'For inquiries regarding these Terms and Conditions, please contact us at [Insert Contact Email].\nBy using MentorBoosters.com, you acknowledge that you have read, understood, and agree to these Terms and Conditions.',
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 40),
-            
           ],
         ),
       ),
@@ -118,6 +167,7 @@ class TermsAndConditionsPage extends StatelessWidget {
   Widget _buildColumn({required String title, required String content}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
           title,
@@ -127,15 +177,13 @@ class TermsAndConditionsPage extends StatelessWidget {
         Text(
           content,
           style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            wordSpacing: 2,
-            letterSpacing: 1,
-          ),
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              wordSpacing: 2,
+              letterSpacing: 1,
+              height: 2),
         ),
       ],
     );
   }
-
-
 }
