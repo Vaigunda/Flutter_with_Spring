@@ -11,6 +11,7 @@ import 'package:mentor/shared/services/verified.service.dart';
 import 'package:mentor/provider/user_data_provider.dart';
 import 'package:mentor/shared/shared.dart';
 import 'package:mentor/shared/widgets/gradient_button.dart';
+import '../../components/schedule/chat.box.dart';
 import '../../shared/services/top_rated_mentor.service.dart';
 import '../../shared/services/top_mentor.service.dart';
 import '../../shared/models/top_rated_mentor.model.dart';
@@ -135,14 +136,24 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   void signOut() async {
     final userDataProvider = context.read<UserDataProvider>();
 
-    await userDataProvider.setUserDataAsync(
-      usertoken: '',
-      userid: '',
-      name: '',
-      usertype: '',
-    );
-
-    context.go(AppRoutes.signin);
+    if (ChatBox.isChatBoxOpen) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please closed the Chat Box.'),
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } else {
+      await userDataProvider.setUserDataAsync(
+        usertoken: '',
+        userid: '',
+        name: '',
+        usertype: '',
+      );
+      
+      context.go(AppRoutes.signin);
+    }
   }
 
   @override

@@ -89,13 +89,31 @@ class _PaymentScreenState extends State<PaymentScreen> {
       await submitBooking();
       context.go(AppRoutes.home);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Payment Failed: $e'),
-          duration: const Duration(seconds: 3),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (e.toString() == "Exception: Please fill in the complete card details.") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please fill in the complete card details.'),
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } else if (e.toString() == "StripeError<String?>(message: Your card has insufficient funds. Try a different card., code: card_declined)") {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Your card has insufficient funds. Try a different card.'),
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Payment Failed : Please check the details.'),
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -119,7 +137,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 filled: true, // Fill the background with the color
                 hintStyle: TextStyle(color: Colors.black), // Set hint text color
               ),
-              style: TextStyle(color: Colors.black), // Set text color for card number
+              style: const TextStyle(color: Colors.black), // Set text color for card number
             ),
             const SizedBox(height: 50),
             ElevatedButton(

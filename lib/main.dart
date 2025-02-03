@@ -21,6 +21,8 @@ Future<void> main() async {
 
   Stripe.publishableKey = "pk_test_51QU01mAUXckYZtWngp7oTkZpbpxEk5a6WNSyp60iKm8px3ISnP5GGvSd1TMnYUHc55N3upyLRMKzFhV5YSPwC8Rj00MJbYHu0k";
 
+  // Stripe.publishableKey = "pk_live_51QkEZTKi6Bct4tzg4yUJMmI6dBoGASYkgdl2Dig32OYU3PWtQfEAabmZukilBG1Ag17OHDtfHRKkUM8Tt9Q5a6bn005qnft1xa";
+  
   if (UniversalPlatform.isDesktop) {
     setDesktopWindow();
   }

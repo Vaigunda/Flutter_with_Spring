@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_timeline/event_item.dart';
 import 'package:flutter_timeline/indicator_position.dart';
@@ -17,6 +16,7 @@ import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
 
 import '../../shared/models/chat.model.dart';
+import 'chat.box.dart';
 
 class ScheduleScreen extends StatefulWidget {
   const ScheduleScreen({super.key});
@@ -30,13 +30,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   final _toDate = DateTime.now().add(const Duration(days: 60));
   static final _todayKey = GlobalKey();
 
-  OverlayEntry? _chatOverlay;
-  List<ChatMessage> _messages = [];
   List<ChatMessage> _unreadMessages = [];
-  List<ChatMessage> _historyMessages = [];
-
-  List<ChatMessage> _historyMessages1 = [];
-  List<ChatMessage> _historyMessages2 = [];
 
   var provider;
   late String userId;
@@ -48,6 +42,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   DateTime selectedDate = DateTime.now();
   String textDate = "Today";
   bool isDay = false;
+
+  bool _isDisposed = false;
 
   @override
   void initState() {
@@ -73,8 +69,45 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
 @override
 void dispose() {
+  _isDisposed = true;
   super.dispose();
 }
+
+Future<List<ChatMessage>> fetchHistoryMessages(int userId, int mentorId) async {
+    List<ChatMessage> messages1 = await fetchChatHistory(userId, mentorId);
+    List<ChatMessage> historyMessages1 = messages1;
+
+    List<ChatMessage> messages2 = await fetchChatHistory(mentorId, userId);
+    List<ChatMessage> historyMessages2 = messages2;
+
+    return mergeAndSort(historyMessages1, historyMessages2);
+  }
+
+  Future<List<ChatMessage>> fetchChatHistory(int senderId, int recipientId) async {
+    final response = await http.get(
+      Uri.parse('http://localhost:8080/api/chat/history/$senderId/$recipientId'),
+      headers: {
+        'Authorization': 'Bearer $usertoken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => ChatMessage.fromJson(json)).toList();
+    } else {
+      throw Exception("Failed to load chat messages");
+    }
+  }
+
+  List<ChatMessage> mergeAndSort(List<ChatMessage> list1, List<ChatMessage> list2) {
+    // Combine both lists
+    List<ChatMessage> mergedList = []..addAll(list1)..addAll(list2);
+
+    // Sort by timestamp
+    mergedList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+    return mergedList;
+  }
 
 Future<List<ChatMessage>> getUnreadMessages(int senderId, int recipientId) async {
   final response = await http.get(
@@ -90,32 +123,6 @@ Future<List<ChatMessage>> getUnreadMessages(int senderId, int recipientId) async
   } else {
     throw Exception("Failed to load unread messages");
   }
-}
-
-Future<List<ChatMessage>> fetchChatHistory(int senderId, int recipientId) async {
-  final response = await http.get(
-    Uri.parse('http://localhost:8080/api/chat/history/$senderId/$recipientId'),
-    headers: {
-      'Authorization': 'Bearer $usertoken',
-    },
-  );
-
-  if (response.statusCode == 200) {
-    List<dynamic> data = jsonDecode(response.body);
-    return data.map((json) => ChatMessage.fromJson(json)).toList();
-  } else {
-    throw Exception("Failed to load chat messages");
-  }
-}
-
-List<ChatMessage> mergeAndSort(List<ChatMessage> list1, List<ChatMessage> list2) {
-  // Combine both lists
-  List<ChatMessage> mergedList = []..addAll(list1)..addAll(list2);
-
-  // Sort by timestamp
-  mergedList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-
-  return mergedList;
 }
 
 Future<void> getBookingList(DateTime date) async {
@@ -158,13 +165,10 @@ Future<void> getBookingList(DateTime date) async {
         List<dynamic> data = jsonDecode(response.body);
 
         if (data.isNotEmpty) {
-          setState(() {
-            bookingList = data;
-          });
-          // Fetch unread messages for the first time after booking list is loaded
-          for (var booking in bookingList) {
-            fetchUnreadMessages(booking['userId'] , booking['mentorId']);
-            fetchHistoryMessages(booking['userId'] , booking['mentorId']);
+          if (!_isDisposed) {  // ✅ Check if widget is still in the tree
+            setState(() {
+              bookingList = data.isNotEmpty ? data : [];
+            });
           }
         } else {
           setState(() {
@@ -176,45 +180,32 @@ Future<void> getBookingList(DateTime date) async {
       }
     }
   } on FormatException {
-    setState(() {
-      bookingList = [];
-    });
-  } on Exception {
-    setState(() {
-      bookingList = [];
-    });
-  }
+      if (!_isDisposed) {
+        setState(() {
+          bookingList = [];
+        });
+      }
+    } on Exception {
+      if (!_isDisposed) {
+        setState(() {
+          bookingList = [];
+        });
+      }
+    }
 }
 
 Future<void> fetchUnreadMessages(int userId, int mentorId) async {
   List<ChatMessage> messages = await getUnreadMessages(userType == 'Mentor' ? userId : mentorId, userType == 'Mentor' ? mentorId : userId);
-  setState(() {
-    _unreadMessages = messages;
-  });
-}
-
-Future<void> fetchHistoryMessages(int userId, int mentorId) async {
-  List<ChatMessage> messages1 = await fetchChatHistory(userId, mentorId);
-  setState(() {
-   // _historyMessages = messages1;
-    _historyMessages1 = messages1;
-  });
-
-  List<ChatMessage> messages2 = await fetchChatHistory(mentorId, userId);
-  setState(() {
-   // _historyMessages = messages2;
-    _historyMessages2 = messages2;
-  });
-
-  _historyMessages = mergeAndSort(_historyMessages1, _historyMessages2);
-  _messages = _historyMessages;
+  if (!_isDisposed) {
+      setState(() {
+        _unreadMessages = messages;
+      });
+    }
 }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-     onTap: closeChatBox,
-    child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
         centerTitle: false,
         title: const Text(
@@ -267,7 +258,6 @@ Future<void> fetchHistoryMessages(int userId, int mentorId) async {
           )
         ]),
       ),
-    ),
     );
   }
 
@@ -324,6 +314,8 @@ Future<void> fetchHistoryMessages(int userId, int mentorId) async {
     } else if (userType == "User") {
       name = bookingList[i]['mentorName'] ?? 'Unknown Mentor';
     }
+
+    fetchUnreadMessages(bookingList[i]['userId'] , bookingList[i]['mentorId']);
     
     final category = bookingList[i]['category'] ?? 'No Category';
     final connectMethod = bookingList[i]['connectMethod'] ?? 'Unknown Method';
@@ -391,7 +383,9 @@ Future<void> fetchHistoryMessages(int userId, int mentorId) async {
                   ],
                 ),
                 onPressed: () async {
-                  openChatBox(userId, mentorId);
+                  var chatBox = ChatBox();
+                  List<ChatMessage> messages = await fetchHistoryMessages(userId, mentorId);
+                  chatBox.openChatBox(context, userId, mentorId, messages, _unreadMessages);
                 },
               ),
             if (_unreadMessages.isNotEmpty)
@@ -454,235 +448,6 @@ Future<void> fetchHistoryMessages(int userId, int mentorId) async {
       ),
     ]),
   );
-}
-
-void openChatBox(int userId, int mentorId) {
-  if (_chatOverlay != null) return;
-
-  TextEditingController chatController = TextEditingController();
-  ScrollController scrollController = ScrollController();
-
-  _chatOverlay = OverlayEntry(
-    builder: (context) => StatefulBuilder(
-      builder: (context, setState) => Positioned(
-        right: 20,
-        bottom: 50,
-        child: _buildChatPanel(userId, mentorId, setState, chatController, scrollController),
-      ),
-    ),
-  );
-
-  Overlay.of(context).insert(_chatOverlay!);
-
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    _scrollToBottom(scrollController);
-  });
-
-  for (var message in _unreadMessages) {
-    markMessagesAsRead(message.senderId, message.recipientId);
-  }
-}
-
-Widget _buildChatPanel(int userId, int mentorId, void Function(void Function()) setState, 
-  TextEditingController chatController, ScrollController scrollController) {
-
-  final FocusNode rawKeyboardFocusNode = FocusNode();
-  final FocusNode textFieldFocusNode = FocusNode();
-    
-    Future<void> handleEnterKey(RawKeyEvent event) async {
-      if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
-        await _sendMessage(chatController.text, userId, mentorId);
-        chatController.clear();
-        _scrollToBottom(scrollController);
-        textFieldFocusNode.requestFocus();
-        setState(() {});
-      }
-    }
-
-    return Material(
-      color: Colors.transparent,
-      child: Container(
-        width: 300,
-        height: 400,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 10,
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: const BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text("Chat", style: TextStyle(color: Colors.white, fontSize: 18)),
-                  IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
-                    onPressed: () {
-                      chatController.dispose(); // Dispose when closing
-                      closeChatBox();
-                    },
-                  ),
-                ],
-              ),
-            ),
-            // Messages List
-            Expanded(
-              child: ListView.builder(
-                controller: scrollController,  // Attach the ScrollController
-                padding: const EdgeInsets.all(10),
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  bool isSender = (userType == "Mentor")
-                    ? _messages[index].senderId == mentorId
-                    : _messages[index].senderId == userId;
-
-                  return _chatBubble(_messages[index].content, isSender);
-                },
-              ),
-            ),
-            Padding(
-             padding: const EdgeInsets.all(8),
-             child: RawKeyboardListener(
-              focusNode: rawKeyboardFocusNode,
-              onKey: handleEnterKey,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: chatController,
-                      focusNode: textFieldFocusNode,
-                      decoration: const InputDecoration(
-                        hintText: "Type a message...",
-                        border: OutlineInputBorder(),
-                      ),
-                      style: const TextStyle(
-                        color:  Color.fromARGB(255, 0, 0, 0)
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.send, color: Color.fromARGB(255, 0, 0, 0)),
-                    onPressed: () async {
-                      await _sendMessage(chatController.text, userId, mentorId);
-                      chatController.clear();
-                      _scrollToBottom(scrollController);
-                      setState(() {});
-                    },
-                  ),
-                ],
-              ),
-             ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Method to scroll to the bottom
-  void _scrollToBottom(ScrollController scrollController) {
-    if (scrollController.hasClients) {
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
-    }
-  }
-
-// Chat Bubble Widget
-Widget _chatBubble(String message, bool isSender) {
-  return Align(
-    alignment: isSender ? Alignment.centerRight : Alignment.centerLeft,
-    child: Container(
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isSender ? Colors.blue : Colors.grey[300],
-        borderRadius: BorderRadius.only(
-          topLeft: const Radius.circular(12),
-          topRight: const Radius.circular(12),
-          bottomLeft: isSender ? const Radius.circular(12) : const Radius.circular(0),
-          bottomRight: isSender ? const Radius.circular(0) : const Radius.circular(12),
-        ),
-      ),
-      child: Text(
-        message,
-        style: TextStyle(color: isSender ? Colors.white : Colors.black),
-      ),
-    ),
-  );
-}
-
-Future<void> _sendMessage(String chatMessage, int userId, int mentorId) async {
-  if (!mounted) return; // Prevent calling setState if widget is unmounted
-  if (chatMessage.isEmpty) return;
-
-  String requestBody;
-  if (userType == 'Mentor') {
-    requestBody = jsonEncode({
-      'senderId': mentorId,
-      'recipientId': userId,
-      'content': chatMessage,
-    });
-  } else {
-    requestBody = jsonEncode({
-      'senderId': userId,
-      'recipientId': mentorId,
-      'content': chatMessage,
-    });
-  }
-
-  try {
-    final response = await http.post(
-      Uri.parse('http://localhost:8080/api/chat/send'),
-      headers: {
-        "content-type": "application/json",
-        'Authorization': 'Bearer $usertoken',
-      },
-      body: requestBody,
-    );
-
-    if (response.statusCode == 200) {
-      var parsed = response.body;
-      Map<String, dynamic> map = jsonDecode(parsed);
-
-      if (mounted) {
-        setState(() {
-          _messages.add(ChatMessage(id: map['id'], senderId: map['senderId'], 
-            recipientId: map['recipientId'], content: map['content'], read: map['read'], timestamp: map['timestamp']));
-        });
-      }
-    }
-  } catch (e) {
-    print("Error sending message: $e");
-  }
-}
-
-// Mark messages as read for a recipient
-Future<void> markMessagesAsRead(int senderId, int recipientId) async {
-  final response = await http.get(
-    Uri.parse('http://localhost:8080/api/chat/markAsRead/$senderId/$recipientId'),
-    headers: {
-      'Authorization': 'Bearer $usertoken',
-    },
-  );
-
-  if (response.statusCode != 200) {
-    throw Exception("Failed to mark messages as read");
-  }
-}
-
-void closeChatBox() {
-  _chatOverlay?.remove();
-  _chatOverlay = null;
 }
 
   Widget _buildTimeline() {
