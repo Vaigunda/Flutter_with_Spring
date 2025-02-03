@@ -140,11 +140,15 @@ class _AdminPageState extends State<AdminPage> {
       appBar: AppBar(
         title: const Center(child: Text('Admin Page')),
         actions: [
-          IconButton(
-            onPressed: () => context.go(AppRoutes.createMentor),
-            icon: const Icon(Icons.add),
-            tooltip: 'Create Mentor',
+          ElevatedButton(
+           onPressed: () => context.go(AppRoutes.createMentor),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+            child: const Text(
+              'Add',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
+         
           IconButton(
             onPressed: () {
               setState(() {
@@ -157,7 +161,16 @@ class _AdminPageState extends State<AdminPage> {
         ],
       ),
       body: mentors.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+          ? Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: EdgeInsets.only(right: 100.0), 
+                child: const Text(
+                  'No mentors found',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+            )
           : isListView
               ? ListView.builder(
                   itemCount: mentors.length,
@@ -167,12 +180,21 @@ class _AdminPageState extends State<AdminPage> {
                       color: Theme.of(context).colorScheme.onTertiaryContainer,
                       margin: const EdgeInsets.all(8.0),
                       child: ListTile(
-                        title: Text(mentor.name),
+                        title: Text(
+                          mentor.name,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(mentor.role ?? ""),
-                              Text(mentor.bio),
+                              Text(
+                                mentor.role ?? "",
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Text(
+                                mentor.bio,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ]),
                         leading: CircleAvatar(
                           radius: 26,
@@ -211,7 +233,7 @@ class _AdminPageState extends State<AdminPage> {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: getCrossAxisCount(context),
                         childAspectRatio:
-                            MediaQuery.of(context).size.width > 600 ? 0.8 : 1.3,
+                            MediaQuery.of(context).size.width > 600 ? 0.9 : 1.3,
                       ),
                       itemCount: mentors.length,
                       itemBuilder: (context, index) {
@@ -238,6 +260,7 @@ class _AdminPageState extends State<AdminPage> {
                               const SizedBox(height: 12),
                               Text(
                                 mentor.name,
+                                overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   fontSize: 24,
@@ -250,6 +273,7 @@ class _AdminPageState extends State<AdminPage> {
                                   children: [
                                     Text(
                                       mentor.role ?? "",
+                                      overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w400,
@@ -259,6 +283,8 @@ class _AdminPageState extends State<AdminPage> {
                                     ),
                                     Text(
                                       mentor.bio,
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.w400,

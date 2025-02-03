@@ -176,7 +176,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 CustomButton(
                   label: "Previous",
                   onPressed: onStepCancel,
-                  type: EButtonType.outline,
+                  
                 ),
               const SizedBox(width: 10),
               if (_index < 3)
@@ -198,85 +198,296 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   Widget renderSelectCategory() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Card(
-        elevation: 1,
-        color: const Color.fromARGB(255, 138, 136, 155),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(child: Padding(
-             padding: const EdgeInsets.only(top: 10.0),
-              child: renderHeaderStep("Select a category"),
-            )),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0,left: 10,right: 10),
-              child: Card(
-                color: Theme.of(context).colorScheme.onTertiary,
+    var isWeb = MediaQuery.of(context).size.width > 800;
+    return Column(
+      children: [
+        isWeb
+            ? Card(
                 elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: mentor!.categories.length + 1,
-                  itemBuilder: (context, index) {
-                    final item = index < mentor!.categories.length
-                        ? mentor!.categories[index]
-                        : Category(
-                            id: 'other', name: "Other", icon: "circleQuestion");
-                      
-                    return InkWell(
-                      onTap: () {
-                        setState(() {
-                          formData[_index]["value"] = item.id;
-                          _errorMessage = '';
-                        });
-                      },
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: formData[_index]["value"] == item.id
-                              ?  Theme.of(context).colorScheme.onBackground
-                              : Colors.transparent,
-                        ),
-                        child: ListTile(
-                          leading:const Icon(Icons.connect_without_contact_sharp) ,
-                          minLeadingWidth: 10,
-                          visualDensity:
-                              const VisualDensity(horizontal: 0, vertical: -4),
-                          dense: true,
-                          title: Text(
-                            item.name,
-                            style: context.bodyMedium!.copyWith(
-                              color: formData[_index]["value"] == item.id
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context).colorScheme.onSurface,
+                color: Theme.of(context).cardColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Learn Your Way',
+                              style: TextStyle(
+                                fontSize: 48,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 2,
+                                fontFamily: "Lobster",
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                          ),
-                          trailing: Radio<String>(
-                            value: item.id,
-                            groupValue: formData[_index]["value"],
-                            onChanged: (String? value) {
-                              setState(() {
-                                formData[_index]["value"] = value;
-                                _errorMessage = '';
-                              });
-                            },
-                          ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'Learn what you want, How you want with our Mentors',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  wordSpacing: 4,
+                                  letterSpacing: 2),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              'Find the right mentor to guide you on your journey and gain valuable insights to grow.\n Choose a time that fits your schedule and start learning from the best.\n Take the next step toward success with personalized mentorship',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  wordSpacing: 4,
+                                  letterSpacing: 1),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  },
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Card(
+                              child: Image.asset(
+                                'assets/images/booking.jpeg',
+                                height: 240,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Card(
+                color: Theme.of(context).cardColor,
+                elevation: 4,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Learn Your Way',
+                            style: TextStyle(
+                              fontSize: 38,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 2,
+                              fontFamily: "Lobster",
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            'Learn what you want, How you want with our Mentoors',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                wordSpacing: 4,
+                                letterSpacing: 2),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Card(
+                            child: Image.asset(
+                              'assets/images/booking.jpeg',
+                              height: 240,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
+        Card(
+            child: Container(
+          height: 40,
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [Colors.pinkAccent, Colors.orangeAccent],
             ),
-          ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: Row(
+              mainAxisAlignment:
+                  MainAxisAlignment.spaceEvenly, // Distributes space evenly
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.find_replace, size: isWeb ? 18 : 15),
+                      const SizedBox(width: 5),
+                      Text(
+                        'Find your Ideal Mentor',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: isWeb ? 16 : 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 3), // Fixed spacing for mobile/web
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.book_online, size: isWeb ? 18 : 15),
+                      const SizedBox(width: 5),
+                      Text(
+                        'Book Sessions Instantly',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: isWeb ? 16 : 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 3),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.grade_outlined, size: isWeb ? 18 : 15),
+                      const SizedBox(width: 5),
+                      Text(
+                        'Grow With Expert Guidance',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: isWeb ? 16 : 9,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Card(
+            elevation: 1,
+            color: Theme.of(context).cardColor,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                    child: Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: renderHeaderStep("Select a category"),
+                )),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(bottom: 10.0, left: 10, right: 10),
+                  child: Card(
+                    color: Theme.of(context).colorScheme.onTertiary,
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: mentor!.categories.length + 1,
+                      itemBuilder: (context, index) {
+                        final item = index < mentor!.categories.length
+                            ? mentor!.categories[index]
+                            : Category(
+                                id: 'other',
+                                name: "Other",
+                                icon: "circleQuestion");
+
+                        return InkWell(
+                          onTap: () {
+                            setState(() {
+                              formData[_index]["value"] = item.id;
+                              _errorMessage = '';
+                            });
+                          },
+                          borderRadius: BorderRadius.circular(8),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: formData[_index]["value"] == item.id
+                                  ? Theme.of(context).colorScheme.onSurface
+                                  : Colors.transparent,
+                            ),
+                            child: ListTile(
+                              leading: const Icon(
+                                  Icons.connect_without_contact_sharp),
+                              minLeadingWidth: 10,
+                              visualDensity: const VisualDensity(
+                                  horizontal: 0, vertical: -4),
+                              dense: true,
+                              title: Text(
+                                item.name,
+                                style: context.bodyMedium!.copyWith(
+                                  color: formData[_index]["value"] == item.id
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                              trailing: Radio<String>(
+                                value: item.id,
+                                groupValue: formData[_index]["value"],
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    formData[_index]["value"] = value;
+                                    _errorMessage = '';
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -355,76 +566,214 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   Widget renderSelectMethodConnect() {
+    var isWeb = MediaQuery.of(context).size.width > 800;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        renderHeaderStep("Select method connect"),
-        DecoratedBox(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Theme.of(context).colorScheme.outline,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
+        Card(
+          color: Theme.of(context).cardColor,
+          elevation: 4,
+          child: isWeb
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Let\'s Connect & Learn together',
+                              style: TextStyle(
+                                fontSize: 42,
+                                fontWeight: FontWeight.w400,
+                                letterSpacing: 2,
+                                fontFamily: "Lobster",
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              'Seamless Mentor Sessions,  Anytime, Anywhere',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  wordSpacing: 4,
+                                  letterSpacing: 2),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              'Connect with expert mentors instantly, schedule flexible \n sessions, gain valuable insights, and accelerate your growth \n from anywhere, anytime with ease.',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w100,
+                                  wordSpacing: 4,
+                                  letterSpacing: 2),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Card(
+                              child: Image.asset(
+                                'assets/images/videocall.jpg',
+                                height: 280,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Column(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Let\'s Connect & Learn together',
+                            style: TextStyle(
+                              fontSize: 38,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 2,
+                              fontFamily: "Lobster",
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            'Seamless Mentor Sessions,  Anytime, Anywhere',
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                wordSpacing: 2,
+                                letterSpacing: 2),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            height: 280,
+                            decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              image: DecorationImage(
+                                image:
+                                    AssetImage('assets/images/videocall.jpg'),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Card(
+          elevation: 2,
+          color: Theme.of(context).cardColor,
           child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: DropdownButton<String>(
-              focusColor: Colors.transparent,
-              isExpanded: true,
-              isDense: true,
-              underline: Container(),
-              value: formData[_index]["value"],
-              hint: const Text("Select method to connect with mentor"),
-              items: connectMethods.map((ConnectMethodModel value) {
-                return DropdownMenuItem<String>(
-                  value: value
-                      .id, // Assuming value.id is a string like "1", "2", etc.
-                  child: Text(value.name),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  formData[_index]["value"] = value;
-                  _errorMessage = '';
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                renderHeaderStep("Select method connect"),
+                Card(
+                  elevation: 3,
+                  color: Theme.of(context).colorScheme.onTertiary,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: DropdownButton<String>(
+                      focusColor: Colors.transparent,
+                      isExpanded: true,
+                      isDense: true,
+                      underline: Container(),
+                      value: formData[_index]["value"],
+                      hint: const Text("Select method to connect with mentor"),
+                      items: connectMethods.map((ConnectMethodModel value) {
+                        return DropdownMenuItem<String>(
+                          value: value
+                              .id, // Assuming value.id is a string like "1", "2", etc.
+                          child: Text(value.name),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          formData[_index]["value"] = value;
+                          _errorMessage = '';
 
-                  // Reset Google Meet specific fields if another method is selected
-                  if (value != '1') {
-                    // Replace '3' with the actual ID for "Google Meet"
-                    googleMeetLink = null;
-                    googleMeetError = null;
-                  }
-                });
-              },
+                          // Reset Google Meet specific fields if another method is selected
+                          if (value != '1') {
+                            // Replace '3' with the actual ID for "Google Meet"
+                            googleMeetLink = null;
+                            googleMeetError = null;
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                // Conditionally render the text field if the ID for "Google Meet" is selected
+                if (formData[_index]["value"] ==
+                    '2') // Replace '3' with the correct ID for "Google Meet"
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        labelText: 'Enter Google Meet Link',
+                        border: const OutlineInputBorder(),
+                        errorText: googleMeetError,
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          googleMeetLink = value;
+
+                          // Validate the Google Meet link
+                          if (!RegExp(
+                                  r"^https://meet\.google\.com/[a-zA-Z0-9-]+$")
+                              .hasMatch(value)) {
+                            googleMeetError =
+                                'Please enter a valid Google Meet link.';
+                          } else {
+                            googleMeetError = null;
+                          }
+                        });
+                      },
+                    ),
+                  ),
+              ],
             ),
           ),
         ),
-        // Conditionally render the text field if the ID for "Google Meet" is selected
-        if (formData[_index]["value"] ==
-            '2') // Replace '3' with the correct ID for "Google Meet"
-          Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: 'Enter Google Meet Link',
-                border: const OutlineInputBorder(),
-                errorText: googleMeetError,
-              ),
-              onChanged: (value) {
-                setState(() {
-                  googleMeetLink = value;
-
-                  // Validate the Google Meet link
-                  if (!RegExp(r"^https://meet\.google\.com/[a-zA-Z0-9-]+$")
-                      .hasMatch(value)) {
-                    googleMeetError = 'Please enter a valid Google Meet link.';
-                  } else {
-                    googleMeetError = null;
-                  }
-                });
-              },
-            ),
-          ),
       ],
     );
   }
@@ -467,7 +816,8 @@ class _BookingScreenState extends State<BookingScreen> {
   Widget renderHeaderStep(String label) {
     return Column(
       children: [
-        Text(label, style: const TextStyle( color: Colors.white,fontSize: 14)),
+        Text(label,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         const SizedBox(height: 10),
         if (_errorMessage.isNotEmpty)
           Text(_errorMessage,
