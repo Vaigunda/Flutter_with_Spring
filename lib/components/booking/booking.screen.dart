@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:mentor/constants/ui.dart';
 import 'package:mentor/navigation/router.dart';
 import 'package:mentor/shared/models/connect_method.model.dart';
 import 'package:mentor/shared/models/fixed_time_slot.model.dart';
@@ -174,19 +176,20 @@ class _BookingScreenState extends State<BookingScreen> {
               if (_index != 0)
                 CustomButton(
                   label: "Previous",
-                  
                   onPressed: onStepCancel,
                   borderRadius: 10,
-                  
                 ),
               const SizedBox(width: 10),
               if (_index < 3)
-                CustomButton(label: "Next", onPressed: onStepContinue,borderRadius: 10,),
+                CustomButton(
+                  label: "Next",
+                  onPressed: onStepContinue,
+                  borderRadius: 10,
+                ),
               if (_index == 3)
                 CustomButton(
                   label: "Booking",
                   borderRadius: 10,
-                  
                   onPressed: () async {
                     await submitBooking();
                     //context.pop();
@@ -782,6 +785,7 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   Widget renderSubmitBooking() {
+var isWeb = MediaQuery.of(context).size.width > 800;
     // Get selected category and connect method
     var category = mentor!.categories.firstWhere(
         (element) => element.id == formData[0]["value"],
@@ -797,23 +801,280 @@ class _BookingScreenState extends State<BookingScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Your booking information: ", style: context.titleSmall),
-        const SizedBox(height: 10),
-        Text("Mentor:", style: context.titleSmall),
-        Text(mentor!.name),
-        const SizedBox(height: 10),
-        Text("Category:", style: context.titleSmall),
-        Text(category.name),
-        const SizedBox(height: 10),
-        Text("Time Slot:", style: context.titleSmall),
-        Text(
-            "${selectedTimeSlot.timeStart} - ${selectedTimeSlot.timeEnd}"), // Display time slot
-        const SizedBox(height: 10),
-        Text("Connect method:", style: context.titleSmall),
-        Text(method.name),
-        const SizedBox(height: 10),
+        const Center(
+          child: Text(
+            "Booking Details",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Padding(
+          padding:  EdgeInsets.symmetric( horizontal:isWeb?120 :16),
+          child:  HoverableContainer(
+            context: context,
+            hover: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+               const SizedBox(height: 20,),
+                ClipRRect(
+                  child: Card(
+                    color: Theme.of(context).cardColor,
+                    shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(15) ),
+                    child: Image.asset(
+                      'assets/images/booking.jpg',
+                      height: 320,
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildInfoBox(Icons.person, "Mentor", mentor!.name, Colors.blue.shade50),
+                _buildInfoBox(Icons.book, "Category", category.name, Colors.green.shade50),
+                _buildInfoBox(Icons.access_time, "Time Slot",
+                    "${selectedTimeSlot.timeStart} - ${selectedTimeSlot.timeEnd}", Colors.orange.shade50),
+                _buildInfoBox(Icons.video_call, "Connect Method", method.name, Colors.purple.shade50),
+            
+                const SizedBox(width: 16),
+            
+                
+              ],
+            ),
+          ),
+        ),
       ],
     );
+  }
+ Widget _buildInfoBox(IconData icon, String label, String value, Color bgColor) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 28, color: Colors.blueGrey),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 4),
+                Text(value, style: const TextStyle(fontSize: 14, color: Colors.black87))]))]));
+
+    //  Column(
+    //     children: [
+    //       Card(
+    //         color: Theme.of(context).cardColor,
+    //         elevation: 4,
+    //         child: isWeb
+    //             ? Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //                 children: [
+    //                   const Padding(
+    //                     padding: EdgeInsets.symmetric(horizontal: 20),
+    //                     child: Expanded(
+    //                       child: Column(
+    //                         crossAxisAlignment: CrossAxisAlignment.center,
+    //                         children: [
+    //                           Text(
+    //                             'Let\'s Connect & Learn together',
+    //                             style: TextStyle(
+    //                               fontSize: 42,
+    //                               fontWeight: FontWeight.w400,
+    //                               letterSpacing: 2,
+    //                               fontFamily: "Lobster",
+    //                             ),
+    //                           ),
+    //                           SizedBox(
+    //                             height: 10,
+    //                           ),
+    //                           Text(
+    //                             'Seamless Mentor Sessions,  Anytime, Anywhere',
+    //                             style: TextStyle(
+    //                                 fontSize: 20,
+    //                                 fontWeight: FontWeight.bold,
+    //                                 wordSpacing: 4,
+    //                                 letterSpacing: 2),
+    //                           ),
+    //                           SizedBox(
+    //                             height: 20,
+    //                           ),
+    //                           Text(
+    //                             'Connect with expert mentors instantly, schedule flexible \n sessions, gain valuable insights, and accelerate your growth \n from anywhere, anytime with ease.',
+    //                             style: TextStyle(
+    //                                 fontSize: 14,
+    //                                 fontWeight: FontWeight.w100,
+    //                                 wordSpacing: 4,
+    //                                 letterSpacing: 2),
+    //                             textAlign: TextAlign.center,
+    //                           ),
+    //                           SizedBox(
+    //                             height: 20,
+    //                           ),
+    //                         ],
+    //                       ),
+    //                     ),
+    //                   ),
+    //                   Expanded(
+    //                     child: Column(
+    //                       children: [
+    //                         Padding(
+    //                           padding: const EdgeInsets.all(8.0),
+    //                           child: Card(
+    //                             child: Image.asset(
+    //                               'assets/images/videocall.jpg',
+    //                               height: 280,
+    //                             ),
+    //                           ),
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   ),
+    //                 ],
+    //               )
+    //             : Column(
+    //                 children: [
+    //                   const Padding(
+    //                     padding: EdgeInsets.symmetric(horizontal: 20),
+    //                     child: Column(
+    //                       crossAxisAlignment: CrossAxisAlignment.center,
+    //                       children: [
+    //                         Text(
+    //                           'Let\'s Connect & Learn together',
+    //                           style: TextStyle(
+    //                             fontSize: 38,
+    //                             fontWeight: FontWeight.w400,
+    //                             letterSpacing: 2,
+    //                             fontFamily: "Lobster",
+    //                           ),
+    //                           textAlign: TextAlign.center,
+    //                         ),
+    //                         SizedBox(
+    //                           height: 10,
+    //                         ),
+    //                         Text(
+    //                           'Seamless Mentor Sessions,  Anytime, Anywhere',
+    //                           style: TextStyle(
+    //                               fontSize: 18,
+    //                               fontWeight: FontWeight.bold,
+    //                               wordSpacing: 2,
+    //                               letterSpacing: 2),
+    //                           textAlign: TextAlign.center,
+    //                         ),
+    //                         SizedBox(
+    //                           height: 20,
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   ),
+    //                   Column(
+    //                     children: [
+    //                       Padding(
+    //                         padding: const EdgeInsets.all(8.0),
+    //                         child: Container(
+    //                           height: 280,
+    //                           decoration: const BoxDecoration(
+    //                             borderRadius:
+    //                                 BorderRadius.all(Radius.circular(10)),
+    //                             image: DecorationImage(
+    //                               image:
+    //                                   AssetImage('assets/images/videocall.jpg'),
+    //                               fit: BoxFit.contain,
+    //                             ),
+    //                           ),
+    //                         ),
+    //                       ),
+    //                     ],
+    //                   ),
+    //                 ],
+    //               ),
+    //       ),
+    //       const SizedBox(
+    //         height: 10,
+    //       ),
+    //       Card(
+    //         elevation: 2,
+    //         color: Theme.of(context).cardColor,
+    //         child: Padding(
+    //           padding: const EdgeInsets.all(10.0),
+    //           child: Column(
+    //             crossAxisAlignment: CrossAxisAlignment.start,
+    //             children: [
+    //               renderHeaderStep("Select method connect"),
+    //               Card(
+    //                 elevation: 3,
+    //                 color: Theme.of(context).colorScheme.onTertiary,
+    //                 child: Padding(
+    //                   padding: const EdgeInsets.all(10),
+    //                   child: DropdownButton<String>(
+    //                     focusColor: Colors.transparent,
+    //                     isExpanded: true,
+    //                     isDense: true,
+    //                     underline: Container(),
+    //                     value: formData[_index]["value"],
+    //                     hint: const Text("Select method to connect with mentor"),
+    //                     items: connectMethods.map((ConnectMethodModel value) {
+    //                       return DropdownMenuItem<String>(
+    //                         value: value
+    //                             .id, // Assuming value.id is a string like "1", "2", etc.
+    //                         child: Text(value.name),
+    //                       );
+    //                     }).toList(),
+    //                     onChanged: (value) {
+    //                       setState(() {
+    //                         formData[_index]["value"] = value;
+    //                         _errorMessage = '';
+
+    //                         // Reset Google Meet specific fields if another method is selected
+    //                         if (value != '1') {
+    //                           // Replace '3' with the actual ID for "Google Meet"
+    //                           googleMeetLink = null;
+    //                           googleMeetError = null;
+    //                         }
+    //                       });
+    //                     },
+    //                   ),
+    //                 ),
+    //               ),
+    //               // Conditionally render the text field if the ID for "Google Meet" is selected
+    //               if (formData[_index]["value"] ==
+    //                   '2') // Replace '3' with the correct ID for "Google Meet"
+    //                 Padding(
+    //                   padding: const EdgeInsets.only(top: 10),
+    //                   child: TextField(
+    //                     decoration: InputDecoration(
+    //                       labelText: 'Enter Google Meet Link',
+    //                       border: const OutlineInputBorder(),
+    //                       errorText: googleMeetError,
+    //                     ),
+    //                     onChanged: (value) {
+    //                       setState(() {
+    //                         googleMeetLink = value;
+
+    //                         // Validate the Google Meet link
+    //                         if (!RegExp(
+    //                                 r"^https://meet\.google\.com/[a-zA-Z0-9-]+$")
+    //                             .hasMatch(value)) {
+    //                           googleMeetError =
+    //                               'Please enter a valid Google Meet link.';
+    //                         } else {
+    //                           googleMeetError = null;
+    //                         }
+    //                       });
+    //                     },
+    //                   ),
+    //                 ),
+    //             ],
+    //           ),
+    //         ),
+    //       ),
+    //     ],
+    //   );
   }
 
   Widget renderHeaderStep(String label) {
@@ -867,7 +1128,8 @@ class _BookingScreenState extends State<BookingScreen> {
         final tokenService = TokenService();
         tokenService.checkToken(usertoken, context);
       } else {
-        context.push('${AppRoutes.payment}/${mentor!.free.price}/${mentor!.id}/${mentor!.name}/$bookingData');
+        context.push(
+            '${AppRoutes.payment}/${mentor!.free.price}/${mentor!.id}/${mentor!.name}/$bookingData');
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

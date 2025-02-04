@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:hugeicons/hugeicons.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
 import 'package:mentor/navigation/router.dart';
@@ -10,6 +11,7 @@ import 'package:mentor/components/admin/view_mentor.screen.dart';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
 
+import '../../constants/ui.dart';
 import '../../shared/services/token.service.dart';
 
 class AdminPage extends StatefulWidget {
@@ -141,14 +143,13 @@ class _AdminPageState extends State<AdminPage> {
         title: const Center(child: Text('Admin Page')),
         actions: [
           ElevatedButton(
-           onPressed: () => context.go(AppRoutes.createMentor),
+            onPressed: () => context.go(AppRoutes.createMentor),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
             child: const Text(
               'Add',
               style: TextStyle(color: Colors.white),
             ),
           ),
-         
           IconButton(
             onPressed: () {
               setState(() {
@@ -161,11 +162,11 @@ class _AdminPageState extends State<AdminPage> {
         ],
       ),
       body: mentors.isEmpty
-          ? Align(
+          ? const Align(
               alignment: Alignment.center,
               child: Padding(
-                padding: EdgeInsets.only(right: 100.0), 
-                child: const Text(
+                padding: EdgeInsets.only(right: 100.0),
+                child: Text(
                   'No mentors found',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
@@ -176,51 +177,70 @@ class _AdminPageState extends State<AdminPage> {
                   itemCount: mentors.length,
                   itemBuilder: (context, index) {
                     final mentor = mentors[index];
-                    return Card(
-                      color: Theme.of(context).colorScheme.onTertiaryContainer,
-                      margin: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        title: Text(
-                          mentor.name,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                mentor.role ?? "",
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Text(
-                                mentor.bio,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ]),
-                        leading: CircleAvatar(
-                          radius: 26,
-                          backgroundImage: AssetImage(
-                            mentor.avatarUrl,
+                    return HoverableContainer(
+                      hover: false,
+                      context: context,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: ListTile(
+                          title: Text(
+                            mentor.name,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.visibility),
-                              onPressed: () => viewMentor(mentor),
-                              tooltip: 'View',
+                          subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(mentor.role ?? "",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w400)),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  mentor.bio,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ]),
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(60),
+                            child: Image.asset(
+                              mentor.avatarUrl,
+                              fit: BoxFit.cover,
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.edit),
-                              onPressed: () => editMentor(mentor),
-                              tooltip: 'Edit',
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () => deleteMentor(mentor.id),
-                              tooltip: 'Delete',
-                            ),
-                          ],
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.visibility,color: Colors.blue,),
+                                onPressed: () => viewMentor(mentor),
+                                tooltip: 'View',
+                              ),
+                              IconButton(
+                                icon: const Icon(HugeIcons.strokeRoundedEdit01,color: Colors.green,),
+                                onPressed: () => editMentor(mentor),
+                                tooltip: 'Edit',
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {
+                                  showDeleteConfirmationDialog(
+                                    context: context,
+                                    itemName: '',
+                                    onConfirm: () => deleteMentor(mentor.id),
+                                  );
+                                },
+                                tooltip: 'Delete',
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );

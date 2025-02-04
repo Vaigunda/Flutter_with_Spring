@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:hugeicons/hugeicons.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:mentor/constants/ui.dart';
 import 'dart:convert';
 import 'package:mentor/shared/models/all_mentors.model.dart';
 import 'package:intl/intl.dart';
 import 'package:mentor/shared/services/categories.service.dart';
+import 'package:mentor/shared/views/button.dart';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -584,51 +587,59 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('Edit Mentor',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24),),
+      ),
+      body: LayoutBuilder(builder: (context, constraints) {
       var isTwoColumn = constraints.maxWidth > 800;
       return SingleChildScrollView(
-          child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: SafeArea(
-                  child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 25, 20, 25),
-                      child: Column(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 25, 20, 25),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (isTwoColumn)
+                    Material(
+                      elevation: 4,
+                      child: Card(
+                        color: Colors.transparent,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            isTwoColumn
-                                ? Padding(
-                                    padding: const EdgeInsets.all(60),
-                                    child: Material(
-                                      elevation: 4,
-                                      child: Card(
-                                        color: Colors.transparent,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            const SizedBox(width: 16),
-                                            Expanded(
-                                              child: formFields(),
-                                            ),
-                                            Expanded(
-                                              child: Column(
-                                                children: [
-                                                  Image.asset(
-                                                    'assets/images/login.png',
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : formFields(),
-                          ])))));
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: formFields(),
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/edit.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else
+                    formFields(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
     }));
   }
 
@@ -637,66 +648,137 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         // Name
-        TextField(
-          controller: nameController,
-          
-          decoration: const InputDecoration(labelText: 'Name'),
-          onChanged: (value) => updateField('name', value),
+        HoverableContainer(
+          context: context,
+          hover: false,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                  labelText: 'Name', border: InputBorder.none),
+              onChanged: (value) => updateField('name', value),
+            ),
+          ),
         ),
         // Email
-        TextField(
-          controller: emailController,
-          decoration: const InputDecoration(labelText: 'Email'),
-          onChanged: (value) => updateField('email', value),
+        HoverableContainer(
+          context: context,
+          hover: false,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                  labelText: 'Email', border: InputBorder.none),
+              onChanged: (value) => updateField('email', value),
+            ),
+          ),
         ),
         // Role
-        TextField(
-          controller: roleController,
-          decoration: const InputDecoration(labelText: 'Role'),
-          onChanged: (value) => updateField('role', value),
+        HoverableContainer(
+          context: context,
+          hover: false,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: roleController,
+              decoration: const InputDecoration(
+                  labelText: 'Role', border: InputBorder.none),
+              onChanged: (value) => updateField('role', value),
+            ),
+          ),
         ),
 
         // Bio
-        TextField(
-          controller: bioController,
-          decoration: const InputDecoration(labelText: 'Bio'),
-          onChanged: (value) => updateField('bio', value),
+        HoverableContainer(
+          context: context,
+          hover: false,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: bioController,
+              decoration: const InputDecoration(
+                  labelText: 'Bio', border: InputBorder.none),
+              onChanged: (value) => updateField('bio', value),
+            ),
+          ),
         ),
 
         // Avatar URL
-        TextField(
-          controller: avatarUrlController,
-          decoration: const InputDecoration(labelText: 'Avatar URL'),
-          onChanged: (value) => updateField('avatarUrl', value),
+        HoverableContainer(
+          context: context,
+          hover: false,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: avatarUrlController,
+              decoration: const InputDecoration(
+                  labelText: 'Avatar URL', border: InputBorder.none),
+              onChanged: (value) => updateField('avatarUrl', value),
+            ),
+          ),
         ),
 
         // Number of Mentorees
-        TextField(
-          controller: numberOfMentoreesController,
-          decoration: const InputDecoration(labelText: 'Number of Mentees'),
-          onChanged: (value) =>
-              updateField('numberOfMentoree', int.tryParse(value)),
+        HoverableContainer(
+          context: context,
+          hover: false,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: numberOfMentoreesController,
+              decoration: const InputDecoration(
+                  labelText: 'Number of Mentees', border: InputBorder.none),
+              onChanged: (value) =>
+                  updateField('numberOfMentoree', int.tryParse(value)),
+            ),
+          ),
         ),
 
         // Rate
-        TextField(
-          controller: rateController,
-          decoration: const InputDecoration(labelText: 'Rate'),
-          onChanged: (value) => updateField('rate', value),
+        HoverableContainer(
+          context: context,
+          hover: false,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: rateController,
+              decoration: const InputDecoration(
+                  labelText: 'Rate', border: InputBorder.none),
+              onChanged: (value) => updateField('rate', value),
+            ),
+          ),
         ),
 
         // Free Price
-        TextField(
-          controller: freePriceController,
-          decoration: const InputDecoration(labelText: 'Free Price'),
-          onChanged: (value) => updateField('freePrice', value),
+        HoverableContainer(
+          context: context,
+          hover: false,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: freePriceController,
+              decoration: const InputDecoration(
+                  labelText: 'Free Price', border: InputBorder.none),
+              onChanged: (value) => updateField('freePrice', value),
+            ),
+          ),
         ),
 
         // Free Unit
-        TextField(
-          controller: freeUnitController,
-          decoration: const InputDecoration(labelText: 'Free Unit'),
-          onChanged: (value) => updateField('freeUnit', value),
+        HoverableContainer(
+          context: context,
+          hover: false,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: freeUnitController,
+              decoration: const InputDecoration(
+                  labelText: 'Free Unit', border: InputBorder.none),
+              onChanged: (value) => updateField('freeUnit', value),
+            ),
+          ),
         ),
 
         // Verified
@@ -725,6 +807,11 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
 
         const SizedBox(height: 16),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
           onPressed: () async {
             final selectedCategories = await showDialog<List<Category>>(
               context: context,
@@ -749,7 +836,13 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
               _addCategories(selectedCategories);
             }
           },
-          child: const Text('Add Categories'),
+          child: Text('Add Categories',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.black
+                    : const Color.fromARGB(255, 249, 245, 252),
+              )),
         ),
         // Experiences section
         // Experiences section
@@ -772,140 +865,194 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Role
-                      TextField(
-                        controller: experienceRoleControllers[index],
-                        decoration: const InputDecoration(labelText: 'Role'),
-                        onChanged: (value) => updateField(
-                            'experiences',
-                            {
-                              'role': value,
-                              'companyName': experience.companyName,
-                              'startDate': experience.startDate,
-                              'endDate': experience.endDate,
-                              'description': experience.description,
-                            },
-                            index: index),
-                      ),
-                      // Company Name
-                      TextField(
-                        controller: experienceCompanyControllers[index],
-                        decoration:
-                            const InputDecoration(labelText: 'Company Name'),
-                        onChanged: (value) => updateField(
-                            'experiences',
-                            {
-                              'role': experience.role,
-                              'companyName': value,
-                              'startDate': experience.startDate,
-                              'endDate': experience.endDate,
-                              'description': experience.description,
-                            },
-                            index: index),
-                      ),
-                      // Description
-                      TextField(
-                        controller: experienceDescriptionControllers[index],
-                        decoration:
-                            const InputDecoration(labelText: 'Description'),
-                        onChanged: (value) => updateField(
-                            'experiences',
-                            {
-                              'role': experience.role,
-                              'companyName': experience.companyName,
-                              'startDate': experience.startDate,
-                              'endDate': experience.endDate,
-                              'description': value,
-                            },
-                            index: index),
-                      ),
-                      // Start Date Field
-                      TextField(
-                        controller: experienceStartDateControllers[index],
-                        decoration: const InputDecoration(
-                            labelText: 'Start Date YYYY-MM-DD'),
-                        readOnly: true, // Prevent manual editing
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(), // Current date
-                            firstDate: DateTime(1900), // Earliest possible date
-                            lastDate: DateTime(2100), // Latest possible date
-                          );
-
-                          if (pickedDate != null) {
-                            // Update the controller with the selected date
-                            String formattedDate =
-                                DateFormat('yyyy-MM-dd').format(pickedDate);
-                            experienceStartDateControllers[index].text =
-                                formattedDate;
-
-                            // Update the experience data
-                            updateField(
+                      HoverableContainer(
+                        context: context,
+                        hover: false,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: experienceRoleControllers[index],
+                            decoration: const InputDecoration(
+                                labelText: 'Role', border: InputBorder.none),
+                            onChanged: (value) => updateField(
                                 'experiences',
                                 {
-                                  'role': experience.role,
+                                  'role': value,
                                   'companyName': experience.companyName,
-                                  'startDate': pickedDate.toIso8601String(),
+                                  'startDate': experience.startDate,
                                   'endDate': experience.endDate,
                                   'description': experience.description,
                                 },
-                                index: index);
-                          }
-                        },
+                                index: index),
+                          ),
+                        ),
                       ),
-
-                      // End Date Field
-                      TextField(
-                        controller: experienceEndDateControllers[index],
-                        decoration: const InputDecoration(
-                            labelText: 'End Date YYYY-MM-DD'),
-                        readOnly: true, // Prevent manual editing
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(), // Current date
-                            firstDate: DateTime(1900), // Earliest possible date
-                            lastDate: DateTime(2100), // Latest possible date
-                          );
-
-                          if (pickedDate != null) {
-                            // Update the controller with the selected date
-                            String formattedDate =
-                                DateFormat('yyyy-MM-dd').format(pickedDate);
-                            experienceEndDateControllers[index].text =
-                                formattedDate;
-
-                            // Update the experience data
-                            updateField(
+                      // Company Name
+                      HoverableContainer(
+                        context: context,
+                        hover: false,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: experienceCompanyControllers[index],
+                            decoration: const InputDecoration(
+                                labelText: 'Company Name',
+                                border: InputBorder.none),
+                            onChanged: (value) => updateField(
+                                'experiences',
+                                {
+                                  'role': experience.role,
+                                  'companyName': value,
+                                  'startDate': experience.startDate,
+                                  'endDate': experience.endDate,
+                                  'description': experience.description,
+                                },
+                                index: index),
+                          ),
+                        ),
+                      ),
+                      // Description
+                      HoverableContainer(
+                        context: context,
+                        hover: false,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: experienceDescriptionControllers[index],
+                            decoration: const InputDecoration(
+                                labelText: 'Description',
+                                border: InputBorder.none),
+                            onChanged: (value) => updateField(
                                 'experiences',
                                 {
                                   'role': experience.role,
                                   'companyName': experience.companyName,
                                   'startDate': experience.startDate,
-                                  'endDate': pickedDate.toIso8601String(),
-                                  'description': experience.description,
+                                  'endDate': experience.endDate,
+                                  'description': value,
                                 },
-                                index: index);
-                          }
-                        },
+                                index: index),
+                          ),
+                        ),
+                      ),
+                      // Start Date Field
+                      HoverableContainer(
+                        context: context,
+                        hover: false,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: experienceStartDateControllers[index],
+                            decoration: const InputDecoration(
+                                labelText: 'Start Date YYYY-MM-DD',
+                                border: InputBorder.none),
+                            readOnly: true, // Prevent manual editing
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(), // Current date
+                                firstDate:
+                                    DateTime(1900), // Earliest possible date
+                                lastDate:
+                                    DateTime(2100), // Latest possible date
+                              );
+
+                              if (pickedDate != null) {
+                                // Update the controller with the selected date
+                                String formattedDate =
+                                    DateFormat('yyyy-MM-dd').format(
+                                  pickedDate,
+                                );
+                                experienceStartDateControllers[index].text =
+                                    formattedDate;
+
+                                // Update the experience data
+                                updateField(
+                                    'experiences',
+                                    {
+                                      'role': experience.role,
+                                      'companyName': experience.companyName,
+                                      'startDate': pickedDate.toIso8601String(),
+                                      'endDate': experience.endDate,
+                                      'description': experience.description,
+                                    },
+                                    index: index);
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+
+                      // End Date Field
+                      HoverableContainer(
+                        context: context,
+                        hover: false,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: experienceEndDateControllers[index],
+                            decoration: const InputDecoration(
+                                labelText: 'End Date YYYY-MM-DD',
+                                border: InputBorder.none),
+                            readOnly: true, // Prevent manual editing
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(), // Current date
+                                firstDate:
+                                    DateTime(1900), // Earliest possible date
+                                lastDate:
+                                    DateTime(2100), // Latest possible date
+                              );
+
+                              if (pickedDate != null) {
+                                // Update the controller with the selected date
+                                String formattedDate =
+                                    DateFormat('yyyy-MM-dd').format(pickedDate);
+                                experienceEndDateControllers[index].text =
+                                    formattedDate;
+
+                                // Update the experience data
+                                updateField(
+                                    'experiences',
+                                    {
+                                      'role': experience.role,
+                                      'companyName': experience.companyName,
+                                      'startDate': experience.startDate,
+                                      'endDate': pickedDate.toIso8601String(),
+                                      'description': experience.description,
+                                    },
+                                    index: index);
+                              }
+                            },
+                          ),
+                        ),
                       ),
                       // Delete Button
                       Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            setState(() {
-                              mentorData.experiences.removeAt(index);
-                              experienceRoleControllers.removeAt(index);
-                              experienceCompanyControllers.removeAt(index);
-                              experienceStartDateControllers.removeAt(index);
-                              experienceEndDateControllers.removeAt(index);
-                              experienceDescriptionControllers.removeAt(index);
-                            });
-                          },
-                        ),
-                      ),
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                              onPressed: () {
+                                showDeleteConfirmationDialog(
+                                  context: context,
+                                  itemName: 'Experience',
+                                  onConfirm: () {
+                                    setState(() {
+                                      mentorData.experiences.removeAt(index);
+                                      experienceRoleControllers.removeAt(index);
+                                      experienceCompanyControllers
+                                          .removeAt(index);
+                                      experienceStartDateControllers
+                                          .removeAt(index);
+                                      experienceEndDateControllers
+                                          .removeAt(index);
+                                      experienceDescriptionControllers
+                                          .removeAt(index);
+                                    });
+                                  },
+                                );
+                              },
+                              icon: const Icon(Icons.delete))),
                     ],
                   ),
                 ),
@@ -915,8 +1062,21 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
             Align(
               alignment: Alignment.centerLeft,
               child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
                 icon: const Icon(Icons.add),
-                label: const Text('Add Experience'),
+                label: Text(
+                  'Add Experience',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : const Color.fromARGB(255, 249, 245, 252),
+                  ),
+                ),
                 onPressed: () {
                   setState(() {
                     mentorData.experiences.add(Experience(
@@ -960,103 +1120,146 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Certificate Name
-                      TextField(
-                        controller: certificateNameControllers[index],
-                        decoration: const InputDecoration(
-                            labelText: 'Certificate Name'),
-                        onChanged: (value) => updateField(
-                            'certificates',
-                            {
-                              'name': value,
-                              'provideBy': certificate.provideBy ?? '',
-                              'createDate':
-                                  certificate.createDate?.toIso8601String(),
-                              'imageUrl': certificate.imageUrl ?? '',
-                            },
-                            index: index),
+                      HoverableContainer(
+                        context: context,
+                        hover: false,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: certificateNameControllers[index],
+                            decoration: const InputDecoration(
+                                labelText: 'Certificate Name',
+                                border: InputBorder.none),
+                            onChanged: (value) => updateField(
+                                'certificates',
+                                {
+                                  'name': value,
+                                  'provideBy': certificate.provideBy ?? '',
+                                  'createDate':
+                                      certificate.createDate?.toIso8601String(),
+                                  'imageUrl': certificate.imageUrl ?? '',
+                                },
+                                index: index),
+                          ),
+                        ),
                       ),
                       // Provided By
-                      TextField(
-                        controller: certificateProvidedByControllers[index],
-                        decoration:
-                            const InputDecoration(labelText: 'Provided By'),
-                        onChanged: (value) => updateField(
-                            'certificates',
-                            {
-                              'name': certificate.name,
-                              'provideBy': value,
-                              'createDate':
-                                  certificate.createDate?.toIso8601String(),
-                              'imageUrl': certificate.imageUrl,
-                            },
-                            index: index),
+                      HoverableContainer(
+                        context: context,
+                        hover: false,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: certificateProvidedByControllers[index],
+                            decoration: const InputDecoration(
+                                labelText: 'Provided By',
+                                border: InputBorder.none),
+                            onChanged: (value) => updateField(
+                                'certificates',
+                                {
+                                  'name': certificate.name,
+                                  'provideBy': value,
+                                  'createDate':
+                                      certificate.createDate?.toIso8601String(),
+                                  'imageUrl': certificate.imageUrl,
+                                },
+                                index: index),
+                          ),
+                        ),
                       ),
                       // Create Date
-                      TextField(
-                        controller: certificateDateControllers[index],
-                        decoration: const InputDecoration(
-                            labelText: 'Create Date YYYY-MM-DD'),
-                        readOnly: true, // Prevent manual editing
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(), // Current date
-                            firstDate: DateTime(1900), // Earliest possible date
-                            lastDate: DateTime(2100), // Latest possible date
-                          );
+                      HoverableContainer(
+                        context: context,
+                        hover: false,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: certificateDateControllers[index],
+                            decoration: const InputDecoration(
+                                labelText: 'Create Date YYYY-MM-DD',
+                                border: InputBorder.none),
+                            readOnly: true, // Prevent manual editing
+                            onTap: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(), // Current date
+                                firstDate:
+                                    DateTime(1900), // Earliest possible date
+                                lastDate:
+                                    DateTime(2100), // Latest possible date
+                              );
 
-                          if (pickedDate != null) {
-                            // Update the controller with the selected date
-                            String formattedDate =
-                                DateFormat('yyyy-MM-dd').format(pickedDate);
-                            certificateDateControllers[index].text =
-                                formattedDate;
+                              if (pickedDate != null) {
+                                // Update the controller with the selected date
+                                String formattedDate =
+                                    DateFormat('yyyy-MM-dd').format(pickedDate);
+                                certificateDateControllers[index].text =
+                                    formattedDate;
 
-                            // Update the mentor data
-                            updateField(
+                                // Update the mentor data
+                                updateField(
+                                    'certificates',
+                                    {
+                                      'name': certificate.name,
+                                      'provideBy': certificate.provideBy,
+                                      'createDate':
+                                          pickedDate.toIso8601String(),
+                                      'imageUrl': certificate.imageUrl,
+                                    },
+                                    index: index);
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                      // Image URL
+                      HoverableContainer(
+                        context: context,
+                        hover: false,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: certificateImageUrlControllers[index],
+                            decoration: const InputDecoration(
+                                labelText: 'Image URL',
+                                border: InputBorder.none),
+                            onChanged: (value) => updateField(
                                 'certificates',
                                 {
                                   'name': certificate.name,
                                   'provideBy': certificate.provideBy,
-                                  'createDate': pickedDate.toIso8601String(),
-                                  'imageUrl': certificate.imageUrl,
+                                  'createDate':
+                                      certificate.createDate?.toIso8601String(),
+                                  'imageUrl': value,
                                 },
-                                index: index);
-                          }
-                        },
-                      ),
-                      // Image URL
-                      TextField(
-                        controller: certificateImageUrlControllers[index],
-                        decoration:
-                            const InputDecoration(labelText: 'Image URL'),
-                        onChanged: (value) => updateField(
-                            'certificates',
-                            {
-                              'name': certificate.name,
-                              'provideBy': certificate.provideBy,
-                              'createDate':
-                                  certificate.createDate?.toIso8601String(),
-                              'imageUrl': value,
-                            },
-                            index: index),
+                                index: index),
+                          ),
+                        ),
                       ),
                       // Delete Button
                       Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            setState(() {
-                              mentorData.certificates.removeAt(index);
-                              certificateNameControllers.removeAt(index);
-                              certificateProvidedByControllers.removeAt(index);
-                              certificateDateControllers.removeAt(index);
-                              certificateImageUrlControllers.removeAt(index);
-                            });
-                          },
-                        ),
-                      ),
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                              onPressed: () {
+                                showDeleteConfirmationDialog(
+                                  context: context,
+                                  itemName: 'Certificate',
+                                  onConfirm: () {
+                                    setState(() {
+                                      mentorData.certificates.removeAt(index);
+                                      certificateNameControllers
+                                          .removeAt(index);
+                                      certificateProvidedByControllers
+                                          .removeAt(index);
+                                      certificateDateControllers
+                                          .removeAt(index);
+                                      certificateImageUrlControllers
+                                          .removeAt(index);
+                                    });
+                                  },
+                                );
+                              },
+                              icon: const Icon(Icons.delete))),
                     ],
                   ),
                 ),
@@ -1066,8 +1269,21 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
             Align(
               alignment: Alignment.centerLeft,
               child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
                 icon: const Icon(Icons.add),
-                label: const Text('Add Certificate'),
+                label: Text(
+                  'Add Certificate',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : const Color.fromARGB(255, 249, 245, 252),
+                  ),
+                ),
                 onPressed: () {
                   setState(() {
                     mentorData.certificates.add(Certificate(
@@ -1109,90 +1325,112 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Time Start Field
-                      TextField(
-                        controller: timeSlotsTimeStartControllers[index],
-                        decoration: const InputDecoration(
-                            labelText: 'Time Start HH:MM:SS'),
-                        readOnly: true, // Prevent manual editing
-                        onTap: () async {
-                          TimeOfDay? pickedTime = await showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.now(), // Current time
-                          );
+                      HoverableContainer(
+                        context: context,
+                        hover: false,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: timeSlotsTimeStartControllers[index],
+                            decoration: const InputDecoration(
+                                labelText: 'Time Start HH:MM:SS',
+                                border: InputBorder.none),
+                            readOnly: true, // Prevent manual editing
+                            onTap: () async {
+                              TimeOfDay? pickedTime = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(), // Current time
+                              );
 
-                          if (pickedTime != null) {
-                            // Format the time as HH:mm:ss
-                            final now = DateTime.now();
-                            String formattedTime =
-                                DateFormat('HH:mm:ss').format(
-                              DateTime(now.year, now.month, now.day,
-                                  pickedTime.hour, pickedTime.minute),
-                            );
+                              if (pickedTime != null) {
+                                // Format the time as HH:mm:ss
+                                final now = DateTime.now();
+                                String formattedTime =
+                                    DateFormat('HH:mm:ss').format(
+                                  DateTime(now.year, now.month, now.day,
+                                      pickedTime.hour, pickedTime.minute),
+                                );
 
-                            timeSlotsTimeStartControllers[index].text =
-                                formattedTime;
+                                timeSlotsTimeStartControllers[index].text =
+                                    formattedTime;
 
-                            // Update the time slot data
-                            updateField(
-                                'timeSlots',
-                                {
-                                  'timeStart': formattedTime,
-                                  'timeEnd': schedule.timeEnd,
-                                },
-                                index: index);
-                          }
-                        },
+                                // Update the time slot data
+                                updateField(
+                                    'timeSlots',
+                                    {
+                                      'timeStart': formattedTime,
+                                      'timeEnd': schedule.timeEnd,
+                                    },
+                                    index: index);
+                              }
+                            },
+                          ),
+                        ),
                       ),
 
                       // Time End Field
-                      TextField(
-                        controller: timeSlotsTimeEndControllers[index],
-                        decoration: const InputDecoration(
-                            labelText: 'Time End HH:MM:SS'),
-                        readOnly: true, // Prevent manual editing
-                        onTap: () async {
-                          TimeOfDay? pickedTime = await showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.now(), // Current time
-                          );
+                      HoverableContainer(
+                        context: context,
+                        hover: false,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: timeSlotsTimeEndControllers[index],
+                            decoration: const InputDecoration(
+                                labelText: 'Time End HH:MM:SS,',
+                                border: InputBorder.none),
+                            readOnly: true, // Prevent manual editing
+                            onTap: () async {
+                              TimeOfDay? pickedTime = await showTimePicker(
+                                context: context,
+                                initialTime: TimeOfDay.now(), // Current time
+                              );
 
-                          if (pickedTime != null) {
-                            // Format the time as HH:mm:ss
-                            final now = DateTime.now();
-                            String formattedTime =
-                                DateFormat('HH:mm:ss').format(
-                              DateTime(now.year, now.month, now.day,
-                                  pickedTime.hour, pickedTime.minute),
-                            );
+                              if (pickedTime != null) {
+                                // Format the time as HH:mm:ss
+                                final now = DateTime.now();
+                                String formattedTime =
+                                    DateFormat('HH:mm:ss').format(
+                                  DateTime(now.year, now.month, now.day,
+                                      pickedTime.hour, pickedTime.minute),
+                                );
 
-                            timeSlotsTimeEndControllers[index].text =
-                                formattedTime;
+                                timeSlotsTimeEndControllers[index].text =
+                                    formattedTime;
 
-                            // Update the time slot data
-                            updateField(
-                                'timeSlots',
-                                {
-                                  'timeStart': schedule.timeStart,
-                                  'timeEnd': formattedTime,
-                                },
-                                index: index);
-                          }
-                        },
+                                // Update the time slot data
+                                updateField(
+                                    'timeSlots',
+                                    {
+                                      'timeStart': schedule.timeStart,
+                                      'timeEnd': formattedTime,
+                                    },
+                                    index: index);
+                              }
+                            },
+                          ),
+                        ),
                       ),
                       // Delete Button
                       Align(
-                        alignment: Alignment.centerRight,
-                        child: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            setState(() {
-                              mentorData.timeSlots.removeAt(index);
-                              timeSlotsTimeStartControllers.removeAt(index);
-                              timeSlotsTimeEndControllers.removeAt(index);
-                            });
-                          },
-                        ),
-                      ),
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                              onPressed: () {
+                                showDeleteConfirmationDialog(
+                                  context: context,
+                                  itemName: 'Time Slot',
+                                  onConfirm: () {
+                                    setState(() {
+                                      mentorData.timeSlots.removeAt(index);
+                                      timeSlotsTimeStartControllers
+                                          .removeAt(index);
+                                      timeSlotsTimeEndControllers
+                                          .removeAt(index);
+                                    });
+                                  },
+                                );
+                              },
+                              icon: const Icon(Icons.delete))),
                     ],
                   ),
                 ),
@@ -1202,8 +1440,21 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
             Align(
               alignment: Alignment.centerLeft,
               child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
                 icon: const Icon(Icons.add),
-                label: const Text('Add Time Slot'),
+                label: Text(
+                  'Add Time Slot',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black
+                        : const Color.fromARGB(255, 249, 245, 252),
+                  ),
+                ),
                 onPressed: () {
                   setState(() {
                     mentorData.timeSlots.add(FixedTimeSlot(
@@ -1219,11 +1470,27 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
             ),
           ],
         ),
-        // Save button
-        ElevatedButton(
-          onPressed: saveMentor,
-          child: const Text('Save'),
+        SizedBox(
+          width: 340,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8)),
+            ),
+            onPressed: saveMentor,
+            child: Text("Save",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : const Color.fromARGB(255, 249, 245, 252),
+                )),
+          ),
         ),
+        const SizedBox(
+          height: 20,
+        )
       ],
     );
   }

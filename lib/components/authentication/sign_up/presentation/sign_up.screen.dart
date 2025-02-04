@@ -10,6 +10,7 @@ import 'package:mentor/shared/utils/extensions.dart';
 import 'package:mentor/shared/utils/validator.dart';
 import 'package:mentor/shared/views/button.dart';
 import 'package:mentor/shared/views/input_field.dart';
+import 'package:mentor/terms_condition.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -34,6 +35,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool _passwordVisible = true;
   bool isChecked = false;
+  bool isterm = false;
 
   late String otp;
   bool isOtpVerified = false;
@@ -132,8 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             children: [
                               Expanded(
                                 child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Center(
                                       child: Text(
@@ -184,17 +185,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             Center(
                               child: Text(
                                 'Create Account,',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineMedium,
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium,
                               ),
                             ),
                             Center(
                               child: Text(
                                 'Sign up to get started!',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ),
                             const SizedBox(height: 20),
@@ -220,194 +218,225 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Form(
       key: _formKey,
       child: RawKeyboardListener(
-      focusNode: _genderFocusNode,
-      onKey: _handleEnterKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          InputField(
-            controller: usernameCtrl,
-            validator: (value) =>
-                validator.required(value, 'This field is required'),
-            labelText: "Username",
-            prefixIcon: const Icon(Icons.person_2),
-          ),
-          const SizedBox(height: 20),
-          InputField(
-            controller: passwordCtrl,
-            validator: (value) =>
-                validator.required(value, 'This field is required'),
-            obscureText: _passwordVisible,
-            prefixIcon: const Icon(Icons.lock_outline_rounded),
-            suffixIcon: IconButton(
-              onPressed: () {
-                setState(() {
-                  _passwordVisible = !_passwordVisible;
-                });
-              },
-              icon: Icon(
-                _passwordVisible
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
-                size: 18,
-              ),
+        focusNode: _genderFocusNode,
+        onKey: _handleEnterKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InputField(
+              controller: usernameCtrl,
+              validator: (value) =>
+                  validator.required(value, 'This field is required'),
+              labelText: "Username",
+              prefixIcon: const Icon(Icons.person_2),
             ),
-            labelText: 'Password',
-          ),
-          const SizedBox(height: 20),
-          InputField(
-            controller: confirmPasswordCtrl,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please confirm your password';
-              }
-              if (value != passwordCtrl.text) {
-                return 'Passwords do not match';
-              }
-              return null; // Validation passed
-            },
-            obscureText: _passwordVisible,
-            prefixIcon: const Icon(Icons.lock_outline_rounded),
-            suffixIcon: IconButton(
-              onPressed: () {
-                setState(() {
-                  _passwordVisible = !_passwordVisible;
-                });
-              },
-              icon: Icon(
-                _passwordVisible
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
-                size: 18,
-              ),
-            ),
-            labelText: 'Confirm Password',
-          ),
-          const SizedBox(height: 20),
-          InputField(
-            controller: nameCtrl,
-            validator: (value) =>
-                validator.required(value, 'This field is required'),
-            labelText: "Full Name",
-            prefixIcon: const Icon(Icons.person),
-          ),
-          const SizedBox(height: 20),
-          InputField(
-            controller: emailCtrl,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter an email address';
-              }
-              // Email validation using regex
-              final emailRegex = RegExp(
-                  r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-              if (!emailRegex.hasMatch(value)) {
-                return 'Please enter a valid email address';
-              }
-              return null; // input is valid
-            },
-            keyboardType: TextInputType.emailAddress,
-            labelText: "Email",
-            prefixIcon: const Icon(Icons.email),
-          ),
-          const SizedBox(height: 20),
-          Center(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  CustomButton(
-                    borderRadius: 4,
-                    onPressed: () {
-                      sendOTP(emailCtrl.text);
-                    },
-                    label: 'Send OTP',
-                  ),
-                  const SizedBox(width: 10),
-                  SizedBox(
-                      width: 150.0,
-                      child: InputField(
-                        controller: otpCtrl,
-                        labelText: 'OTP',
-                      )),
-                  const SizedBox(width: 10),
-                  CustomButton(
-                    borderRadius: 4,
-                    onPressed: () {
-                      verifyOTP(otpCtrl.text);
-                    },
-                    label: 'Verify OTP',
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          InputField(
-            controller: ageCtrl,
-            labelText: "Age (Optional)",
-            prefixIcon: const Icon(Icons.calendar_today),
-          ),
-          const SizedBox(height: 20),
-          DropdownButtonFormField<String>(
-            value: genderCtrl.text.isEmpty ? null : genderCtrl.text,
-            onChanged: (value) {
-              setState(() {
-                genderCtrl.text = value!;
-              });
-            },
-            items: [
-              const DropdownMenuItem(
-                value: 'Male',
-                child: Text('Male'),
-              ),
-              const DropdownMenuItem(
-                value: 'Female',
-                child: Text('Female'),
-              ),
-            ],
-            decoration: const InputDecoration(
-              labelText: "Gender (Optional)",
-              prefixIcon: Icon(Icons.person),
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Checkbox(
-                checkColor: Colors.white,
-                value: isChecked,
-                onChanged: (bool? value) {
+            const SizedBox(height: 20),
+            InputField(
+              controller: passwordCtrl,
+              validator: (value) =>
+                  validator.required(value, 'This field is required'),
+              obscureText: _passwordVisible,
+              prefixIcon: const Icon(Icons.lock_outline_rounded),
+              suffixIcon: IconButton(
+                onPressed: () {
                   setState(() {
-                    isChecked = value!;
+                    _passwordVisible = !_passwordVisible;
                   });
                 },
+                icon: Icon(
+                  _passwordVisible
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                  size: 18,
+                ),
               ),
-              Text("Remember me", style: context.titleSmall),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Center(
-            child: CustomButton(
-              borderRadius: 4,
-              minWidth: MediaQuery.of(context).size.width,
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _signUp();
-                }
-              },
-              label: "Sign up",
+              labelText: 'Password',
             ),
-          ),
-        ],
+            const SizedBox(height: 20),
+            InputField(
+              controller: confirmPasswordCtrl,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please confirm your password';
+                }
+                if (value != passwordCtrl.text) {
+                  return 'Passwords do not match';
+                }
+                return null; // Validation passed
+              },
+              obscureText: _passwordVisible,
+              prefixIcon: const Icon(Icons.lock_outline_rounded),
+              suffixIcon: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _passwordVisible = !_passwordVisible;
+                  });
+                },
+                icon: Icon(
+                  _passwordVisible
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                  size: 18,
+                ),
+              ),
+              labelText: 'Confirm Password',
+            ),
+            const SizedBox(height: 20),
+            InputField(
+              controller: nameCtrl,
+              validator: (value) =>
+                  validator.required(value, 'This field is required'),
+              labelText: "Full Name",
+              prefixIcon: const Icon(Icons.person),
+            ),
+            const SizedBox(height: 20),
+            InputField(
+              controller: emailCtrl,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter an email address';
+                }
+                // Email validation using regex
+                final emailRegex =
+                    RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                if (!emailRegex.hasMatch(value)) {
+                  return 'Please enter a valid email address';
+                }
+                return null; // input is valid
+              },
+              keyboardType: TextInputType.emailAddress,
+              labelText: "Email",
+              prefixIcon: const Icon(Icons.email),
+            ),
+            const SizedBox(height: 20),
+            Center(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    CustomButton(
+                      borderRadius: 4,
+                      onPressed: () {
+                        sendOTP(emailCtrl.text);
+                      },
+                      label: 'Send OTP',
+                    ),
+                    const SizedBox(width: 10),
+                    SizedBox(
+                        width: 150.0,
+                        child: InputField(
+                          controller: otpCtrl,
+                          labelText: 'OTP',
+                        )),
+                    const SizedBox(width: 10),
+                    CustomButton(
+                      borderRadius: 4,
+                      onPressed: () {
+                        verifyOTP(otpCtrl.text);
+                      },
+                      label: 'Verify OTP',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            InputField(
+              controller: ageCtrl,
+              labelText: "Age (Optional)",
+              prefixIcon: const Icon(Icons.calendar_today),
+            ),
+            const SizedBox(height: 20),
+            DropdownButtonFormField<String>(
+              value: genderCtrl.text.isEmpty ? null : genderCtrl.text,
+              onChanged: (value) {
+                setState(() {
+                  genderCtrl.text = value!;
+                });
+              },
+              items: [
+                const DropdownMenuItem(
+                  value: 'Male',
+                  child: Text('Male'),
+                ),
+                const DropdownMenuItem(
+                  value: 'Female',
+                  child: Text('Female'),
+                ),
+              ],
+              decoration: const InputDecoration(
+                labelText: "Gender (Optional)",
+                prefixIcon: Icon(Icons.person),
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Checkbox(
+                  checkColor: Colors.white,
+                  value: isChecked,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isChecked = value!;
+                    });
+                  },
+                ),
+                Text("Remember me", style: context.titleSmall),
+              ],
+            ),
+            Row(
+              children: [
+                Checkbox(
+                  checkColor: Colors.white,
+                  value: isterm,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isterm = value!;
+                    });
+                  },
+                ),
+                Row(
+                  children: [
+                    Text("I accept the", style: context.titleSmall),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    TermsAndConditionsPage()));
+                      },
+                      child: const Text(
+                        "Terms and Conditions",
+                        style: TextStyle(color: Colors.blue, fontSize: 14),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            Center(
+              child: CustomButton(
+                borderRadius: 4,
+                minWidth: MediaQuery.of(context).size.width,
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _signUp();
+                  }
+                },
+                label: "Sign up",
+              ),
+            ),
+          ],
+        ),
       ),
-    ),);
+    );
   }
 
   // Function to send sign-up request to API
   Future<void> _signUp() async {
-
     if (!_formKey.currentState!.validate()) return;
 
     // Prepare the data to send as JSON
@@ -417,7 +446,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'name': nameCtrl.text,
       'emailId': emailCtrl.text,
       'age': ageCtrl.text.isEmpty ? '0' : ageCtrl.text, // Optional field
-      'gender': genderCtrl.text.isEmpty ? 'Not Specified' : genderCtrl.text, // Optional field
+      'gender': genderCtrl.text.isEmpty
+          ? 'Not Specified'
+          : genderCtrl.text, // Optional field
     });
 
     if (isOtpVerified) {
@@ -425,7 +456,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       final response = await http.post(
         url,
         headers: {
-          "Content-Type": "application/json", // Make sure content type is correct
+          "Content-Type":
+              "application/json", // Make sure content type is correct
         },
         body: body, // Send the JSON string as the body
       );
@@ -434,37 +466,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
         if (response.body == 'Email already Exists') {
           // Email already exists
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Email already Exists!"),
-            backgroundColor: Colors.green,),
+            const SnackBar(
+              content: Text("Email already Exists!"),
+              backgroundColor: Colors.green,
+            ),
           );
         }
-      } if (response.statusCode == 201) {
+      }
+      if (response.statusCode == 201) {
         // Sign up successful
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Sign up successful!"),
-          backgroundColor: Colors.green,),
+          const SnackBar(
+            content: Text("Sign up successful!"),
+            backgroundColor: Colors.green,
+          ),
         );
         context.go(AppRoutes.signin);
       } else {
         // Handle error, show error message
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Sign up failed! Please try again."),
-          backgroundColor: Colors.red,),
+          const SnackBar(
+            content: Text("Sign up failed! Please try again."),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } else {
       // Verification
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please Verify Your Email OTP"),
-        backgroundColor: Colors.red,),
-      );             
+        const SnackBar(
+          content: Text("Please Verify Your Email OTP"),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
   Future<void> sendOTP(String email) async {
     // Email validation using regex
-    final emailRegex = RegExp(
-        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    final emailRegex =
+        RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
 
     if (!emailRegex.hasMatch(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -475,7 +516,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
     } else {
       final response = await http
-        .get(Uri.parse('http://localhost:8080/api/auth/mail/verify/$email'));
+          .get(Uri.parse('http://localhost:8080/api/auth/mail/verify/$email'));
 
       if (response.statusCode == 200) {
         var parsed = response.body;
@@ -501,6 +542,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void verifyOTP(String verifyOTP) {
+    // if (verifyOTP.isEmpty) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const Snackbar(
+    //       content: Text('Please click "Send OTP".'),
+    //       backgroundColor: Colors.red,
+    //     )
+    //   )
+    // }
     if (otp == verifyOTP) {
       isOtpVerified = true;
 
@@ -520,4 +569,3 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 }
-

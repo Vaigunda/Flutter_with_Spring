@@ -16,7 +16,6 @@ import '../../shared/services/top_rated_mentor.service.dart';
 import '../../shared/services/top_mentor.service.dart';
 import '../../shared/models/top_rated_mentor.model.dart';
 import '../../shared/models/top_mentor.model.dart';
-import '../../shared/views/brightness_toggle.dart';
 import '../splash/aboutus.dart';
 import 'widgets/categories.dart';
 import 'widgets/explore.dart';
@@ -202,7 +201,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                   ".",
                   style: TextStyle(
                     fontSize: 72, // Font size for the dot
-                    fontWeight: FontWeight.w800, // Match the same weight as text
+                    fontWeight:
+                        FontWeight.w800, // Match the same weight as text
                     fontFamily: "Epilogue", // Font Family
                     color: Color(0xFF4ABFE2), // Match the color
                     height: 1, // Default height
@@ -214,16 +214,14 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
           actions: [
             if (userid.isNotEmpty)
               TextButton(
-                onPressed: () async {
-                  signOut();
-                  //context.pop();
-                },
-                child: const Text(
-                  'Sign Out',
-                  style: TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600),
-                )
-              ),
+                  onPressed: () async {
+                    signOut();
+                    //context.pop();
+                  },
+                  child: const Text(
+                    'Sign Out',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  )),
             const SizedBox(width: 10),
             if (!isMobile)
               TextButton(
@@ -277,7 +275,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         body: LayoutBuilder(builder: (builderContext, constraints) {
           return SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 25, 0, 10),
+              padding: const EdgeInsets.fromLTRB(20, 25, 0, 0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -310,15 +308,17 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                   const SizedBox(height: 30),
                   HomeTopMentors(topMentors: topMentors),
                   const SizedBox(height: 30),
-                  if (userid.isEmpty) // Show button only if user is not logged in
+                  if (userid
+                      .isEmpty) // Show button only if user is not logged in
                     Center(
                       child: Container(
-                        width:240,
+                        width: 240,
                         alignment: Alignment.center,
                         child: GradientButton(
                           label: Text(
                             "Discover More Mentors",
-                            style: context.labelLarge!.copyWith(fontWeight: FontWeight.w900),
+                            style: context.labelLarge!
+                                .copyWith(fontWeight: FontWeight.w900),
                           ),
                           onPressed: () {
                             context.go(AppRoutes.signin);
@@ -337,8 +337,90 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                   const SizedBox(height: 30),
                   HomeTopRated(
                     topRatedMentors: topRatedMentors,
-                  )
+                  ),
                   // Pass the future data for top-rated mentors
+
+                  Container(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    width: double.infinity,
+                    height: 70,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: const Column(
+                      children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.phone, size: 18),
+                              SizedBox(width: 4),
+                              Text(
+                                'Contact Us: ',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                              Text(
+                                "088-885-342",
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                              SizedBox(width: 20),
+                              Icon(Icons.email, size: 18),
+                              SizedBox(width: 4),
+                              Text(
+                                'Email: ',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                              Text(
+                                "support@mentorboosters.com",
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                              SizedBox(width: 20),
+                              Icon(Icons.location_on, size: 18),
+                              SizedBox(width: 4),
+                              Text(
+                                'Location: ',
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                              Text(
+                                "Chennai, India",
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          "ⓒ COPYRIGHTS | 2025 | MENTORBOOSTERS | All RIGHTS RESERVED",
+                          style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),

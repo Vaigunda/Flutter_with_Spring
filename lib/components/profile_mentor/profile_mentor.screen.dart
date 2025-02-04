@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -82,8 +83,9 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
 
   Future<void> _fetchMentorData() async {
     try {
-      ProfileMentor? fetchedMentor = await ProfileMentorService.fetchMentorById(widget.profileId, usertoken);
-      
+      ProfileMentor? fetchedMentor = await ProfileMentorService.fetchMentorById(
+          widget.profileId, usertoken);
+
       setState(() {
         mentor = fetchedMentor;
       });
@@ -101,70 +103,157 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
       tokenService.checkToken(usertoken, context);
     } else {
       final url = Uri.parse('http://localhost:8080/api/reviews/create');
-        final response = await http.post(
-          url,
-          headers: {
-            'Authorization': 'Bearer $usertoken',
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode({
-            'message': message,
-            'rating': rating.isNotEmpty ? int.parse(rating) : 0,
-            'mentorId': widget.profileId,
-            'userId': userid,
-          }),
-        );
+      final response = await http.post(
+        url,
+        headers: {
+          'Authorization': 'Bearer $usertoken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'message': message,
+          'rating': rating.isNotEmpty ? int.parse(rating) : 0,
+          'mentorId': widget.profileId,
+          'userId': userid,
+        }),
+      );
 
-        if (response.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Review is submitted successfully'),
-            duration: Duration(seconds: 2),),
-          );
-        } else {
-          throw Exception('Failed to add reviews');
-        }
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Review is submitted successfully'),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } else {
+        throw Exception('Failed to add reviews');
+      }
     }
   }
 
-  void _showAddReviewsDialog() {
-    TextEditingController messageCtrl = TextEditingController();
-    TextEditingController ratingCtrl = TextEditingController();
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Feedback'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min, // Ensures the dialog doesn't take up unnecessary space
-            children: [
-              TextField(
-                controller: messageCtrl,
-                decoration: const InputDecoration(labelText: 'Message'),
-              ),
-              TextField(
-                controller: ratingCtrl,
-                decoration: const InputDecoration(labelText: 'Rating'),
+  void _showAddReviewsDialog(BuildContext context) {
+  TextEditingController messageCtrl = TextEditingController();
+   TextEditingController ratingCtrl = TextEditingController();
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          width: 400,
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 8,
+                spreadRadius: 2,
+                offset: Offset(2, 4),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                saveReviews(messageCtrl.text, ratingCtrl.text); // Use the messageCtrl text
-              },
-              child: const Text('Add'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Title Section
+              Container(
+                width: 360,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Column(
+                  children: [
+                    Text(
+                      "Share Your Feedback",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "Please rate and share your experience.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Rating Section
+              RatingBar.builder(
+                initialRating: 3,
+                minRating: 1,
+                itemSize: 40,
+                itemPadding: const EdgeInsets.symmetric(horizontal: 4),
+                itemBuilder: (context, index) {
+                  return const Icon(
+                    Icons.star,
+                    color: Colors.yellow,
+                  );
+                },
+                onRatingUpdate: (rating) {
+                  print(rating); // Handle rating change
+                },
+              ),
+              const SizedBox(height: 16),
+              // Text Input Section
+              TextField(
+                controller: messageCtrl,
+                maxLines: 4,
+                decoration: InputDecoration(
+                  hintText: "Write your review here...",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.teal.shade200),
+                  ),
+                  contentPadding: EdgeInsets.all(12),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Submit Button
+              ElevatedButton(
+                onPressed: () {
+                         Navigator.pop(context);
+                saveReviews(messageCtrl.text,
+                    ratingCtrl.text); // Close dialog
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:  Colors.blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                ),
+                child: const Text(
+                  "Submit Review",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -241,13 +330,13 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
         overflow: TextOverflow.ellipsis,
       ),
       ...[
-      Text(
-        mentor!.role,
-        style: context.bodyMedium,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      )
-    ],
+        Text(
+          mentor!.role,
+          style: context.bodyMedium,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        )
+      ],
       const SizedBox(height: 20),
       Wrap(spacing: 15, children: [
         Column(
@@ -293,6 +382,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
       children: [
         CustomButton(
           label: "Booking",
+          borderRadius: 10,
           onPressed: () {
             context.push('${AppRoutes.bookingMentor}/${mentor!.id}');
           },
@@ -300,9 +390,10 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
         const SizedBox(width: 10),
         CustomButton(
           type: EButtonType.secondary,
+          borderRadius: 10,
           label: "Review",
           onPressed: () async {
-            _showAddReviewsDialog();
+            _showAddReviewsDialog(context);
           },
         )
       ],
@@ -317,14 +408,8 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               bio(),
-              ...[
-              const SizedBox(height: 10),
-              experiences()
-            ],
-              ...[
-              const SizedBox(height: 10),
-              skills()
-            ]
+              ...[const SizedBox(height: 10), experiences()],
+              ...[const SizedBox(height: 10), skills()]
             ])));
   }
 
@@ -393,8 +478,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
                     'body': Style(
                         margin: Margins.all(0), padding: HtmlPaddings.all(0)),
                     'p': Style(margin: Margins.only(top: 5)),
-                    'ul':
-                        Style(margin: Margins.symmetric(vertical: 10)),
+                    'ul': Style(margin: Margins.symmetric(vertical: 10)),
                   },
                 )
             ],
@@ -444,7 +528,8 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
 
   Widget itemReview(Review review) {
     return FutureBuilder<ProfileMentor?>(
-      future: ProfileMentorService.fetchMentorById(int.parse(review.createdById), usertoken),
+      future: ProfileMentorService.fetchMentorById(
+          int.parse(review.createdById), usertoken),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator(); // Loading indicator
@@ -455,7 +540,8 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
           return Container(
             decoration: BoxDecoration(
               border: Border(
-                bottom: BorderSide(color: Theme.of(context).colorScheme.tertiary),
+                bottom:
+                    BorderSide(color: Theme.of(context).colorScheme.tertiary),
               ),
             ),
             child: Padding(
@@ -481,7 +567,8 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
                           ),
                           Text(
                             review.createDate != null
-                                ? DateFormat("yyyy/MM/dd").format(review.createDate!)
+                                ? DateFormat("yyyy/MM/dd")
+                                    .format(review.createDate!)
                                 : "No Date",
                             style: context.bodySmall,
                           ),
@@ -502,7 +589,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
         }
       },
     );
-}
+  }
 
 //--------------------END--------------------------------
   Widget certificates() {
@@ -521,29 +608,55 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
 
   Widget itemCertificate(Certificate certificate) {
     return Container(
-        padding: const EdgeInsets.only(bottom: 10),
-        decoration: BoxDecoration(
-            border: Border(
-                bottom:
-                    BorderSide(color: Theme.of(context).colorScheme.tertiary))),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Image.asset(certificate.imageUrl,
-              width: MediaQuery.of(context).size.width),
+      padding: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Theme.of(context).colorScheme.tertiary),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          certificate.imageUrl.isNotEmpty
+              ? Image.network(
+                  certificate.imageUrl,
+                  width: MediaQuery.of(context).size.width,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Center(
+                      child: Text("No Certificate Found",
+                          style: context.bodyMedium),
+                    );
+                  },
+                )
+              : Center(
+                  child:
+                      Text("No Certificate Found", style: context.bodyMedium),
+                ),
           const SizedBox(height: 10),
-          Text(certificate.name,
-              style: context.titleMedium,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis),
-          Text(certificate.provideBy,
-              style: context.bodySmall,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis),
+          Text(
+            certificate.name,
+            style: context.titleMedium,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          Text(
+            certificate.provideBy,
+            style: context.bodySmall,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
           const SizedBox(height: 20),
-          Text(certificate.createDate != null ? DateFormat("yyyy/MM/dd").format(certificate.createDate!) : "No Date",
-              style: context.bodySmall,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis),
-        ]));
+          Text(
+            certificate.createDate != null
+                ? DateFormat("yyyy/MM/dd").format(certificate.createDate!)
+                : "No Date",
+            style: context.bodySmall,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
   }
 
   Divider divider() {
