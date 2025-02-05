@@ -575,11 +575,11 @@ class _BookingScreenState extends State<BookingScreen> {
     var isWeb = MediaQuery.of(context).size.width > 800;
     return Column(
       children: [
-        Card(
-          color: Theme.of(context).cardColor,
-          elevation: 4,
-          child: isWeb
-              ? Row(
+        isWeb
+            ? Card(
+                elevation: 4,
+                color: Theme.of(context).cardColor,
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const Padding(
@@ -603,10 +603,11 @@ class _BookingScreenState extends State<BookingScreen> {
                             Text(
                               'Seamless Mentor Sessions,  Anytime, Anywhere',
                               style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
                                   wordSpacing: 4,
                                   letterSpacing: 2),
+                              textAlign: TextAlign.center,
                             ),
                             SizedBox(
                               height: 20,
@@ -615,9 +616,9 @@ class _BookingScreenState extends State<BookingScreen> {
                               'Connect with expert mentors instantly, schedule flexible \n sessions, gain valuable insights, and accelerate your growth \n from anywhere, anytime with ease.',
                               style: TextStyle(
                                   fontSize: 14,
-                                  fontWeight: FontWeight.w100,
+                                  fontWeight: FontWeight.w400,
                                   wordSpacing: 4,
-                                  letterSpacing: 2),
+                                  letterSpacing: 1),
                               textAlign: TextAlign.center,
                             ),
                             SizedBox(
@@ -643,8 +644,12 @@ class _BookingScreenState extends State<BookingScreen> {
                       ),
                     ),
                   ],
-                )
-              : Column(
+                ))
+            : Card(
+                color: Theme.of(context).cardColor,
+                elevation: 4,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
@@ -654,12 +659,11 @@ class _BookingScreenState extends State<BookingScreen> {
                           Text(
                             'Let\'s Connect & Learn together',
                             style: TextStyle(
-                              fontSize: 38,
+                              fontSize: 42,
                               fontWeight: FontWeight.w400,
                               letterSpacing: 2,
                               fontFamily: "Lobster",
                             ),
-                            textAlign: TextAlign.center,
                           ),
                           SizedBox(
                             height: 10,
@@ -667,11 +671,11 @@ class _BookingScreenState extends State<BookingScreen> {
                           Text(
                             'Seamless Mentor Sessions,  Anytime, Anywhere',
                             style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                wordSpacing: 2,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                wordSpacing: 4,
                                 letterSpacing: 2),
-                            textAlign: TextAlign.center,
+                            textAlign: TextAlign.left,
                           ),
                           SizedBox(
                             height: 20,
@@ -683,16 +687,10 @@ class _BookingScreenState extends State<BookingScreen> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            height: 280,
-                            decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              image: DecorationImage(
-                                image:
-                                    AssetImage('assets/images/videocall.jpg'),
-                                fit: BoxFit.contain,
-                              ),
+                          child: Card(
+                            child: Image.asset(
+                              'assets/images/videocall.jpg',
+                              height: 240,
                             ),
                           ),
                         ),
@@ -700,10 +698,8 @@ class _BookingScreenState extends State<BookingScreen> {
                     ),
                   ],
                 ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
+              ),
+              const SizedBox(height: 20,),
         Card(
           elevation: 2,
           color: Theme.of(context).cardColor,
@@ -783,6 +779,219 @@ class _BookingScreenState extends State<BookingScreen> {
       ],
     );
   }
+
+  // Widget renderSelectMethodConnect() {
+  //   var isWeb = MediaQuery.of(context).size.width > 800;
+  //   return Column(
+  //     children: [
+  //       Card(
+  //         color: Theme.of(context).cardColor,
+  //         elevation: 4,
+  //         child: isWeb
+  //             ? Row(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                 children: [
+  //                   const Padding(
+  //                     padding: EdgeInsets.symmetric(horizontal: 20),
+  //                     child: Expanded(
+  //                       child: Column(
+  //                         crossAxisAlignment: CrossAxisAlignment.center,
+  //                         children: [
+  //                           Text(
+  //                             'Let\'s Connect & Learn together',
+  //                             style: TextStyle(
+  //                               fontSize: 42,
+  //                               fontWeight: FontWeight.w400,
+  //                               letterSpacing: 2,
+  //                               fontFamily: "Lobster",
+  //                             ),
+  //                           ),
+  //                           SizedBox(
+  //                             height: 10,
+  //                           ),
+  //                           Text(
+  //                             'Seamless Mentor Sessions,  Anytime, Anywhere',
+  //                             style: TextStyle(
+  //                                 fontSize: 20,
+  //                                 fontWeight: FontWeight.bold,
+  //                                 wordSpacing: 4,
+  //                                 letterSpacing: 2),
+  //                           ),
+  //                           SizedBox(
+  //                             height: 20,
+  //                           ),
+  //                           Text(
+  //                             'Connect with expert mentors instantly, schedule flexible \n sessions, gain valuable insights, and accelerate your growth \n from anywhere, anytime with ease.',
+  //                             style: TextStyle(
+  //                                 fontSize: 14,
+  //                                 fontWeight: FontWeight.w100,
+  //                                 wordSpacing: 4,
+  //                                 letterSpacing: 2),
+  //                             textAlign: TextAlign.center,
+  //                           ),
+  //                           SizedBox(
+  //                             height: 20,
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   Expanded(
+  //                     child: Column(
+  //                       children: [
+  //                         Padding(
+  //                           padding: const EdgeInsets.all(8.0),
+  //                           child: Card(
+  //                             child: Image.asset(
+  //                               'assets/images/videocall.jpg',
+  //                               height: 280,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ],
+  //               )
+  // : Column(
+  //     children: [
+  //       const Padding(
+  //         padding: EdgeInsets.symmetric(horizontal: 20),
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.center,
+  //           children: [
+  //             Text(
+  //               'Let\'s Connect & Learn together',
+  //               style: TextStyle(
+  //                 fontSize: 38,
+  //                 fontWeight: FontWeight.w400,
+  //                 letterSpacing: 2,
+  //                 fontFamily: "Lobster",
+  //               ),
+  //               textAlign: TextAlign.center,
+  //             ),
+  //             SizedBox(
+  //               height: 10,
+  //             ),
+  //             Text(
+  //               'Seamless Mentor Sessions,  Anytime, Anywhere',
+  //               style: TextStyle(
+  //                   fontSize: 18,
+  //                   fontWeight: FontWeight.bold,
+  //                   wordSpacing: 2,
+  //                   letterSpacing: 2),
+  //               textAlign: TextAlign.center,
+  //             ),
+  //             SizedBox(
+  //               height: 20,
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //       Column(
+  //         children: [
+  //           Padding(
+  //             padding: const EdgeInsets.all(8.0),
+  //             child: Container(
+  //               height: 280,
+  //               decoration: const BoxDecoration(
+  //                 borderRadius:
+  //                     BorderRadius.all(Radius.circular(10)),
+  //                 image: DecorationImage(
+  //                   image:
+  //                       AssetImage('assets/images/videocall.jpg'),
+  //                   fit: BoxFit.contain,
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ],
+  //   ),
+  //       ),
+  //       const SizedBox(
+  //         height: 10,
+  //       ),
+  //       Card(
+  //         elevation: 2,
+  //         color: Theme.of(context).cardColor,
+  //         child: Padding(
+  //           padding: const EdgeInsets.all(10.0),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               renderHeaderStep("Select method connect"),
+  //               Card(
+  //                 elevation: 3,
+  //                 color: Theme.of(context).colorScheme.onTertiary,
+  //                 child: Padding(
+  //                   padding: const EdgeInsets.all(10),
+  //                   child: DropdownButton<String>(
+  //                     focusColor: Colors.transparent,
+  //                     isExpanded: true,
+  //                     isDense: true,
+  //                     underline: Container(),
+  //                     value: formData[_index]["value"],
+  //                     hint: const Text("Select method to connect with mentor"),
+  //                     items: connectMethods.map((ConnectMethodModel value) {
+  //                       return DropdownMenuItem<String>(
+  //                         value: value
+  //                             .id, // Assuming value.id is a string like "1", "2", etc.
+  //                         child: Text(value.name),
+  //                       );
+  //                     }).toList(),
+  //                     onChanged: (value) {
+  //                       setState(() {
+  //                         formData[_index]["value"] = value;
+  //                         _errorMessage = '';
+
+  //                         // Reset Google Meet specific fields if another method is selected
+  //                         if (value != '1') {
+  //                           // Replace '3' with the actual ID for "Google Meet"
+  //                           googleMeetLink = null;
+  //                           googleMeetError = null;
+  //                         }
+  //                       });
+  //                     },
+  //                   ),
+  //                 ),
+  //               ),
+  //               // Conditionally render the text field if the ID for "Google Meet" is selected
+  //               if (formData[_index]["value"] ==
+  //                   '2') // Replace '3' with the correct ID for "Google Meet"
+  //                 Padding(
+  //                   padding: const EdgeInsets.only(top: 10),
+  //                   child: TextField(
+  //                     decoration: InputDecoration(
+  //                       labelText: 'Enter Google Meet Link',
+  //                       border: const OutlineInputBorder(),
+  //                       errorText: googleMeetError,
+  //                     ),
+  //                     onChanged: (value) {
+  //                       setState(() {
+  //                         googleMeetLink = value;
+
+  //                         // Validate the Google Meet link
+  //                         if (!RegExp(
+  //                                 r"^https://meet\.google\.com/[a-zA-Z0-9-]+$")
+  //                             .hasMatch(value)) {
+  //                           googleMeetError =
+  //                               'Please enter a valid Google Meet link.';
+  //                         } else {
+  //                           googleMeetError = null;
+  //                         }
+  //                       });
+  //                     },
+  //                   ),
+  //                 ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget renderSubmitBooking() {
     var isWeb = MediaQuery.of(context).size.width > 800;
