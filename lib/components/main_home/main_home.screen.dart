@@ -150,7 +150,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         name: '',
         usertype: '',
       );
-      
+
       context.go(AppRoutes.signin);
     }
   }
@@ -339,88 +339,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     topRatedMentors: topRatedMentors,
                   ),
                   // Pass the future data for top-rated mentors
-
-                  Container(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    width: double.infinity,
-                    height: 70,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: const Column(
-                      children: [
-                        SizedBox(
-                          height: 10,
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.phone, size: 18),
-                              SizedBox(width: 4),
-                              Text(
-                                'Contact Us: ',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                              Text(
-                                "088-885-342",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                              SizedBox(width: 20),
-                              Icon(Icons.email, size: 18),
-                              SizedBox(width: 4),
-                              Text(
-                                'Email: ',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                              Text(
-                                "support@mentorboosters.com",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                              SizedBox(width: 20),
-                              Icon(Icons.location_on, size: 18),
-                              SizedBox(width: 4),
-                              Text(
-                                'Location: ',
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                              Text(
-                                "Chennai, India",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Text(
-                          "ⓒ COPYRIGHTS | 2025 | MENTORBOOSTERS | All RIGHTS RESERVED",
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                        ),
-                      ],
-                    ),
-                  )
                 ],
               ),
             ),

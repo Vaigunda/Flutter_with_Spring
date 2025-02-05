@@ -216,12 +216,18 @@ class _AdminPageState extends State<AdminPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.visibility,color: Colors.blue,),
+                                icon: const Icon(
+                                  Icons.visibility,
+                                  color: Colors.blue,
+                                ),
                                 onPressed: () => viewMentor(mentor),
                                 tooltip: 'View',
                               ),
                               IconButton(
-                                icon: const Icon(HugeIcons.strokeRoundedEdit01,color: Colors.green,),
+                                icon: const Icon(
+                                  HugeIcons.strokeRoundedEdit01,
+                                  color: Colors.green,
+                                ),
                                 onPressed: () => editMentor(mentor),
                                 tooltip: 'Edit',
                               ),
@@ -253,7 +259,7 @@ class _AdminPageState extends State<AdminPage> {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: getCrossAxisCount(context),
                         childAspectRatio:
-                            MediaQuery.of(context).size.width > 600 ? 0.9 : 1.3,
+                            MediaQuery.of(context).size.width > 600 ? 0.8 : 1.3,
                       ),
                       itemCount: mentors.length,
                       itemBuilder: (context, index) {
@@ -349,7 +355,9 @@ class _AdminPageState extends State<AdminPage> {
 
     if (width > 1200) {
       return 4;
-    } else if (width > 800) {
+    } else if (width > 1000) {
+      return 3;
+    } else if (width > 700) {
       return 2;
     } else {
       return 1;

@@ -96,7 +96,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
       await submitBooking();
       context.go(AppRoutes.home);
     } catch (e) {
-      if (e.toString() == "Exception: Please fill in the complete card details.") {
+      if (e.toString() ==
+          "Exception: Please fill in the complete card details.") {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Please fill in the complete card details.'),
@@ -104,10 +105,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
             backgroundColor: Colors.red,
           ),
         );
-      } else if (e.toString() == "StripeError<String?>(message: Your card has insufficient funds. Try a different card., code: card_declined)") {
+      } else if (e.toString() ==
+          "StripeError<String?>(message: Your card has insufficient funds. Try a different card., code: card_declined)") {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Your card has insufficient funds. Try a different card.'),
+            content:
+                Text('Your card has insufficient funds. Try a different card.'),
             duration: Duration(seconds: 3),
             backgroundColor: Colors.red,
           ),
@@ -135,11 +138,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          child: Material(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            elevation: 2,
+          child: HoverableContainer(
+            hover: false,
+            context: context,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -195,14 +196,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              TextField(
-                                                controller: nameController,
-                                                decoration:
-                                                    const InputDecoration(
-                                                  labelText: "Cardholder Name",
-                                                  border: OutlineInputBorder(),
-                                                ),
-                                              ),
                                               const SizedBox(height: 10),
                                               CardField(
                                                 onCardChanged: (card) {
@@ -212,62 +205,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                 },
                                                 decoration:
                                                     const InputDecoration(
-                                                        labelText:
-                                                            "Card Number",
-                                                        border:
-                                                            OutlineInputBorder(),
-                                                        suffixIcon: Icon(
-                                                            Icons.credit_card)),
+                                                  labelText: 'Card Number',
+                                                  fillColor: Colors.white,
+                                                  filled: true,
+                                                  hintStyle: TextStyle(
+                                                      color: Colors.black),
+                                                ),
+                                                style: const TextStyle(
+                                                    color: Colors.black),
                                               ),
                                               const SizedBox(height: 10),
-                                              Row(
+                                              const Row(
                                                 children: [
                                                   Expanded(
-                                                    child: TextField(
-                                                      controller: cvvController,
-                                                      keyboardType:
-                                                          TextInputType.number,
-                                                      inputFormatters: [
-                                                        FilteringTextInputFormatter
-                                                            .digitsOnly
-                                                      ],
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        labelText: "End Date",
-                                                        border:
-                                                            OutlineInputBorder(),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 10),
-                                                  Expanded(
-                                                    child: TextField(
-                                                      controller: cvvController,
-                                                      keyboardType:
-                                                          TextInputType.number,
-                                                      inputFormatters: [
-                                                        FilteringTextInputFormatter
-                                                            .digitsOnly
-                                                      ],
-                                                      decoration:
-                                                          const InputDecoration(
-                                                        labelText: "CVV",
-                                                        border:
-                                                            OutlineInputBorder(),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 10),
-                                              Row(
-                                                children: [
-                                                  Checkbox(
-                                                      value: false,
-                                                      onChanged: (val) {}),
-                                                  const Expanded(
                                                     child: Text(
-                                                        "I have read and accept the terms of use, rules of flight, and privacy policy"),
+                                                        "I have read and accept the terms of use, rules of Mentorbooster, and privacy policy"),
                                                   ),
                                                 ],
                                               ),
@@ -276,8 +228,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                 child: SizedBox(
                                                   width: 340,
                                                   child: ElevatedButton(
-                                                    style:
-                                                        ElevatedButton.styleFrom(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
                                                       backgroundColor:
                                                           Colors.blue,
                                                       shape:
@@ -290,7 +242,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                     onPressed: _processPayment,
                                                     child: const Text("Pay Now",
                                                         style: TextStyle(
-                                                            color: Colors.white)),
+                                                            color:
+                                                                Colors.white)),
                                                   ),
                                                 ),
                                               ),

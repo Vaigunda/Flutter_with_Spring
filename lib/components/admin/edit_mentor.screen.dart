@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:hugeicons/hugeicons.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mentor/constants/ui.dart';
 import 'dart:convert';
 import 'package:mentor/shared/models/all_mentors.model.dart';
 import 'package:intl/intl.dart';
 import 'package:mentor/shared/services/categories.service.dart';
-import 'package:mentor/shared/views/button.dart';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';

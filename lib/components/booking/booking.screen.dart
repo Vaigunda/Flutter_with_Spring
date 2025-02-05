@@ -785,7 +785,7 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   Widget renderSubmitBooking() {
-var isWeb = MediaQuery.of(context).size.width > 800;
+    var isWeb = MediaQuery.of(context).size.width > 800;
     // Get selected category and connect method
     var category = mentor!.categories.firstWhere(
         (element) => element.id == formData[0]["value"],
@@ -809,18 +809,21 @@ var isWeb = MediaQuery.of(context).size.width > 800;
         ),
         const SizedBox(height: 16),
         Padding(
-          padding:  EdgeInsets.symmetric( horizontal:isWeb?120 :16),
-          child:  HoverableContainer(
+          padding: EdgeInsets.symmetric(horizontal: isWeb ? 120 : 16),
+          child: HoverableContainer(
             context: context,
             hover: false,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-               const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 ClipRRect(
                   child: Card(
                     color: Theme.of(context).cardColor,
-                    shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(15) ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
                     child: Image.asset(
                       'assets/images/booking.jpg',
                       height: 320,
@@ -830,15 +833,43 @@ var isWeb = MediaQuery.of(context).size.width > 800;
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildInfoBox(Icons.person, "Mentor", mentor!.name, Colors.blue.shade50),
-                _buildInfoBox(Icons.book, "Category", category.name, Colors.green.shade50),
-                _buildInfoBox(Icons.access_time, "Time Slot",
-                    "${selectedTimeSlot.timeStart} - ${selectedTimeSlot.timeEnd}", Colors.orange.shade50),
-                _buildInfoBox(Icons.video_call, "Connect Method", method.name, Colors.purple.shade50),
-            
+                _buildInfoBox(
+                  Icons.person,
+                  "Mentor",
+                  mentor!.name,
+                  (Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.blue.shade50)!, // Ensure non-null
+                  context,
+                ),
+                _buildInfoBox(
+                  Icons.category,
+                  "Category",
+                  category.name,
+                  (Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.green.shade50)!, // Ensure non-null
+                  context,
+                ),
+                _buildInfoBox(
+                  Icons.timer,
+                  "Time Slot",
+                  "${selectedTimeSlot.timeStart} - ${selectedTimeSlot.timeEnd}",
+                  (Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.orange.shade50)!, // Ensure non-null
+                  context,
+                ),
+                _buildInfoBox(
+                  Icons.video_call,
+                  "Connect Method",
+                  method.name,
+                  (Theme.of(context).brightness == Brightness.dark
+                      ? Colors.black
+                      : Colors.purple.shade50)!, // Ensure non-null
+                  context,
+                ),
                 const SizedBox(width: 16),
-            
-                
               ],
             ),
           ),
@@ -846,25 +877,42 @@ var isWeb = MediaQuery.of(context).size.width > 800;
       ],
     );
   }
- Widget _buildInfoBox(IconData icon, String label, String value, Color bgColor) {
+
+  Widget _buildInfoBox(IconData icon, String label, String value, Color bgColor,
+      BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white.withAlpha((0.2 * 255).round())
+                  : Colors.grey.withAlpha((0.2 * 255).round()),
+              spreadRadius: 1,
+              blurRadius: 5,
+            ),
+          ],
+          color: bgColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(children: [
           Icon(icon, size: 28, color: Colors.blueGrey),
           const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                Text(label,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
-                Text(value, style: const TextStyle(fontSize: 14, color: Colors.black87))]))]));
+                Text(value,
+                    style: const TextStyle(
+                      fontSize: 14,
+                    ))
+              ]))
+        ]));
 
     //  Column(
     //     children: [

@@ -144,16 +144,15 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
         ),
         child: Container(
           width: 400,
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(         
+           borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
                 blurRadius: 8,
                 spreadRadius: 2,
-                offset: Offset(2, 4),
+                offset: const Offset(2, 4),
               ),
             ],
           ),
@@ -204,9 +203,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
                     color: Colors.yellow,
                   );
                 },
-                onRatingUpdate: (rating) {
-                  print(rating); // Handle rating change
-                },
+                onRatingUpdate: print,
               ),
               const SizedBox(height: 16),
               // Text Input Section
@@ -219,7 +216,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: Colors.teal.shade200),
                   ),
-                  contentPadding: EdgeInsets.all(12),
+                  contentPadding: const EdgeInsets.all(12),
                 ),
               ),
               const SizedBox(height: 16),

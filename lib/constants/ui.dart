@@ -68,13 +68,13 @@ class HoverableContainer extends StatefulWidget {
   final bool hover; // Optional hover flag (default: true)
 
   const HoverableContainer({
-    Key? key,
+    super.key,
     required this.child,
     required this.context,
     this.border,
     this.hoverColor,
     this.hover = true, // Default value is true
-  }) : super(key: key);
+  });
 
   @override
   _HoverableContainerState createState() => _HoverableContainerState();
