@@ -39,6 +39,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   late String otp;
   bool isOtpVerified = false;
+  bool isLoading = false;
+  bool isVerify = false;
 
   @override
   void dispose() {
@@ -316,10 +318,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   children: [
                     CustomButton(
                       borderRadius: 4,
-                      onPressed: () {
-                        sendOTP(emailCtrl.text);
-                      },
-                      label: 'Send OTP',
+                      onPressed: isLoading ? () {} : () => sendOTP(emailCtrl.text),
+                      label: isLoading ? 'Sending...' : 'Send OTP',
                     ),
                     const SizedBox(width: 10),
                     SizedBox(
@@ -332,7 +332,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     CustomButton(
                       borderRadius: 4,
                       onPressed: () {
-                        verifyOTP(otpCtrl.text);
+                        if (otpCtrl.text.trim().isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('OTP is required'),
+                              backgroundColor: Colors.red,
+                              duration: Duration(milliseconds: 1500),
+                            ),
+                          );
+                        } else {
+                          verifyOTP(otpCtrl.text);
+                        }
                       },
                       label: 'Verify OTP',
                     ),
@@ -514,30 +524,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
           backgroundColor: Colors.red,
         ),
       );
-    } else {
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
       final response = await http
           .get(Uri.parse('http://localhost:8080/api/auth/mail/verify/$email'));
 
       if (response.statusCode == 200) {
         var parsed = response.body;
         Map<String, dynamic> map = jsonDecode(parsed);
-
         otp = map['data'];
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('OTP is sent Successfully to your mail.'),
+            content: Text('OTP is sent successfully to your email.'),
             backgroundColor: Colors.green,
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Failed to send email, Please check your Email ID'),
+            content: Text('Failed to send email, please check your Email ID'),
             backgroundColor: Colors.red,
           ),
         );
       }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An error occurred: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 

@@ -153,6 +153,12 @@ class _EditUserScreenState extends State<EditUserScreen> {
                       controller: ageCtrl,
                       decoration: const InputDecoration(labelText: "Age"),
                       keyboardType: TextInputType.number,
+                      onTap: () {
+                        // Clear the field if it's showing '0'
+                        if (ageCtrl.text == '0') {
+                          ageCtrl.clear();
+                        }
+                      }
                     ),
                     TextFormField(
                       controller: genderCtrl,
