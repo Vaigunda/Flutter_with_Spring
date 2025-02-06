@@ -101,7 +101,7 @@ Future<List<ChatMessage>> fetchHistoryMessages(int userId, int mentorId) async {
 
   List<ChatMessage> mergeAndSort(List<ChatMessage> list1, List<ChatMessage> list2) {
     // Combine both lists
-    List<ChatMessage> mergedList = []..addAll(list1)..addAll(list2);
+    List<ChatMessage> mergedList = [...list1, ...list2];
 
     // Sort by timestamp
     mergedList.sort((a, b) => a.timestamp.compareTo(b.timestamp));

@@ -18,13 +18,13 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  //final notifications = NotificationsProvider.shared.notifications;
-  late String usertoken;
-  late String userid;
-  late String usertype;
+  late String? usertoken;
+  late String? userid;
+  late String? usertype;
   var provider;
 
   List<NotificationModel> notifications = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -35,42 +35,38 @@ class _NotificationScreenState extends State<NotificationScreen> {
     userid = provider.userid;
     usertype = provider.usertype;
 
-    if (usertype == 'Admin') {
-      loadAdminNotification();
-    } else if (usertype == 'Mentor') {
-      loadMentorNotification();
-    } else {
-      loadUserNotification();
+    // Check if any value is null or an empty string
+    if (usertoken == null || usertoken!.isEmpty || 
+        userid == null || userid!.isEmpty || 
+        usertype == null || usertype!.isEmpty) {
+      setState(() {
+        isLoading = false;
+      });
+      return;
     }
+
+    loadNotifications();
   }
 
-  loadAdminNotification() async {
-    notifications = await NotificationsProvider.shared.getNotificationsByAdmin(usertoken);
+
+  void loadNotifications() async {
+    List<NotificationModel> fetchedNotifications = [];
+
+    if (usertype == 'Admin') {
+      fetchedNotifications = await NotificationsProvider.shared.getNotificationsByAdmin(usertoken!);
+    } else if (usertype == 'Mentor') {
+      fetchedNotifications = await NotificationsProvider.shared.getNotificationsByMentor(int.parse(userid!), usertoken!);
+    } else {
+      fetchedNotifications = await NotificationsProvider.shared.getNotificationsByUser(int.parse(userid!), usertoken!);
+    }
 
     setState(() {
-      notifications = notifications;
+      notifications = fetchedNotifications;
+      isLoading = false;
     });
   }
 
-  loadMentorNotification() async {
-    int userId = int.parse(userid);
-    notifications = await NotificationsProvider.shared.getNotificationsByMentor(userId, usertoken);
-
-    setState(() {
-      notifications = notifications;
-    });
-  }
-
-  loadUserNotification() async {
-    int userId = int.parse(userid);
-    notifications = await NotificationsProvider.shared.getNotificationsByUser(userId, usertoken);
-
-    setState(() {
-      notifications = notifications;
-    });
-  }
-
-  setRead() async {
+  Future<void> setRead() async {
     for (var notify in notifications) {
       int id = int.parse(notify.id);
       final url = Uri.parse('http://localhost:8080/api/notify/updateAsRead?notificationId=$id');
@@ -82,7 +78,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
         },
       );
     }
-
     context.go(AppRoutes.home);
   }
 
@@ -96,59 +91,60 @@ class _NotificationScreenState extends State<NotificationScreen> {
           style: context.headlineMedium,
         ),
         actions: [
-          if (usertype == 'Mentor')
+          if (usertype == 'Mentor' && notifications.isNotEmpty)
             TextButton(
               onPressed: () async {
                 await setRead();
               },
-            child: const Text("Clear all"))
+              child: const Text("Clear all"),
+            )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: ListView.builder(
-          itemCount: notifications.length,
-          itemBuilder: (context, index) {
-            final notification = notifications[index];
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Dismissible(
-                background: Container(
-                  decoration:
-                      BoxDecoration(color: context.colors.errorContainer),
-                  child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Icon(FontAwesomeIcons.trashCan),
-                        SizedBox(
-                          width: 20,
-                        )
-                      ]),
-                ),
-                key: Key(notifications[index].id),
-                child: ListTile(
-                  title: Text(notification.title),
-                  subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(notification.message ?? ""),
-                        Text(
-                          timeago.format(notification.dateTime),
-                          style: context.bodySmall,
-                        )
-                      ]),
-                  /*leading: CircleAvatar(
-                    radius: 26,
-                    backgroundImage: AssetImage(
-                      notification.initiatedUser.avatarUrl,
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : usertoken == null || userid == null || usertype == null
+              ? const Center(child: Text("Please log in to view notifications."))
+              : notifications.isEmpty
+                  ? const Center(child: Text("No notifications"))
+                  : Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: ListView.builder(
+                        itemCount: notifications.length,
+                        itemBuilder: (context, index) {
+                          final notification = notifications[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Dismissible(
+                              background: Container(
+                                decoration:
+                                    BoxDecoration(color: context.colors.errorContainer),
+                                child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Icon(FontAwesomeIcons.trashCan),
+                                      SizedBox(
+                                        width: 20,
+                                      )
+                                    ]),
+                              ),
+                              key: Key(notifications[index].id),
+                              child: ListTile(
+                                title: Text(notification.title),
+                                subtitle: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(notification.message ?? ""),
+                                      Text(
+                                        timeago.format(notification.dateTime),
+                                        style: context.bodySmall,
+                                      )
+                                    ]),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),*/
-                ),
-              ),
-            );
-          },
-        ),
-      ),
     );
   }
 }

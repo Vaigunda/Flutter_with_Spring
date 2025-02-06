@@ -85,11 +85,30 @@ class _HomeTopRatedState extends State<HomeTopRated> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
+              child: Image.network(
                 mentor.avatarUrl,
                 fit: BoxFit.cover,
                 height: 88,
                 width: 88,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child; // Image is loaded
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(), // Show loading indicator
+                    );
+                  }
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return Image.asset(
+                    mentor.gender == 'male'
+                        ? 'assets/images/malepic.jpg'  // Use male image if gender is male
+                        : 'assets/images/femalepic.jpg',  // Use female image if gender is female
+                    fit: BoxFit.cover,
+                    height: 88,
+                    width: 88,
+                  );
+                },
               ),
             ),
             Expanded(

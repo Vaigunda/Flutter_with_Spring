@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mentor/constants/ui.dart';
@@ -1048,7 +1047,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   mentor!.name,
                   (Theme.of(context).brightness == Brightness.dark
                       ? Colors.black
-                      : Colors.blue.shade50)!, // Ensure non-null
+                      : Colors.blue.shade50), // Ensure non-null
                   context,
                 ),
                 _buildInfoBox(
@@ -1057,7 +1056,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   category.name,
                   (Theme.of(context).brightness == Brightness.dark
                       ? Colors.black
-                      : Colors.green.shade50)!, // Ensure non-null
+                      : Colors.green.shade50), // Ensure non-null
                   context,
                 ),
                 _buildInfoBox(
@@ -1066,7 +1065,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   "${selectedTimeSlot.timeStart} - ${selectedTimeSlot.timeEnd}",
                   (Theme.of(context).brightness == Brightness.dark
                       ? Colors.black
-                      : Colors.orange.shade50)!, // Ensure non-null
+                      : Colors.orange.shade50), // Ensure non-null
                   context,
                 ),
                 _buildInfoBox(
@@ -1075,7 +1074,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   method.name,
                   (Theme.of(context).brightness == Brightness.dark
                       ? Colors.black
-                      : Colors.purple.shade50)!, // Ensure non-null
+                      : Colors.purple.shade50), // Ensure non-null
                   context,
                 ),
                 const SizedBox(width: 16),
@@ -1385,7 +1384,7 @@ class _BookingScreenState extends State<BookingScreen> {
         final tokenService = TokenService();
         tokenService.checkToken(usertoken, context);
       } else {
-        context.push(
+        context.go(
             '${AppRoutes.payment}/${mentor!.free.price}/${mentor!.id}/${mentor!.name}/$bookingData');
       }
     } else {

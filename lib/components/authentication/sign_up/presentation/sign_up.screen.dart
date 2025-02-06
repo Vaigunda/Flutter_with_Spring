@@ -433,6 +433,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 minWidth: MediaQuery.of(context).size.width,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
+                    if (!isterm) {
+                      // If not, show an alert or a message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('You must accept the Terms and Conditions to sign up.'),
+                          backgroundColor: Colors.red,
+                          duration: Duration(milliseconds: 1500),
+                        ),
+                      );
+                      return;
+                    }
                     _signUp();
                   }
                 },

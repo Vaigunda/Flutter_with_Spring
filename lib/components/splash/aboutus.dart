@@ -18,9 +18,9 @@ class _AboutUsState extends State<AboutUs> {
           children: [
             // ABOUT US Section
             const Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               child: Column(
-                children: const [
+                children: [
                   Text(
                     'ABOUT US',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
@@ -61,7 +61,7 @@ class _AboutUsState extends State<AboutUs> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Text(
-                      'Mr. Nurudeen Osidipe, our CEO, brings over 14 years of experience in financial planning and strategic management. As a Certified Chartered Accountant, he has a proven track record of enhancing profitability and operational efficiency for various organizations. His leadership ensures that Mentor Boosters remains aligned with its mission to drive impactful mentormentee relationships. Mrs.Azeezat Omowunmi Ojekunle, our COO, is a financial expert with over 14 years of experience in tax advisory, compliance, and corporate strategy. She holds a degree in Animal Production and Health and has furthered  her expertise with an online certification in Business Analytics from Harvard Business School in 2020. Her focus on operational excellence ensures a seamless experience for both mentors and mentees. Together, they have combined their expertise and resources to create a trusted platform for entrepreneurs seeking mentorship in diverse areas such as finance, leadership, marketing, and business strategy. ',
+                      'Mr. Nurudeen Osidipe, our CEO, brings over 14 years of experience in financial planning and strategic management. As a Certified Chartered Accountant, he has a proven track record of enhancing profitability and operational efficiency for various organizations. His leadership ensures that Mentor Boosters remains aligned with its mission to drive impactful mentormentee relationships.\n \n Mrs.Azeezat Omowunmi Ojekunle, our COO, is a financial expert with over 14 years of experience in tax advisory, compliance, and corporate strategy. She holds a degree in Animal Production and Health and has furthered  her expertise with an online certification in Business Analytics from Harvard Business School in 2020. Her focus on operational excellence ensures a seamless experience for both mentors and mentees. Together, they have combined their expertise and resources to create a trusted platform for entrepreneurs seeking mentorship in diverse areas such as finance, leadership, marketing, and business strategy. ',
                       style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.justify,
                     ),

@@ -52,6 +52,8 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
   late String usertoken;
   var provider;
 
+  late bool isMale;
+
   List<Category> allCategories = []; // List to hold all fetched categories
 
   @override
@@ -63,6 +65,8 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
     usertoken = provider.usertoken;
 
     _fetchCategories(); // Fetch categories on initialization
+
+    isMale = mentorData.gender == 'male';
 
     nameController = TextEditingController(text: mentorData.name);
     emailController = TextEditingController(text: mentorData.email);
@@ -401,6 +405,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
     final updatedData = {
       'id': mentorData.id,
       'name': mentorData.name,
+      'gender': isMale ? 'male' : 'female',
       'email': mentorData.email,
       'avatarUrl': mentorData.avatarUrl,
       'bio': mentorData.bio,
@@ -493,6 +498,16 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
       }
     }
   }
+
+  // Update gender selection logic
+  void updateGender(bool? value) {
+    if (value != null) {
+      setState(() {
+        isMale = value;
+      });
+    }
+  }
+
 
   void updateField(String field, dynamic value, {int? index}) {
     setState(() {
@@ -656,6 +671,29 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
               decoration: const InputDecoration(
                   labelText: 'Name', border: InputBorder.none),
               onChanged: (value) => updateField('name', value),
+            ),
+          ),
+        ),
+        // Gender selection field (Checkbox for male/female)
+        HoverableContainer(
+          context: context,
+          hover: false,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Text('Gender: '),
+                Checkbox(
+                  value: isMale,
+                  onChanged: updateGender,
+                ),
+                Text('Male'),
+                Checkbox(
+                  value: !isMale,
+                  onChanged: (value) => updateGender(!value!),
+                ),
+                Text('Female'),
+              ],
             ),
           ),
         ),

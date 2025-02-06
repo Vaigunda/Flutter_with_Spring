@@ -60,6 +60,9 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
   bool isVerified = false;
   bool isSubmitting = false;
 
+  bool isMale = false;
+  bool isFemale = false;
+
   late String usertoken;
   var provider;
 
@@ -194,6 +197,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
     // Prepare the mentor data to be sent
     Map<String, dynamic> mentorData = {
       "name": nameController.text,
+      "gender": isMale ? "male" : "female",
       "email": emailController.text,
       "avatarUrl": avatarUrlController.text,
       "bio": bioController.text,
@@ -500,6 +504,36 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
             validator: (value) => value == null || value.isEmpty
                 ? 'Name is required'
                 : null,
+          ),
+          const SizedBox(height: 20),
+          // Gender Selection Section
+          Row(
+            children: [
+              Expanded(
+                child: CheckboxListTile(
+                  title: const Text("Male"),
+                  value: isMale,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isMale = value!;
+                      isFemale = false; // If Male is selected, uncheck Female
+                    });
+                  },
+                ),
+              ),
+              Expanded(
+                child: CheckboxListTile(
+                  title: const Text("Female"),
+                  value: isFemale,
+                  onChanged: (bool? value) {
+                    setState(() {
+                      isFemale = value!;
+                      isMale = false; // If Female is selected, uncheck Male
+                    });
+                  },
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 20),
 

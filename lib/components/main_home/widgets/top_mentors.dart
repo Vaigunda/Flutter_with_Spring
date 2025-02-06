@@ -1,6 +1,7 @@
 // lib/screens/home/home_top_mentors.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart';
 import 'package:mentor/navigation/router.dart';
 import 'package:mentor/shared/models/top_mentor.model.dart';
 import 'package:mentor/shared/services/top_mentor.service.dart';
@@ -28,8 +29,8 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
     provider = context.read<UserDataProvider>();
     usertoken = provider.usertoken;
 
-    topMentors = widget.topMentors ??
-        TopMentorService().fetchTopMentors(usertoken);
+    topMentors =
+        widget.topMentors ?? TopMentorService().fetchTopMentors(usertoken);
   }
 
   @override
@@ -53,7 +54,8 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
             children: [
               Row(
                 children: [
-                  Text("Top Mentors", style: Theme.of(context).textTheme.titleLarge),
+                  Text("Top Mentors",
+                      style: Theme.of(context).textTheme.titleLarge),
                 ],
               ),
               const SizedBox(height: 10),
@@ -66,7 +68,8 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
                   crossAxisSpacing: 10,
                   mainAxisExtent: 300.0,
                 ),
-                itemBuilder: (context, index) => _customCard(context, mentors[index]),
+                itemBuilder: (context, index) =>
+                    _customCard(context, mentors[index]),
               ),
             ],
           );
@@ -140,7 +143,6 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
 //   }
 // }
 
-
   Widget _buildContent(BuildContext context, bool hasMentors) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,13 +155,13 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
         const SizedBox(height: 10),
         if (!hasMentors)
           const Padding(
-            padding: EdgeInsets.only(left: 16.0), // Align with the title's start
+            padding:
+                EdgeInsets.only(left: 16.0), // Align with the title's start
             child: Text('No top mentors found'),
           ),
       ],
     );
   }
-
 
   Widget _customCard(BuildContext context, TopMentorModel mentor) {
     return InkWell(
@@ -169,7 +171,8 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
         } else {
           // Show scaffold message and redirect to login
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Please login to view mentor details')),
+            const SnackBar(
+                content: Text('Please login to view mentor details')),
           );
           context.go(AppRoutes.signin);
         }
@@ -187,7 +190,22 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
             Center(
               child: CircleAvatar(
                 radius: 80,
-                backgroundImage: AssetImage(mentor.avatarUrl), // Use AssetImage for local images
+                backgroundColor:
+                    Colors.grey[300], // Optional: Placeholder background
+                child: ClipOval(
+                  child: Image.network(
+                    mentor.avatarUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        mentor.gender == 'male'
+                            ? 'assets/images/malepic.jpg' // Male fallback
+                            : 'assets/images/femalepic.jpg', // Female fallback
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  ),
+                ),
               ),
             ),
             _buildDetails(mentor),
@@ -197,22 +215,24 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
     );
   }
 
-
   Widget _buildDetails(TopMentorModel mentor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(mentor.name, style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 5),
-        Text(mentor.categories.join(", "), style: Theme.of(context).textTheme.bodyMedium),
+        Text(mentor.categories.join(", "),
+            style: Theme.of(context).textTheme.bodyMedium),
         const SizedBox(height: 5),
-        Text("${mentor.numberOfMentoree} mentees", style: Theme.of(context).textTheme.bodySmall),
+        Text("${mentor.numberOfMentoree} mentees",
+            style: Theme.of(context).textTheme.bodySmall),
         const SizedBox(height: 5),
         Row(
           children: [
             const Icon(Icons.star, size: 12),
             const SizedBox(width: 6),
-            Text("${mentor.rate}", style: Theme.of(context).textTheme.bodySmall),
+            Text("${mentor.rate}",
+                style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
       ],

@@ -3,6 +3,7 @@
 class AllMentors {
   final int id;
   final String name;
+  final String gender;
   final String email;
   final String role;
   final String avatarUrl;
@@ -20,6 +21,7 @@ class AllMentors {
   AllMentors({
     required this.id,
     required this.name,
+    required this.gender,
     required this.email,
     required this.role,
     required this.avatarUrl,
@@ -38,6 +40,7 @@ class AllMentors {
   AllMentors copyWith({                                                                                               
     int? id,
     String? name,
+    String? gender,
     String? email,
     String? role,
     String? avatarUrl,
@@ -55,6 +58,7 @@ class AllMentors {
     return AllMentors(
       id: id ?? this.id,
       name: name ?? this.name,
+      gender: gender ?? this.gender,
       email: email ?? this.email,
       role: role ?? this.role,
       avatarUrl: avatarUrl ?? this.avatarUrl,
@@ -76,6 +80,7 @@ class AllMentors {
     return AllMentors(
       id: json['id'],
       name: json['name'],
+      gender: json['gender'],
       email: json['email'],
       role: json['role'],
       avatarUrl: json['avatarUrl'],
@@ -107,6 +112,7 @@ class AllMentors {
     return {
       'id': id,
       'name': name,
+      'gender': gender,
       'email': email,
       'role': role,
       'avatarUrl': avatarUrl,

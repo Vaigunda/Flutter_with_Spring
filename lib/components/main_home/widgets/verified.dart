@@ -212,11 +212,30 @@ class _HomeVerifiedState extends State<HomeVerified> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
+            child: Image.network(
               mentor.avatarUrl,
               fit: BoxFit.cover,
               height: 127,
               width: 182,
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) {
+                  return child; // Image is loaded
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(), // Show loading indicator
+                  );
+                }
+              },
+              errorBuilder: (context, error, stackTrace) {
+                return Image.asset(
+                  mentor.gender == 'male'
+                      ? 'assets/images/malepic.jpg'  // Male fallback image
+                      : 'assets/images/femalepic.jpg',  // Female fallback image
+                  fit: BoxFit.cover,
+                  height: 127,
+                  width: 182,
+                );
+              },
             ),
           ),
           _buildDetails(mentor),

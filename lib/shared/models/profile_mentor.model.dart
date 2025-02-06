@@ -3,6 +3,7 @@
 class ProfileMentor {
   final int id;
   final String name;
+  final String gender;
   final String role;
   final String avatarUrl;
   final bool verified;
@@ -18,6 +19,7 @@ class ProfileMentor {
   ProfileMentor({
     required this.id,
     required this.name,
+    required this.gender,
     required this.role,
     required this.avatarUrl,
     required this.verified,
@@ -35,6 +37,7 @@ class ProfileMentor {
   ProfileMentor copyWith({
     int? id,
     String? name,
+    String? gender,
     String? role,
     String? avatarUrl,
     bool? verified,
@@ -50,6 +53,7 @@ class ProfileMentor {
     return ProfileMentor(
       id: id ?? this.id,
       name: name ?? this.name,
+      gender: gender ?? this.gender,
       role: role ?? this.role,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       verified: verified ?? this.verified,
@@ -69,6 +73,7 @@ class ProfileMentor {
     return ProfileMentor(
       id: json['id'],
       name: json['name'],
+      gender: json['gender'],
       role: json['role'],
       avatarUrl: json['avatarUrl'],
       verified: json['verified'],
@@ -96,6 +101,7 @@ class ProfileMentor {
     return {
       'id': id,
       'name': name,
+      'gender': gender,
       'role': role,
       'avatarUrl': avatarUrl,
       'verified': verified,
