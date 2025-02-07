@@ -221,8 +221,12 @@ class _AdminPageState extends State<AdminPage> {
                                       },
                                       errorBuilder: (context, error, stackTrace) {
                                         return Image.asset(
-                                          'assets/images/fb.png', // Fallback image
+                                          mentor.gender == 'male'
+                                              ? 'assets/images/malepic.jpg'  // Male fallback image
+                                              : 'assets/images/femalepic.jpg',  // Female fallback image
                                           fit: BoxFit.cover,
+                                          height: 60,
+                                          width: 40,
                                         );
                                       },
                                     ),

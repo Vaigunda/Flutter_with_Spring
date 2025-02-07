@@ -1384,7 +1384,7 @@ class _BookingScreenState extends State<BookingScreen> {
         final tokenService = TokenService();
         tokenService.checkToken(usertoken, context);
       } else {
-        context.go(
+        context.push(
             '${AppRoutes.payment}/${mentor!.free.price}/${mentor!.id}/${mentor!.name}/$bookingData');
       }
     } else {

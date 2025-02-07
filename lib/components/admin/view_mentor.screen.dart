@@ -173,9 +173,23 @@ class ViewMentorScreen extends StatelessWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                     CircleAvatar(
-                                      backgroundImage:
-                                          AssetImage(mentor.avatarUrl),
                                       radius: 120,
+                                      backgroundColor:
+                                          Colors.grey[300], // Optional: Placeholder background
+                                      child: ClipOval(
+                                        child: Image.network(
+                                          mentor.avatarUrl,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return Image.asset(
+                                              mentor.gender == 'male'
+                                                  ? 'assets/images/malepic.jpg' // Male fallback
+                                                  : 'assets/images/femalepic.jpg', // Female fallback
+                                              fit: BoxFit.cover,
+                                            );
+                                          },
+                                        ),
+                                      ),
                                     ),
                                     const SizedBox(height: 8),
                                     Text(

@@ -67,6 +67,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   Future<void> setRead() async {
+    if (usertype == 'User'){
+        context.go(AppRoutes.home);
+        return;
+    }
     for (var notify in notifications) {
       int id = int.parse(notify.id);
       final url = Uri.parse('http://localhost:8080/api/notify/updateAsRead?notificationId=$id');
@@ -90,6 +94,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           "Notifications",
           style: context.headlineMedium,
         ),
+        leading: IconButton(onPressed: setRead, icon: const Icon(Icons.arrow_back)),
         actions: [
           if (usertype == 'Mentor' && notifications.isNotEmpty)
             TextButton(

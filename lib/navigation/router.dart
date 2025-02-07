@@ -26,6 +26,7 @@ import 'package:mentor/components/admin/admin_page.screen.dart';
 import 'package:mentor/components/admin/edit_mentor.screen.dart';
 import 'package:mentor/components/admin/view_mentor.screen.dart';
 import 'package:mentor/components/custom_category/category.screen.dart';
+import 'package:mentor/components/splash/aboutus.dart';
 
 import 'package:mentor/shared/models/all_mentors.model.dart';
 
@@ -41,6 +42,7 @@ class AppRoutes {
   static String signin = "/signin";
   static String signup = "/signup";
   static String mySchedule = "/my-schedule";
+  static String aboutus = "/about-us";
   static String search = "/search";
   static String filter = "/filter";
   static String notifications = "/notifications";
@@ -267,6 +269,9 @@ final appRouter = GoRouter(
     GoRoute(
         path: AppRoutes.forgetPassword,
         builder: (context, state) => const ForgetPasswordScreen()),
+    GoRoute(
+        path: AppRoutes.aboutus,
+        builder: (context, state) => const AboutUs()),    
     GoRoute(
         path: AppRoutes.newPassword,
         builder: (context, state) => const NewPasswordScreen()),

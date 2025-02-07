@@ -226,12 +226,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             if (!isMobile)
               TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const AboutUs(),
-                    ),
-                  );
+                  context.go('/about-us'); // Updates the URL properly
                 },
                 child: const Text(
                   'About Us',
@@ -246,7 +241,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               textBaseline: TextBaseline.alphabetic,
               children: [
                 IconButton(
-                  onPressed: () => context.push(AppRoutes.notifications),
+                  onPressed: () => context.go(AppRoutes.notifications),
                   icon: const Icon(FontAwesomeIcons.bell),
                 ),
                 // Badge to display the number
