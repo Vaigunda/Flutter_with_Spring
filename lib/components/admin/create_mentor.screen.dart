@@ -12,7 +12,6 @@ import 'package:mentor/provider/user_data_provider.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
-
 import '../../shared/services/token.service.dart';
 import '../../shared/utils/validator.dart';
 import '../../shared/views/button.dart';
@@ -71,8 +70,6 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
   bool isCertSubmitted = false;
   bool isExpSubmitted = false;
   bool isTimeSubmitted = false;
-
-
 
   List<CategoryModel> categories = [];
   List<CategoryModel> selectedCategories = [];
@@ -362,7 +359,11 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Create Mentor Form",style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),)),
+      appBar: AppBar(
+          title: const Text(
+        "Create Mentor Form",
+        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+      )),
       body: LayoutBuilder(
         builder: (context, constraints) {
           bool isWideScreen = constraints.maxWidth > 800;
@@ -501,36 +502,61 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
             controller: nameController,
             labelText: "Name",
             prefixIcon: const Icon(Icons.person),
-            validator: (value) => value == null || value.isEmpty
-                ? 'Name is required'
-                : null,
+            validator: (value) =>
+                value == null || value.isEmpty ? 'Name is required' : null,
           ),
           const SizedBox(height: 20),
           // Gender Selection Section
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: CheckboxListTile(
-                  title: const Text("Male"),
-                  value: isMale,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      isMale = value!;
-                      isFemale = false; // If Male is selected, uncheck Female
-                    });
-                  },
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          width: 0.8,
+                          color: Theme.of(context).colorScheme.outline)),
+                  child: CheckboxListTile(
+                    title: Text(
+                      "Male",
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.outline),
+                    ),
+                    value: isMale,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isMale = value!;
+                        isFemale = false; // If Male is selected, uncheck Female
+                      });
+                    },
+                  ),
                 ),
               ),
+              const SizedBox(
+                width: 4,
+              ),
               Expanded(
-                child: CheckboxListTile(
-                  title: const Text("Female"),
-                  value: isFemale,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      isFemale = value!;
-                      isMale = false; // If Female is selected, uncheck Male
-                    });
-                  },
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          width: 0.8,
+                          color: Theme.of(context).colorScheme.outline)),
+                  child: CheckboxListTile(
+                    title: Text(
+                      "Female",
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.outline),
+                    ),
+                    value: isFemale,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isFemale = value!;
+                        isMale = false; // If Female is selected, uncheck Male
+                      });
+                    },
+                  ),
                 ),
               ),
             ],
@@ -545,7 +571,8 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
               if (value == null || value.isEmpty) {
                 return 'Email is required';
               }
-              final emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+              final emailRegex =
+                  RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
               if (!emailRegex.hasMatch(value)) {
                 return 'Enter a valid email';
               }
@@ -569,9 +596,8 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
             labelText: "Bio",
             maxLines: 3,
             prefixIcon: const Icon(Icons.info),
-            validator: (value) => value == null || value.isEmpty
-                ? 'Bio is required'
-                : null,
+            validator: (value) =>
+                value == null || value.isEmpty ? 'Bio is required' : null,
           ),
           const SizedBox(height: 20),
 
@@ -579,9 +605,8 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
             controller: roleController,
             labelText: "Role",
             prefixIcon: const Icon(Icons.work),
-            validator: (value) => value == null || value.isEmpty
-                ? 'Role is required'
-                : null,
+            validator: (value) =>
+                value == null || value.isEmpty ? 'Role is required' : null,
           ),
           const SizedBox(height: 20),
 
@@ -617,9 +642,8 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
             controller: freeUnitController,
             labelText: "Free Unit (e.g. hour)",
             prefixIcon: const Icon(Icons.timer),
-            validator: (value) => value == null || value.isEmpty
-                ? 'Free unit is required'
-                : null,
+            validator: (value) =>
+                value == null || value.isEmpty ? 'Free unit is required' : null,
           ),
           const SizedBox(height: 20),
 
@@ -640,547 +664,605 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
           ),
           const SizedBox(height: 20),
           Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // CheckboxListTile on the left
-            Expanded(
-              flex: 2,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 1,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // CheckboxListTile on the left
+              Expanded(
+                flex: 2,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.transparent
+                        : const Color.fromARGB(255, 249, 245, 252),
                   ),
-                  borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ?  Colors.transparent
-                      : const Color.fromARGB(255, 249, 245, 252),
-                ),
-                child: CheckboxListTile(
-                  title: const Text("Verified Mentor"),
-                  value: isVerified,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      isVerified = value!;
-                    });
-                  },
-                ),
-              ),
-            ),
-
-            const SizedBox(width: 20), // Add spacing between the two widgets
-
-            // MultiSelectDialogField on the right
-            Expanded(
-              flex: 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  MultiSelectDialogField<CategoryModel>(
-                    items: categories
-                        .map((category) =>
-                            MultiSelectItem(category, category.name))
-                        .toList(),
-                    title: const Text("Select Categories"),
-                    selectedColor: Colors.blue,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        width: 1,
-                      ),
-                    ),
-                    buttonIcon: Icon(
-                      Icons.arrow_drop_down,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : Colors.black,
-                    ),
-                    buttonText: Text(
-                      "Select Categories",
-                      style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                        fontSize: 16,
-                      ),
-                    ),
-                    onConfirm: (values) {
+                  child: CheckboxListTile(
+                    title: const Text("Verified Mentor"),
+                    value: isVerified,
+                    onChanged: (bool? value) {
                       setState(() {
-                        selectedCategories = values;
-
-                        if (selectedCategories
-                            .any((category) => category.name == "Others")) {
-                          // Remove "Others" from the selected categories temporarily
-                          selectedCategories.removeWhere(
-                              (category) => category.name == "Others");
-
-                          // Prevent chipDisplay from showing categories yet
-                          displayedCategories = [];
-
-                          // Show a dialog for the custom category
-                          _showOthersCategoryField();
-                        } else {
-                          // If "Others" was not selected, immediately update displayedCategories
-                          displayedCategories = List.from(selectedCategories);
-                        }
+                        isVerified = value!;
                       });
                     },
-                    chipDisplay: MultiSelectChipDisplay(
-                      // Use the new displayedCategories variable instead of selectedCategories
-                      items: displayedCategories
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 20), // Add spacing between the two widgets
+
+              // MultiSelectDialogField on the right
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    MultiSelectDialogField<CategoryModel>(
+                      items: categories
                           .map((category) =>
-                              MultiSelectItem(category, category.name,))
+                              MultiSelectItem(category, category.name))
                           .toList(),
-                      onTap: (value) {
+                      title: const Text("Select Categories"),
+                      selectedColor: Colors.blue,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          width: 1,
+                        ),
+                      ),
+                      buttonIcon: Icon(
+                        Icons.arrow_drop_down,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.black,
+                      ),
+                      buttonText: Text(
+                        "Select Categories",
+                        style: TextStyle(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                      onConfirm: (values) {
                         setState(() {
-                          selectedCategories.remove(value);
-                          displayedCategories.remove(value);
+                          selectedCategories = values;
+
+                          if (selectedCategories
+                              .any((category) => category.name == "Others")) {
+                            // Remove "Others" from the selected categories temporarily
+                            selectedCategories.removeWhere(
+                                (category) => category.name == "Others");
+
+                            // Prevent chipDisplay from showing categories yet
+                            displayedCategories = [];
+
+                            // Show a dialog for the custom category
+                            _showOthersCategoryField();
+                          } else {
+                            // If "Others" was not selected, immediately update displayedCategories
+                            displayedCategories = List.from(selectedCategories);
+                          }
                         });
                       },
-                      textStyle: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                      ),
-                      icon: Icon(
-                        Icons.cancel,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white
-                            : Colors.black,
-                      ),
-                      
-                    ),
-                    itemsTextStyle: const TextStyle(
-                      color: Colors.blue, // Uniform color for all dropdown items
-                    ),
-                    selectedItemsTextStyle: const TextStyle(
-                      color: Colors.blue,
-                    ),
-                  ),
-                  if (isFormSubmitted && selectedCategories.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        'Please select at least one category.',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 20,
-        ),
+                      // chipDisplay: MultiSelectChipDisplay(
+                      //   // Use the new displayedCategories variable instead of selectedCategories
+                      //   items: displayedCategories
+                      //       .map((category) =>
+                      //           MultiSelectItem(category, category.name,))
+                      //       .toList(),
+                      //   onTap: (value) {
 
-        // Certificates Section
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ...List.generate(certificateNameControllers.length, (index) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InputField(
-                    controller: certificateNameControllers[index],
-                    labelText: "Certificate Name",
-                    prefixIcon: const Icon(HugeIcons.strokeRoundedMessageAdd02),
-                  ),
-                  if (isCertSubmitted &&
-                      certificateNameControllers[index].text.trim().isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        'Certificate Name is required.',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
+                      //     setState(() {
+                      //       selectedCategories.remove(value);
+                      //       displayedCategories.remove(value);
+                      //     });
+                      //   },
+                      //   textStyle: TextStyle(
+                      //     color: Theme.of(context).brightness == Brightness.dark
+                      //         ? Colors.white
+                      //         : Colors.black,
+                      //   ),
+                      //   icon: Icon(
+                      //     Icons.cancel,
+                      //     color: Theme.of(context).brightness == Brightness.dark
+                      //         ? Colors.white
+                      //         : Colors.black,
+                      //   ),
+
+                      // ),
+                      chipDisplay: MultiSelectChipDisplay.none(),
+                      itemsTextStyle: const TextStyle(
+                        color:
+                            Colors.blue, // Uniform color for all dropdown items
+                      ),
+                      selectedItemsTextStyle: const TextStyle(
+                        color: Colors.blue,
                       ),
                     ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  InputField(
-                    controller: certificateProviderControllers[index],
-                    labelText: "Certificate Provider",
-                    prefixIcon: const Icon(HugeIcons.strokeRoundedMessageAdd02),
-                  ),
-                  if (isCertSubmitted &&
-                      certificateProviderControllers[index].text.trim().isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        'Certificate Provider is required.',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
+                    Wrap(
+                      spacing: 8.0,
+                      children: displayedCategories
+                          .map(
+                            (category) => Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Chip(
+                                label: Text(category.name),
+                                deleteIcon: const Icon(Icons.cancel,
+                                    color: Colors.white),
+                                onDeleted: () {
+                                  setState(() {
+                                    selectedCategories.remove(category);
+                                    displayedCategories.remove(category);
+                                  });
+                                },
+                              ),
+                            ),
+                          )
+                          .toList(),
                     ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  TextField(
-                    controller: certificateDateControllers[index],
-                     decoration:
-                         const InputDecoration(labelText: "Certificate Date YYYY-MM-DD",border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10.0)))),
-                     onTap: () => _selectDate(
-                         context, certificateDateControllers[index]),
-                     readOnly: true,
-                  ),
-                  if (isCertSubmitted &&
-                      certificateDateControllers[index].text.trim().isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        'Certificate Date is required.',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
+                    if (isFormSubmitted && selectedCategories.isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          'Please select at least one category.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
                       ),
-                    ),
-                  const SizedBox(
-                    height: 20,
-                  )
-                ],
-              );
-            }),
-            CustomButton(
-                minWidth: MediaQuery.of(context).size.width,
-                borderRadius: 4,
-                onPressed: _addCertificate,
-                label: "Add Certificate"),
-          ],
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        // Experiences Section
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ...List.generate(experienceRoleControllers.length, (index) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InputField(
-                    controller: experienceRoleControllers[index],
-                    labelText: "Role",
-                    prefixIcon: const Icon(HugeIcons.strokeRoundedMessageAdd02),
-                  ),
-                  if (isExpSubmitted && experienceRoleControllers[index].text.trim().isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        'Role is required.',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
-                    ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  InputField(
-                    controller: experienceCompanyControllers[index],
-                    labelText: "Company",
-                    prefixIcon: const Icon(HugeIcons.strokeRoundedMessageAdd02),
-                  ),
-                  if (isExpSubmitted && experienceCompanyControllers[index].text.trim().isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        'Company is required.',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
-                    ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  InputField(
-                    controller: experienceDescriptionControllers[index],
-                    labelText: "Description",
-                    prefixIcon: const Icon(HugeIcons.strokeRoundedMessageAdd02),
-                  ),
-                  if (isExpSubmitted && experienceDescriptionControllers[index].text.trim().isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        'Description is required.',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
-                    ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextField(
-                    controller: experienceStartDateControllers[index],
-                    decoration: const InputDecoration(
-                        labelText: "Start Date YYYY-MM-DD",border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10.0)))),
-                    onTap: () => _selectDate(
-                        context, experienceStartDateControllers[index]),
-                    readOnly: true,
-                  ),
-                  if (isExpSubmitted && experienceStartDateControllers[index].text.trim().isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        'Start Date is required.',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
-                    ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  TextField(
-                    controller: experienceEndDateControllers[index],
-                    decoration:
-                        const InputDecoration(labelText: "End Date YYYY-MM-DD",border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10.0)))),
-                    onTap: () => _selectDate(
-                        context, experienceEndDateControllers[index]),
-                    readOnly: true,
-                  ),
-                  if (isExpSubmitted && experienceEndDateControllers[index].text.trim().isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        'End Date is required.',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
-                    ),
-                  const SizedBox(
-                    height: 20,
-                  )
-                ],
-              );
-            }),
-            
-            CustomButton(
-                minWidth: MediaQuery.of(context).size.width,
-                borderRadius: 4,
-                onPressed: _addExperience,
-                label: "Add Experience"),
-           
-          ],
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-
-        // Add Teaching Schedules Section
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ...List.generate(timeSlotsTimeStartControllers.length, (index) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    controller: timeSlotsTimeStartControllers[index],
-                    decoration: const InputDecoration(
-                        labelText: "Start Time (HH:mm:ss)",border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
-                    onTap: () => _selectTime(
-                        context, timeSlotsTimeStartControllers[index]),
-                    readOnly: true,
-                  ),
-                  if (isTimeSubmitted && timeSlotsTimeStartControllers[index].text.trim().isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        'Start Time is required.',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
-                    ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextField(
-                    controller: timeSlotsTimeEndControllers[index],
-                    decoration:
-                        const InputDecoration(labelText: "End Time (HH:mm:ss)",border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10)))),
-                    onTap: () => _selectTime(
-                        context, timeSlotsTimeEndControllers[index]),
-                    readOnly: true,
-                  ),
-                  if (isTimeSubmitted && timeSlotsTimeEndControllers[index].text.trim().isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        'End Time is required.',
-                        style: TextStyle(color: Colors.red, fontSize: 12),
-                      ),
-                    ),
-                ],
-              );
-            }),
-              const SizedBox(
-                    height: 20,
-                  ),
-            CustomButton(
-                minWidth: MediaQuery.of(context).size.width,
-                borderRadius: 4,
-                onPressed: _addTeachingSchedule,
-                label: "Add TimeSlots"),
-          ],
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-
-
-        // Submit Button
-        CustomButton(
-          minWidth: MediaQuery.of(context).size.width,
-          borderRadius: 4,
-          onPressed: () {
-            // First, validate the form using the form key
-            if (_formKey.currentState!.validate()) {
-              // Category validation
-              setState(() {
-                isFormSubmitted = true;
-              });
-
-              if (selectedCategories.isEmpty) {
-                // Show error message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please select at least one category.'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                return;
-              }
-
-              // Certificate validation
-              setState(() {
-                isCertSubmitted = true;
-              });
-
-              // Check if certificates have been added
-              if (certificateNameControllers.isEmpty) {
-                // Show a message if no certificates have been added
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please add at least one certificate.'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                return;
-              }
-
-              bool isCertValid = true;
-              for (int i = 0; i < certificateNameControllers.length; i++) {
-                if (certificateNameControllers[i].text.trim().isEmpty ||
-                    certificateProviderControllers[i].text.trim().isEmpty ||
-                    certificateDateControllers[i].text.trim().isEmpty) {
-                  isCertValid = false;
-                  break;
-                }
-              }
-
-              if (!isCertValid) {
-                // Show error message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('All certificate fields are required.'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                return;
-              }
-
-              // Experience validation
-              setState(() {
-                isExpSubmitted = true;
-              });
-
-              // Check if experiences have been added
-              if (experienceRoleControllers.isEmpty) {
-                // Show a message if no experiences have been added
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please add at least one experience.'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                return;
-              }
-
-              bool isExpValid = true;
-              for (int i = 0; i < experienceRoleControllers.length; i++) {
-                if (experienceRoleControllers[i].text.trim().isEmpty ||
-                    experienceCompanyControllers[i].text.trim().isEmpty ||
-                    experienceDescriptionControllers[i].text.trim().isEmpty ||
-                    experienceStartDateControllers[i].text.trim().isEmpty ||
-                    experienceEndDateControllers[i].text.trim().isEmpty) {
-                  isExpValid = false;
-                  break;
-                }
-              }
-
-              if (!isExpValid) {
-                // Show error message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('All experience fields (Role, Company, Description, Start Date, End Date) are required.'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                return;
-              }
-
-              // Time validation
-              setState(() {
-                isTimeSubmitted = true;
-              });
-
-              // Check if teaching schedules have been added
-              if (timeSlotsTimeStartControllers.isEmpty) {
-                // Show a message if no teaching schedules have been added
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please add at least one time slot.'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                return;
-              }
-
-              bool isTimeValid = true;
-              for (int i = 0; i < timeSlotsTimeStartControllers.length; i++) {
-                if (timeSlotsTimeStartControllers[i].text.trim().isEmpty ||
-                    timeSlotsTimeEndControllers[i].text.trim().isEmpty) {
-                  isTimeValid = false;
-                  break;
-                }
-              }
-
-              if (!isTimeValid) {
-                // Show error message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('All time slot fields (Start Time, End Time) are required.'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-                return;
-              }
-
-              // Finally, call the submit function if all validations pass
-              submitMentor();
-            } else {
-              // If form is not valid, return early
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Please fill all required fields.'),
-                  backgroundColor: Colors.red,
+                  ],
                 ),
-              );
-            }
-          },
-          label: isSubmitting ? "Submitting..." : "Submit Mentor",
-        ),
-        const SizedBox(height: 40),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+
+          // Certificates Section
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...List.generate(certificateNameControllers.length, (index) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InputField(
+                      controller: certificateNameControllers[index],
+                      labelText: "Certificate Name",
+                      prefixIcon:
+                          const Icon(HugeIcons.strokeRoundedMessageAdd02),
+                    ),
+                    if (isCertSubmitted &&
+                        certificateNameControllers[index].text.trim().isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          'Certificate Name is required.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    InputField(
+                      controller: certificateProviderControllers[index],
+                      labelText: "Certificate Provider",
+                      prefixIcon:
+                          const Icon(HugeIcons.strokeRoundedMessageAdd02),
+                    ),
+                    if (isCertSubmitted &&
+                        certificateProviderControllers[index]
+                            .text
+                            .trim()
+                            .isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          'Certificate Provider is required.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextField(
+                      controller: certificateDateControllers[index],
+                      decoration: const InputDecoration(
+                          labelText: "Certificate Date YYYY-MM-DD",
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)))),
+                      onTap: () => _selectDate(
+                          context, certificateDateControllers[index]),
+                      readOnly: true,
+                    ),
+                    if (isCertSubmitted &&
+                        certificateDateControllers[index].text.trim().isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          'Certificate Date is required.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 20,
+                    )
+                  ],
+                );
+              }),
+              CustomButton(
+                  minWidth: MediaQuery.of(context).size.width,
+                  borderRadius: 4,
+                  onPressed: _addCertificate,
+                  label: "Add Certificate"),
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          // Experiences Section
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...List.generate(experienceRoleControllers.length, (index) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InputField(
+                      controller: experienceRoleControllers[index],
+                      labelText: "Role",
+                      prefixIcon:
+                          const Icon(HugeIcons.strokeRoundedMessageAdd02),
+                    ),
+                    if (isExpSubmitted &&
+                        experienceRoleControllers[index].text.trim().isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          'Role is required.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    InputField(
+                      controller: experienceCompanyControllers[index],
+                      labelText: "Company",
+                      prefixIcon:
+                          const Icon(HugeIcons.strokeRoundedMessageAdd02),
+                    ),
+                    if (isExpSubmitted &&
+                        experienceCompanyControllers[index].text.trim().isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          'Company is required.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    InputField(
+                      controller: experienceDescriptionControllers[index],
+                      labelText: "Description",
+                      prefixIcon:
+                          const Icon(HugeIcons.strokeRoundedMessageAdd02),
+                    ),
+                    if (isExpSubmitted &&
+                        experienceDescriptionControllers[index]
+                            .text
+                            .trim()
+                            .isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          'Description is required.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextField(
+                      controller: experienceStartDateControllers[index],
+                      decoration: const InputDecoration(
+                          labelText: "Start Date YYYY-MM-DD",
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)))),
+                      onTap: () => _selectDate(
+                          context, experienceStartDateControllers[index]),
+                      readOnly: true,
+                    ),
+                    if (isExpSubmitted &&
+                        experienceStartDateControllers[index]
+                            .text
+                            .trim()
+                            .isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          'Start Date is required.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextField(
+                      controller: experienceEndDateControllers[index],
+                      decoration: const InputDecoration(
+                          labelText: "End Date YYYY-MM-DD",
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)))),
+                      onTap: () => _selectDate(
+                          context, experienceEndDateControllers[index]),
+                      readOnly: true,
+                    ),
+                    if (isExpSubmitted &&
+                        experienceEndDateControllers[index].text.trim().isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          'End Date is required.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 20,
+                    )
+                  ],
+                );
+              }),
+              CustomButton(
+                  minWidth: MediaQuery.of(context).size.width,
+                  borderRadius: 4,
+                  onPressed: _addExperience,
+                  label: "Add Experience"),
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+
+          // Add Teaching Schedules Section
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...List.generate(timeSlotsTimeStartControllers.length, (index) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      controller: timeSlotsTimeStartControllers[index],
+                      decoration: const InputDecoration(
+                          labelText: "Start Time (HH:mm:ss)",
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)))),
+                      onTap: () => _selectTime(
+                          context, timeSlotsTimeStartControllers[index]),
+                      readOnly: true,
+                    ),
+                    if (isTimeSubmitted &&
+                        timeSlotsTimeStartControllers[index]
+                            .text
+                            .trim()
+                            .isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          'Start Time is required.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextField(
+                      controller: timeSlotsTimeEndControllers[index],
+                      decoration: const InputDecoration(
+                          labelText: "End Time (HH:mm:ss)",
+                          border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)))),
+                      onTap: () => _selectTime(
+                          context, timeSlotsTimeEndControllers[index]),
+                      readOnly: true,
+                    ),
+                    if (isTimeSubmitted &&
+                        timeSlotsTimeEndControllers[index].text.trim().isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          'End Time is required.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                  ],
+                );
+              }),
+              const SizedBox(
+                height: 20,
+              ),
+              CustomButton(
+                  minWidth: MediaQuery.of(context).size.width,
+                  borderRadius: 4,
+                  onPressed: _addTeachingSchedule,
+                  label: "Add TimeSlots"),
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+
+          // Submit Button
+          CustomButton(
+            minWidth: MediaQuery.of(context).size.width,
+            borderRadius: 4,
+            onPressed: () {
+              // First, validate the form using the form key
+              if (_formKey.currentState!.validate()) {
+                // Category validation
+                setState(() {
+                  isFormSubmitted = true;
+                });
+
+                if (selectedCategories.isEmpty) {
+                  // Show error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please select at least one category.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                // Certificate validation
+                setState(() {
+                  isCertSubmitted = true;
+                });
+
+                // Check if certificates have been added
+                if (certificateNameControllers.isEmpty) {
+                  // Show a message if no certificates have been added
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please add at least one certificate.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                bool isCertValid = true;
+                for (int i = 0; i < certificateNameControllers.length; i++) {
+                  if (certificateNameControllers[i].text.trim().isEmpty ||
+                      certificateProviderControllers[i].text.trim().isEmpty ||
+                      certificateDateControllers[i].text.trim().isEmpty) {
+                    isCertValid = false;
+                    break;
+                  }
+                }
+
+                if (!isCertValid) {
+                  // Show error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('All certificate fields are required.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                // Experience validation
+                setState(() {
+                  isExpSubmitted = true;
+                });
+
+                // Check if experiences have been added
+                if (experienceRoleControllers.isEmpty) {
+                  // Show a message if no experiences have been added
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please add at least one experience.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                bool isExpValid = true;
+                for (int i = 0; i < experienceRoleControllers.length; i++) {
+                  if (experienceRoleControllers[i].text.trim().isEmpty ||
+                      experienceCompanyControllers[i].text.trim().isEmpty ||
+                      experienceDescriptionControllers[i].text.trim().isEmpty ||
+                      experienceStartDateControllers[i].text.trim().isEmpty ||
+                      experienceEndDateControllers[i].text.trim().isEmpty) {
+                    isExpValid = false;
+                    break;
+                  }
+                }
+
+                if (!isExpValid) {
+                  // Show error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          'All experience fields (Role, Company, Description, Start Date, End Date) are required.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                // Time validation
+                setState(() {
+                  isTimeSubmitted = true;
+                });
+
+                // Check if teaching schedules have been added
+                if (timeSlotsTimeStartControllers.isEmpty) {
+                  // Show a message if no teaching schedules have been added
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please add at least one time slot.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                bool isTimeValid = true;
+                for (int i = 0; i < timeSlotsTimeStartControllers.length; i++) {
+                  if (timeSlotsTimeStartControllers[i].text.trim().isEmpty ||
+                      timeSlotsTimeEndControllers[i].text.trim().isEmpty) {
+                    isTimeValid = false;
+                    break;
+                  }
+                }
+
+                if (!isTimeValid) {
+                  // Show error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          'All time slot fields (Start Time, End Time) are required.'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  return;
+                }
+
+                // Finally, call the submit function if all validations pass
+                submitMentor();
+              } else {
+                // If form is not valid, return early
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please fill all required fields.'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+            label: isSubmitting ? "Submitting..." : "Submit Mentor",
+          ),
+          const SizedBox(height: 40),
         ],
       ),
     );
   }
-
 
   // Widget _buildFormFields() {
   //   return Column(
@@ -1548,7 +1630,7 @@ class _CreateMentorScreenState extends State<CreateMentorScreen> {
   //               ],
   //             );
   //           }),
-            
+
   //           CustomButton(
   //               minWidth: MediaQuery.of(context).size.width,
   //               borderRadius: 4,
