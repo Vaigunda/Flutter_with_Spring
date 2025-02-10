@@ -172,7 +172,7 @@ class _HomeCategoriesState extends State<HomeCategories> {
 
   Widget _buildNoCategoriesMessage(BuildContext context) {
     return const Padding(
-      padding: EdgeInsets.only(left: 16.0), // Align with the title
+      padding: EdgeInsets.only(left: 1.0), // Align with the title
       child: Text('No categories found'),
     );
   }

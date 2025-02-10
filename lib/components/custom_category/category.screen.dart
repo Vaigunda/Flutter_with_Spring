@@ -85,13 +85,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
           // Category successfully added
           _fetchCategories(); // Refresh the category list
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Category added successfully')),
+            const SnackBar(content: Text('Category added successfully'),duration: Duration(milliseconds: 1500),backgroundColor: Colors.green,),
           );
         } else if (response.statusCode == 400) {
           // Category already exists
           
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Category already exists')),
+            const SnackBar(content: Text('Category already exists'),duration: Duration(milliseconds: 1500),backgroundColor: Colors.red,),
           );
         } else {
           // Other errors
@@ -100,7 +100,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error adding category'),duration: Duration(seconds: 2),),
+        const SnackBar(content: Text('Error adding category'),duration: Duration(milliseconds: 1500),backgroundColor: Colors.red,),
       );
     }
   }
@@ -121,22 +121,41 @@ class _CategoryScreenState extends State<CategoryScreen> {
           },
         );
 
-        if (response.statusCode == 200) {
+        if (response.statusCode == 200 && response.body.contains("Category deleted successfully.")) {
           _fetchCategories(); // Refresh the category list
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Category deleted successfully'),duration: Duration(seconds: 2),),
+            const SnackBar(
+              content: Text('Category deleted successfully'),
+              duration: Duration(milliseconds: 1500),
+              backgroundColor: Colors.green,
+            ),
           );
-          
         } else {
-          throw Exception('Failed to delete category');
+          if (response.statusCode == 200 && response.body.contains("Already Assigned")) {
+            // Show different message if category is assigned
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Assigned Category cannot be deleted'),
+                duration: Duration(milliseconds: 1500),
+                backgroundColor: Colors.red,
+              ),
+            );
+          } else {
+            throw Exception('Failed to delete category');
+          }
         }
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error deleting category'),duration: Duration(seconds: 2),),
+        const SnackBar(
+          content: Text('Error deleting category'),
+          duration: Duration(milliseconds: 1500),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
+
 
   Future<void> _editCategory(String id, String newName) async {
     try {
@@ -162,12 +181,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
           _fetchCategories(); // Refresh the category list
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Category edited successfully'),
-            duration: Duration(seconds: 2),),
+            duration: Duration(milliseconds: 1500),
+            backgroundColor: Colors.green,),
           );
         } else if (response.statusCode == 400) {
           // Category already exists
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Category already exists')),
+            const SnackBar(content: Text('Category already exists'),duration: Duration(milliseconds: 1500),backgroundColor: Colors.red,),
           );
         } else {
           throw Exception('Failed to edit category');
@@ -175,7 +195,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error editing category'),duration: Duration(seconds: 2),),
+        const SnackBar(content: Text('Error editing category'),duration: Duration(milliseconds: 1500),backgroundColor: Colors.red,),
       );
     }
   }

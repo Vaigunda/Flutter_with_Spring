@@ -485,30 +485,37 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       if (response.statusCode == 200) {
         if (response.body == 'Email already Exists') {
-          // Email already exists
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text("Email already Exists!"),
-              backgroundColor: Colors.green,
+              backgroundColor: Colors.red,
+              duration: Duration(milliseconds: 1500)
+            ),
+          );
+        } else if (response.body == 'Username already Exists') { // Use else if
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Username already Exists!"),
+              backgroundColor: Colors.red,
+              duration: Duration(milliseconds: 1500)
             ),
           );
         }
-      }
-      if (response.statusCode == 201) {
-        // Sign up successful
+      } else if (response.statusCode == 201) { // Only runs if sign-up is successful
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Sign up successful!"),
             backgroundColor: Colors.green,
+            duration: Duration(milliseconds: 1500)
           ),
         );
         context.go(AppRoutes.signin);
-      } else {
-        // Handle error, show error message
+      } else { // Runs only if there is an actual failure
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text("Sign up failed! Please try again."),
             backgroundColor: Colors.red,
+            duration: Duration(milliseconds: 1500)
           ),
         );
       }

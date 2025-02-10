@@ -1,7 +1,6 @@
 // lib/screens/home/home_top_mentors.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart';
 import 'package:mentor/navigation/router.dart';
 import 'package:mentor/shared/models/top_mentor.model.dart';
 import 'package:mentor/shared/services/top_mentor.service.dart';
@@ -156,7 +155,7 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
         if (!hasMentors)
           const Padding(
             padding:
-                EdgeInsets.only(left: 16.0), // Align with the title's start
+                EdgeInsets.only(left: 1.0), // Align with the title's start
             child: Text('No top mentors found'),
           ),
       ],
