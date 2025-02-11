@@ -110,7 +110,7 @@ class ViewMentorScreen extends StatelessWidget {
               ),
               subtitle: Text('Provided By: ${certificate.provideBy}'),
               leading: certificate.imageUrl != null
-                  ? Image.network(
+                  ? Image.asset(
                       certificate.imageUrl,
                       width: 50,
                       height: 50,
@@ -177,7 +177,7 @@ class ViewMentorScreen extends StatelessWidget {
                                       backgroundColor:
                                           Colors.grey[300], // Optional: Placeholder background
                                       child: ClipOval(
-                                        child: Image.network(
+                                        child: Image.asset(
                                           mentor.avatarUrl,
                                           fit: BoxFit.cover,
                                           errorBuilder: (context, error, stackTrace) {

@@ -615,7 +615,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           certificate.imageUrl.isNotEmpty
-              ? Image.network(
+              ? Image.asset(
                   certificate.imageUrl,
                   width: MediaQuery.of(context).size.width,
                   errorBuilder: (context, error, stackTrace) {

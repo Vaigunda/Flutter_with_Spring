@@ -570,7 +570,7 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  Widget renderSelectMethodConnect() {
+  /*Widget renderSelectMethodConnect() {
     var isWeb = MediaQuery.of(context).size.width > 800;
     return Column(
       children: [
@@ -775,6 +775,81 @@ class _BookingScreenState extends State<BookingScreen> {
             ),
           ),
         ),
+      ],
+    );
+  }*/
+
+  Widget renderSelectMethodConnect() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        renderHeaderStep("Select method connect"),
+        DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outline,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: DropdownButton<String>(
+              focusColor: Colors.transparent,
+              isExpanded: true,
+              isDense: true,
+              underline: Container(),
+              value: formData[_index]["value"],
+              hint: const Text("Select method to connect with mentor"),
+              items: connectMethods.map((ConnectMethodModel value) {
+                return DropdownMenuItem<String>(
+                  value: value
+                      .id, // Assuming value.id is a string like "1", "2", etc.
+                  child: Text(value.name),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  formData[_index]["value"] = value;
+                  _errorMessage = '';
+
+                  // Reset Google Meet specific fields if another method is selected
+                  if (value != '1') {
+                    // Replace '3' with the actual ID for "Google Meet"
+                    googleMeetLink = null;
+                    googleMeetError = null;
+                  }
+                });
+              },
+            ),
+          ),
+        ),
+        // Conditionally render the text field if the ID for "Google Meet" is selected
+        if (formData[_index]["value"] ==
+            '2') // Replace '3' with the correct ID for "Google Meet"
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: 'Enter Google Meet Link',
+                border: const OutlineInputBorder(),
+                errorText: googleMeetError,
+              ),
+              onChanged: (value) {
+                setState(() {
+                  googleMeetLink = value;
+
+                  // Validate the Google Meet link
+                  if (!RegExp(r"^https://meet\.google\.com/[a-zA-Z0-9-]+$")
+                      .hasMatch(value)) {
+                    googleMeetError = 'Please enter a valid Google Meet link.';
+                  } else {
+                    googleMeetError = null;
+                  }
+                });
+              },
+            ),
+          ),
       ],
     );
   }

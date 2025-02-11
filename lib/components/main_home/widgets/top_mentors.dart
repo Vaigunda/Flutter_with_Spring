@@ -192,7 +192,7 @@ class _HomeTopMentorsState extends State<HomeTopMentors> {
                 backgroundColor:
                     Colors.grey[300], // Optional: Placeholder background
                 child: ClipOval(
-                  child: Image.network(
+                  child: Image.asset(
                     mentor.avatarUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {

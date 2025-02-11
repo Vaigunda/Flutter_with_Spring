@@ -212,20 +212,11 @@ class _HomeVerifiedState extends State<HomeVerified> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.network(
+            child: Image.asset(
               mentor.avatarUrl,
               fit: BoxFit.cover,
               height: 127,
               width: 182,
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) {
-                  return child; // Image is loaded
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(), // Show loading indicator
-                  );
-                }
-              },
               errorBuilder: (context, error, stackTrace) {
                 return Image.asset(
                   mentor.gender == 'male'

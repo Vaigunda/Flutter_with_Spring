@@ -207,18 +207,9 @@ class _AdminPageState extends State<AdminPage> {
                               ]),
                           leading: ClipRRect(
                                     borderRadius: BorderRadius.circular(60),
-                                    child: Image.network(
+                                    child: Image.asset(
                                       mentor.avatarUrl,
-                                      fit: BoxFit.cover,                                    
-                                      loadingBuilder: (context, child, loadingProgress) {
-                                        if (loadingProgress == null) {
-                                          return child; // Image is loaded
-                                        } else {
-                                          return const Center(
-                                            child: CircularProgressIndicator(), // Show loading indicator
-                                          );
-                                        }
-                                      },
+                                      fit: BoxFit.cover,
                                       errorBuilder: (context, error, stackTrace) {
                                         return Image.asset(
                                           mentor.gender == 'male'
