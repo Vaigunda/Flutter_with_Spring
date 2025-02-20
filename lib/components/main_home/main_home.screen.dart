@@ -171,7 +171,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                   },
                   icon: const Icon(Icons.menu))
               : null,
-          title: const Padding(
+          title: Padding(
             padding: EdgeInsets.only(bottom: 20),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -180,7 +180,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 Text(
                   "m",
                   style: TextStyle(
-                    fontSize: 48, // Size: 48px
+                    fontSize:  MediaQuery.of(context).size.width > 600 ? 48 : 26,
                     fontFamily: "Lobster", // Font Family: Lobster
                     fontWeight: FontWeight.w400, // Weight: 400
                     color: Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
@@ -190,7 +190,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 Text(
                   "entorboosters",
                   style: TextStyle(
-                    fontSize: 32, // Size: 32px
+                    fontSize: MediaQuery.of(context).size.width > 600 ? 32 : 18, // Size: 32px
                     fontWeight: FontWeight.w900, // Weight: 800
                     fontFamily: "Epilogue", // Font Family: Epilogue, sans-serif
                     color: Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
@@ -200,7 +200,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 Text(
                   ".",
                   style: TextStyle(
-                    fontSize: 72, // Font size for the dot
+                    fontSize: MediaQuery.of(context).size.width > 600 ? 72 : 40,
                     fontWeight:
                         FontWeight.w800, // Match the same weight as text
                     fontFamily: "Epilogue", // Font Family
@@ -222,7 +222,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     'Sign Out',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   )),
-            const SizedBox(width: 10),
+           SizedBox(width: MediaQuery.of(context).size.width > 600 ? 10 : 5),
             if (!isMobile)
               TextButton(
                 onPressed: () {
@@ -233,9 +233,9 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                 ),
               ),
-            const SizedBox(width: 10),
+             SizedBox(width: MediaQuery.of(context).size.width > 600 ? 10 : 5),
             const BrightnessToggle(),
-            const SizedBox(width: 10),
+             SizedBox(width: MediaQuery.of(context).size.width > 600 ? 10 : 5),
             Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
