@@ -119,10 +119,9 @@
 //   }
 // }
 
-
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mentor/constants/ui.dart';
 import 'package:mentor/shared/models/verified.model.dart';
 import 'package:mentor/shared/services/verified.service.dart';
 import 'package:mentor/shared/utils/extensions.dart';
@@ -141,7 +140,7 @@ class HomeVerified extends StatefulWidget {
 class _HomeVerifiedState extends State<HomeVerified> {
   late Future<List<VerifiedMentor>> verifiedMentors;
 
- late String usertoken;
+  late String usertoken;
   var provider;
 
   @override
@@ -152,7 +151,8 @@ class _HomeVerifiedState extends State<HomeVerified> {
     usertoken = provider.usertoken;
 
     // If the widget has provided mentors, use that; otherwise, fetch from the service
-    verifiedMentors = widget.verifiedMentors ?? VerifiedService().fetchVerifiedMentors(usertoken);
+    verifiedMentors = widget.verifiedMentors ??
+        VerifiedService().fetchVerifiedMentors(usertoken);
   }
 
   @override
@@ -160,13 +160,25 @@ class _HomeVerifiedState extends State<HomeVerified> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text(
-              "Verified",
-              style: context.headlineSmall,
-            ),
-          ],
+        Padding(
+          padding: const EdgeInsets.only(top: 40),
+          child: Row(
+            children: [
+              const Text(
+                "Verified",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Icon(
+                FontAwesomeIcons.solidCircleCheck,
+                size: 24,
+                color: context.colors.primary,
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: 10),
         FutureBuilder<List<VerifiedMentor>>(
@@ -197,40 +209,42 @@ class _HomeVerifiedState extends State<HomeVerified> {
     );
   }
 
-
   Widget _customCard(VerifiedMentor mentor) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              mentor.avatarUrl,
-              fit: BoxFit.cover,
-              height: 127,
-              width: 182,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.asset(
-                  mentor.gender == 'male'
-                      ? 'assets/images/malepic.jpg'  // Male fallback image
-                      : 'assets/images/femalepic.jpg',  // Female fallback image
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 200),
+      child: HoverableContainer(
+        context: context,
+        hover: false,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  mentor.avatarUrl,
                   fit: BoxFit.cover,
                   height: 127,
                   width: 182,
-                );
-              },
-            ),
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      mentor.gender == 'male'
+                          ? 'assets/images/malepic.jpg' // Male fallback image
+                          : 'assets/images/femalepic.jpg', // Female fallback image
+                      fit: BoxFit.cover,
+                      height: 127,
+                      width: 182,
+                    );
+                  },
+                ),
+              ),
+              _buildDetails(mentor),
+            ],
           ),
-          _buildDetails(mentor),
-        ],
+        ),
       ),
     );
   }
@@ -240,35 +254,40 @@ class _HomeVerifiedState extends State<HomeVerified> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Row(
-          children: [
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(children: [
+           const SizedBox(height: 4,),
             Text(
               mentor.name,
-              style: context.titleMedium,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               textAlign: TextAlign.start,
             ),
             const SizedBox(width: 4),
             Icon(
-              FontAwesomeIcons.circleCheck,
-              size: 12,
+              FontAwesomeIcons.solidCircleCheck,
+              size: 14,
               color: context.colors.primary,
             ),
-          ],
+          ]),
         ),
         const SizedBox(height: 5),
-        Text(
-          mentor.categories.join(", "),
-          style: context.bodyMedium,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          textAlign: TextAlign.start,
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Text(
+            mentor.categories.join(", "),
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            textAlign: TextAlign.start,
+          ),
         ),
         const SizedBox(height: 5),
         Text(
           "${mentor.numberOfMentoree} mentees",
-          style: context.bodySmall,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
           textAlign: TextAlign.start,

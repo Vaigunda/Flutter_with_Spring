@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../navigation/router.dart';
 
 class AboutUs extends StatefulWidget {
   const AboutUs({super.key});
@@ -12,7 +15,14 @@ class _AboutUsState extends State<AboutUs> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go(AppRoutes.home);
+          },
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -39,7 +49,7 @@ class _AboutUsState extends State<AboutUs> {
                   Text(
                     'Our Story',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
-                     textAlign: TextAlign.center,
+                    textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20),
                   Text(
@@ -88,18 +98,21 @@ class _AboutUsState extends State<AboutUs> {
             const Padding(
               padding: EdgeInsets.only(left: 20, right: 20),
               child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      textAlign: TextAlign.center,
-                      'We believe in your success and that Data-driven Mentorship \n can help you achieve the best results for your business, \n regardless of your field or target market. ',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 15,
-                          letterSpacing: 1),
-                    ),
-                  ],
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        textAlign: TextAlign.center,
+                        'We believe in your success and that Data-driven Mentorship \n can help you achieve the best results for your business, \n regardless of your field or target market. ',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 15,
+                            letterSpacing: 1),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -162,7 +175,7 @@ class _AboutUsState extends State<AboutUs> {
     } else if (width > 600) {
       return 0.8;
     } else {
-      return 1.7;
+      return 0.9;
     }
   }
 }

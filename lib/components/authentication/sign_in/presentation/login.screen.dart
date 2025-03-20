@@ -117,7 +117,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
       isTwoColumn = constraints.maxWidth > 800;
 
@@ -187,95 +186,95 @@ class _LoginScreenState extends State<LoginScreen> {
     return Form(
         key: _formKey,
         child: RawKeyboardListener(
-        focusNode: _passwordFocusNode,
-        onKey: _handleEnterKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                textBaseline: TextBaseline.alphabetic,
+            focusNode: _passwordFocusNode,
+            onKey: _handleEnterKey,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                     buildCustomTextRow(),
-                ],
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              const Row(
-                children: [
-                  Column(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    textBaseline: TextBaseline.alphabetic,
                     children: [
-                      Text(
-                        'Welcome',
-                        style: TextStyle(
-                          fontSize: 40,
-                          fontFamily: "Lobster",
-                          fontWeight: FontWeight.w400,
-                          height: 62 / 48,
-                        ),
-                      ),
-                      Text(
-                        'Sign in to Continue!',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
+                      buildCustomTextRow(),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  const Row(
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            'Welcome',
+                            style: TextStyle(
+                              fontSize: 40,
+                              fontFamily: "Lobster",
+                              fontWeight: FontWeight.w400,
+                              height: 62 / 48,
+                            ),
+                          ),
+                          Text(
+                            'Sign in to Continue!',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              InputField(
-                controller: emailCtrl,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an email address';
-                  }
-                  // Email validation using regex
-                  final emailRegex = RegExp(
-                      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
-                  if (!emailRegex.hasMatch(value)) {
-                    return 'Please enter a valid email address';
-                  }
-                  return null; // input is valid
-                },
-                keyboardType: TextInputType.emailAddress,
-                labelText: "Email Id",
-                prefixIcon: const Icon(HugeIcons.strokeRoundedUser),
-              ),
-              const SizedBox(
-                height: 22,
-              ),
-              InputField(
-                controller: passwordCtrl,
-                validator: (value) {
-                  return validator.required(value, 'This field is required');
-                },
-                obscureText: _passwordVisible,
-                prefixIcon: const Icon(Icons.lock_outline_rounded),
-                suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _passwordVisible = !_passwordVisible;
-                      });
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  InputField(
+                    controller: emailCtrl,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an email address';
+                      }
+                      // Email validation using regex
+                      final emailRegex = RegExp(
+                          r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+                      if (!emailRegex.hasMatch(value)) {
+                        return 'Please enter a valid email address';
+                      }
+                      return null; // input is valid
                     },
-                    icon: Icon(
-                      _passwordVisible
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      size: 24,
-                    )),
-                labelText: 'Password'
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              /*Row(
+                    keyboardType: TextInputType.emailAddress,
+                    labelText: "Email Id",
+                    prefixIcon: const Icon(HugeIcons.strokeRoundedUser),
+                  ),
+                  const SizedBox(
+                    height: 22,
+                  ),
+                  InputField(
+                      controller: passwordCtrl,
+                      validator: (value) {
+                        return validator.required(
+                            value, 'This field is required');
+                      },
+                      obscureText: _passwordVisible,
+                      prefixIcon: const Icon(Icons.lock_outline_rounded),
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                          icon: Icon(
+                            _passwordVisible
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            size: 24,
+                          )),
+                      labelText: 'Password'),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  /*Row(
                 children: [
                   Checkbox(
                     checkColor: Colors.white,
@@ -295,40 +294,43 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 height: 20,
               ),*/
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    //padding: const EdgeInsets.symmetric(horizontal: 150, vertical: 18),
-                    backgroundColor: Colors.blue, // Set background color
-                    foregroundColor: Colors.white, // Set text color
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 80, vertical: 18),
+                      backgroundColor: Colors.blue, // Set background color
+                      foregroundColor: Colors.white, // Set text color
+                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        isLoading ? null : login(context);
+                      }
+                    },
+                    child: isLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : const Text(
+                            'Sign in',
+                            style: TextStyle(fontSize: 16),
+                          ),
                   ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      isLoading ? null : login(context);
-                    }
-                  },
-                  child: isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : const Text(
-                        'Sign in',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                ),
-              const SizedBox(
-                height: 20,
-              ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    /*Row(
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        /*Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text("Forget password", style: context.bodySmall),
@@ -339,21 +341,34 @@ class _LoginScreenState extends State<LoginScreen> {
                                 style: TextStyle(color: context.colors.primary))),
                       ],
                     ),*/
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Not a member!', style: context.bodyMedium),
-                        TextButton(
-                            onPressed: () => context.push(AppRoutes.signup),
-                            child: Text('Register Now!',
-                                style: TextStyle(color: context.colors.primary))),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Not a member!',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextButton(
+                                onPressed: () => context.push(AppRoutes.signup),
+                                child: Text('Register Now!',
+                                    style: TextStyle(
+                                        color: context.colors.primary,
+                                        fontWeight: FontWeight.bold))),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            
+                            TextButton(
+                                onPressed: () => context.push(AppRoutes.signup),
+                                child: Text('Forgot Password!',
+                                    style: TextStyle(
+                                        color: context.colors.primary,
+                                        fontWeight: FontWeight.bold))),
+                          ],
+                        ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              /*SizedBox(
+                  ),
+                  const SizedBox(height: 20),
+                  /*SizedBox(
                 width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
@@ -418,8 +433,8 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 height: 40,
               )*/
-            ],
-          ),
-        )));
+                ],
+              ),
+            )));
   }
 }

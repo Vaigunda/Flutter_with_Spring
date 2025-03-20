@@ -208,3 +208,60 @@ Future<void> showDeleteConfirmationDialog({
     },
   );
 }
+
+
+class CustomCard extends StatelessWidget {
+  final String imageUrl;
+  final String title;
+  final String description;
+
+  const CustomCard({
+    Key? key,
+    required this.imageUrl,
+    required this.title,
+    required this.description,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.network(
+                imageUrl,
+                height: 300,
+                width: 250,
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Center(
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 32.0,
+                  ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Center(
+            child: Text(
+              description,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontSize: 22.0,
+                    color: Colors.grey[600],
+                  ),
+            ),
+          ),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+}

@@ -141,6 +141,12 @@ class _AdminPageState extends State<AdminPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text('Admin Page')),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.go(AppRoutes.home);
+          },
+        ),
         actions: [
           ElevatedButton(
             onPressed: () => context.go(AppRoutes.createMentor),

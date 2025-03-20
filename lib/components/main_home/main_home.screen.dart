@@ -162,17 +162,8 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          leading: isMobile
-              ? IconButton(
-                  onPressed: () {
-                    if (isMobile) {
-                      _scaffoldKey.currentState?.openDrawer();
-                    }
-                  },
-                  icon: const Icon(Icons.menu))
-              : null,
           title: Padding(
-            padding: EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.only(bottom: 20),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
@@ -180,7 +171,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 Text(
                   "m",
                   style: TextStyle(
-                    fontSize:  MediaQuery.of(context).size.width > 600 ? 48 : 26,
+                    fontSize: MediaQuery.of(context).size.width > 600 ? 48 : 26,
                     fontFamily: "Lobster", // Font Family: Lobster
                     fontWeight: FontWeight.w400, // Weight: 400
                     color: Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
@@ -190,7 +181,9 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                 Text(
                   "entorboosters",
                   style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width > 600 ? 32 : 18, // Size: 32px
+                    fontSize: MediaQuery.of(context).size.width > 600
+                        ? 32
+                        : 18, // Size: 32px
                     fontWeight: FontWeight.w900, // Weight: 800
                     fontFamily: "Epilogue", // Font Family: Epilogue, sans-serif
                     color: Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
@@ -212,30 +205,39 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             ),
           ),
           actions: [
+            Row(
+              children: [
+                userid.isEmpty
+                    ? TextButton(
+                        onPressed: () => context.go(AppRoutes.signin),
+                        child: const Text(
+                          "Sign in",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                      )
+                    : SizedBox()
+              ],
+            ),
             if (userid.isNotEmpty)
+            MediaQuery.of(context).size.width > 600 ?
               TextButton(
                   onPressed: () async {
                     signOut();
-                    //context.pop();
                   },
                   child: const Text(
                     'Sign Out',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  )),
-           SizedBox(width: MediaQuery.of(context).size.width > 600 ? 10 : 5),
-            if (!isMobile)
-              TextButton(
-                onPressed: () {
-                  context.go('/about-us'); // Updates the URL properly
-                },
-                child: const Text(
-                  'About Us',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-              ),
-             SizedBox(width: MediaQuery.of(context).size.width > 600 ? 10 : 5),
+                  )):IconButton(
+              onPressed: () async {
+                signOut();
+              },
+              icon: const Icon(Icons.logout),
+              tooltip: 'Sign Out', // ✅ Added tooltip for better accessibility
+            ),
+            SizedBox(width: MediaQuery.of(context).size.width > 600 ? 10 : 5),
             const BrightnessToggle(),
-             SizedBox(width: MediaQuery.of(context).size.width > 600 ? 10 : 5),
+            SizedBox(width: MediaQuery.of(context).size.width > 600 ? 10 : 5),
             Row(
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
@@ -266,7 +268,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             const SizedBox(width: 10),
           ],
         ),
-        drawer: isMobile ? _buildMobileDrawer(context) : null,
         body: LayoutBuilder(builder: (builderContext, constraints) {
           return SingleChildScrollView(
             child: Padding(
@@ -280,7 +281,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                         TextButton(
                           onPressed: () => context.go(AppRoutes.signin),
                           child: const Text(
-                            "Sign in",
+                            "",
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w600),
                           ),
@@ -339,71 +340,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
             ),
           );
         }),
-      ),
-    );
-  }
-
-  Drawer _buildMobileDrawer(BuildContext context) {
-    return Drawer(
-      width: 200,
-      child: ListView(
-        children: [
-          const SizedBox(
-            height: 50,
-          ),
-          ListTile(
-            leading: const Icon(Icons.home),
-            title: const Text('Home'),
-            onTap: () {},
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text('Profile'),
-            onTap: () {},
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
-            onTap: () {},
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('About Us'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AboutUs(),
-                ),
-              );
-            },
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          ListTile(
-            leading: const Icon(Icons.login),
-            title: const Text('Login'),
-            onTap: () => context.go(AppRoutes.signin),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Logout'),
-            onTap: signOut,
-          ),
-        ],
       ),
     );
   }

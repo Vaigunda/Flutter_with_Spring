@@ -1,6 +1,7 @@
 // lib/components/main_home/widgets/home_top_rated.dart
 
 import 'package:flutter/material.dart';
+import 'package:mentor/constants/ui.dart';
 import 'package:mentor/shared/models/top_rated_mentor.model.dart';
 import 'package:mentor/shared/services/top_rated_mentor.service.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,7 @@ class _HomeTopRatedState extends State<HomeTopRated> {
   @override
   void initState() {
     super.initState();
-    
+
     provider = context.read<UserDataProvider>();
     usertoken = provider.usertoken;
 
@@ -38,10 +39,17 @@ class _HomeTopRatedState extends State<HomeTopRated> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text("Top Rated", style: Theme.of(context).textTheme.titleLarge),
-          ],
+        const Padding(
+          padding: EdgeInsets.only(top: 40),
+          child: Row(
+            children: [
+              Text("Top Rated",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  )),
+            ],
+          ),
         ),
         const SizedBox(height: 10),
         FutureBuilder<List<TopRatedMentorModel>>(
@@ -70,68 +78,83 @@ class _HomeTopRatedState extends State<HomeTopRated> {
     );
   }
 
-
   Widget _info(TopRatedMentorModel mentor) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 400),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: const BorderRadius.all(Radius.circular(16)),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                mentor.avatarUrl,
-                fit: BoxFit.cover,
-                height: 88,
-                width: 88,
-                errorBuilder: (context, error, stackTrace) {
-                  return Image.asset(
-                    mentor.gender == 'male'
-                        ? 'assets/images/malepic.jpg'  // Use male image if gender is male
-                        : 'assets/images/femalepic.jpg',  // Use female image if gender is female
-                    fit: BoxFit.cover,
-                    height: 88,
-                    width: 88,
-                  );
-                },
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(mentor.name, style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 4),
-                    Text(
-                      mentor.categories.join(", "),
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "${mentor.numberOfMentoree} mentees",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        const Icon(Icons.star, size: 12),
-                        const SizedBox(width: 6),
-                        Text("${mentor.rate}", style: Theme.of(context).textTheme.bodySmall),
-                      ],
-                    ),
-                  ],
+      constraints: const BoxConstraints(maxWidth: 360),
+      child: HoverableContainer(
+        context: context,
+        hover: false,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  mentor.avatarUrl,
+                  fit: BoxFit.cover,
+                  height: 88,
+                  width: 88,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      mentor.gender == 'male'
+                          ? 'assets/images/malepic.jpg' // Use male image if gender is male
+                          : 'assets/images/femalepic.jpg', // Use female image if gender is female
+                      fit: BoxFit.cover,
+                      height: 88,
+                      width: 88,
+                    );
+                  },
                 ),
               ),
-            ),
-          ],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(
+                          mentor.name,
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(
+                          mentor.categories.join(", "),
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "${mentor.numberOfMentoree} mentees",
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w400),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                         Icon(Icons.star, size: 18,color:Colors.amber[600],),
+                          const SizedBox(width: 6),
+                          Text(
+                            "${mentor.rate}",
+                            style: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:mentor/constants/ui.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -47,7 +48,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
         if (response.statusCode == 200) {
           List<dynamic> data = json.decode(response.body);
           setState(() {
-            categories = data.map((item) => CategoryModel.fromJson(item)).toList();
+            categories =
+                data.map((item) => CategoryModel.fromJson(item)).toList();
           });
         } else {
           throw Exception('Failed to fetch categories');
@@ -77,7 +79,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
           },
           body: jsonEncode({
             "name": name,
-            "icon": "FontAwesomeIcons.code", // Add a default icon if none is provided
+            "icon":
+                "FontAwesomeIcons.code", // Add a default icon if none is provided
           }),
         );
 
@@ -85,13 +88,21 @@ class _CategoryScreenState extends State<CategoryScreen> {
           // Category successfully added
           _fetchCategories(); // Refresh the category list
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Category added successfully'),duration: Duration(milliseconds: 1500),backgroundColor: Colors.green,),
+            const SnackBar(
+              content: Text('Category added successfully'),
+              duration: Duration(milliseconds: 1500),
+              backgroundColor: Colors.green,
+            ),
           );
         } else if (response.statusCode == 400) {
           // Category already exists
-          
+
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Category already exists'),duration: Duration(milliseconds: 1500),backgroundColor: Colors.red,),
+            const SnackBar(
+              content: Text('Category already exists'),
+              duration: Duration(milliseconds: 1500),
+              backgroundColor: Colors.red,
+            ),
           );
         } else {
           // Other errors
@@ -100,7 +111,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error adding category'),duration: Duration(milliseconds: 1500),backgroundColor: Colors.red,),
+        const SnackBar(
+          content: Text('Error adding category'),
+          duration: Duration(milliseconds: 1500),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -113,7 +128,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
         final tokenService = TokenService();
         tokenService.checkToken(usertoken, context);
       } else {
-        final url = Uri.parse('http://localhost:8080/api/categories/delete/$id');
+        final url =
+            Uri.parse('http://localhost:8080/api/categories/delete/$id');
         final response = await http.delete(
           url,
           headers: {
@@ -121,7 +137,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
           },
         );
 
-        if (response.statusCode == 200 && response.body.contains("Category deleted successfully.")) {
+        if (response.statusCode == 200 &&
+            response.body.contains("Category deleted successfully.")) {
           _fetchCategories(); // Refresh the category list
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -131,7 +148,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
             ),
           );
         } else {
-          if (response.statusCode == 200 && response.body.contains("Already Assigned")) {
+          if (response.statusCode == 200 &&
+              response.body.contains("Already Assigned")) {
             // Show different message if category is assigned
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -156,7 +174,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }
   }
 
-
   Future<void> _editCategory(String id, String newName) async {
     try {
       // Check if token has expired
@@ -180,14 +197,20 @@ class _CategoryScreenState extends State<CategoryScreen> {
         if (response.statusCode == 200) {
           _fetchCategories(); // Refresh the category list
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Category edited successfully'),
-            duration: Duration(milliseconds: 1500),
-            backgroundColor: Colors.green,),
+            const SnackBar(
+              content: Text('Category edited successfully'),
+              duration: Duration(milliseconds: 1500),
+              backgroundColor: Colors.green,
+            ),
           );
         } else if (response.statusCode == 400) {
           // Category already exists
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Category already exists'),duration: Duration(milliseconds: 1500),backgroundColor: Colors.red,),
+            const SnackBar(
+              content: Text('Category already exists'),
+              duration: Duration(milliseconds: 1500),
+              backgroundColor: Colors.red,
+            ),
           );
         } else {
           throw Exception('Failed to edit category');
@@ -195,7 +218,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error editing category'),duration: Duration(milliseconds: 1500),backgroundColor: Colors.red,),
+        const SnackBar(
+          content: Text('Error editing category'),
+          duration: Duration(milliseconds: 1500),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -265,11 +292,23 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Categories'),
+        title: const Text(
+          'Categories',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: _showAddCategoryDialog,
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5))),
+                onPressed: _showAddCategoryDialog,
+                child: const Text(
+                  'Add',
+                  style: TextStyle(color: Colors.white),
+                )),
           ),
         ],
       ),
@@ -280,26 +319,83 @@ class _CategoryScreenState extends State<CategoryScreen> {
               itemBuilder: (context, index) {
                 final category = categories[index];
                 IconData categoryIcon = category.getIcon();
-                return ListTile(
-                  leading: Icon(categoryIcon),
-                  title: Text(category.name),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () => _showEditCategoryDialog(
-                          category.id,
-                          category.name,
-                        ),
+                return HoverableContainer(
+                    hover: false,
+                    context: context,
+                    child: ListTile(
+                      leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Icon(
+                            categoryIcon,
+                            size: 20,
+                          )),
+                      title: Text(
+                        category.name,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () => _deleteCategory(category.id),
+                      trailing: LayoutBuilder(
+                        builder: (context, constraints) {
+                          bool isDesktop = constraints.maxWidth > 600;
+
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: isDesktop
+                                ? [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                      ),
+                                      onPressed: () => _showEditCategoryDialog(
+                                        category.id,
+                                        category.name,
+                                      ),
+                                      child: const Text(
+                                        'Edit',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                      ),
+                                      onPressed: () =>
+                                          _deleteCategory(category.id),
+                                      child: const Text(
+                                        'Delete',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ]
+                                : [
+                                    IconButton(
+                                      icon: const Icon(Icons.edit,
+                                          color:
+                                              Color.fromARGB(255, 15, 121, 19)),
+                                      onPressed: () => _showEditCategoryDialog(
+                                          category.id, category.name),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete,
+                                          color:
+                                              Color.fromARGB(255, 170, 26, 15)),
+                                      onPressed: () =>
+                                          _deleteCategory(category.id),
+                                    ),
+                                  ],
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                );
+                    ));
               },
             ),
     );

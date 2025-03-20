@@ -26,43 +26,45 @@ class _ExploreMentorState extends State<ExploreMentor> {
   Stack mentor(BuildContext context) {
     return Stack(
       children: [
-        Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              headingLine(),
-              Text(
-                "Unlock your company's potential by connecting with seasoned mentors and gaining valuable insights.",
-                style: context.bodyLarge,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  GradientButton(
-                    label: Text(
-                      "Find your Mentor",
-                      style: context.labelLarge!
-                          .copyWith(fontWeight: FontWeight.w900),
-                    ),
-                    onPressed: () {
-                      context.go(AppRoutes.search);
-                    },
-                    trailingIcon: Icon(
-                      FontAwesomeIcons.arrowRight,
-                      color: Theme.of(context).cardColor,
-                      size: 16,
-                    ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            headingLine(),
+            const SizedBox(height: 20,),
+            Text(
+              "Unlock your company's potential by connecting with seasoned mentors and gaining valuable insights.",
+              style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.blue[900],
+                      ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                GradientButton(
+                  label: Text(
+                    "Find your Mentor",
+                    style: context.labelLarge!
+                        .copyWith(fontWeight: FontWeight.w900),
                   ),
-                  //CustomButton(label: "Becom a Mentor", onPressed: () {}),
-                ],
-              ),
-            ],
-          ),
+                  onPressed: () {
+                    context.go(AppRoutes.search);
+                  },
+                  trailingIcon: Icon(
+                    FontAwesomeIcons.arrowRight,
+                    color: Theme.of(context).cardColor,
+                    size: 16,
+                  ),
+                ),
+                //CustomButton(label: "Becom a Mentor", onPressed: () {}),
+              ],
+            ),
+          ],
         ),
       ],
     );

@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:mentor/components/booking/booking.screen.dart';
+import 'package:mentor/constants/ui.dart';
 import 'package:mentor/navigation/router.dart';
 import 'package:mentor/shared/models/profile_mentor.model.dart';
 import 'package:mentor/shared/services/profile_mentor.service.dart';
@@ -130,126 +133,6 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
     }
   }
 
-
-  void _showAddReviewsDialog(BuildContext context) {
-  TextEditingController messageCtrl = TextEditingController();
-   TextEditingController ratingCtrl = TextEditingController();
-
-  showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Container(
-          width: 400,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(         
-           borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
-                spreadRadius: 2,
-                offset: const Offset(2, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Title Section
-              Container(
-                width: 360,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Column(
-                  children: [
-                    Text(
-                      "Share Your Feedback",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      "Please rate and share your experience.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-              // Rating Section
-              RatingBar.builder(
-                initialRating: 3,
-                minRating: 1,
-                itemSize: 40,
-                itemPadding: const EdgeInsets.symmetric(horizontal: 4),
-                itemBuilder: (context, index) {
-                  return const Icon(
-                    Icons.star,
-                    color: Colors.yellow,
-                  );
-                },
-                onRatingUpdate: print,
-              ),
-              const SizedBox(height: 16),
-              // Text Input Section
-              TextField(
-                controller: messageCtrl,
-                maxLines: 4,
-                decoration: InputDecoration(
-                  hintText: "Write your review here...",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.teal.shade200),
-                  ),
-                  contentPadding: const EdgeInsets.all(12),
-                ),
-              ),
-              const SizedBox(height: 16),
-              // Submit Button
-              ElevatedButton(
-                onPressed: () {
-                         Navigator.pop(context);
-                saveReviews(messageCtrl.text,
-                    ratingCtrl.text); // Close dialog
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:  Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                ),
-                child: const Text(
-                  "Submit Review",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
-
   
 
   @override
@@ -268,38 +151,325 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
 
     // Mentor data is fetched, proceed with building the profile screen
     return Scaffold(
-      body: SafeArea(
-        child: NestedScrollView(
-          controller: _scrollCtrl,
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                backgroundColor: Theme.of(context).colorScheme.surface,
-                pinned: false,
-                flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
-                    background: Column(children: [
-                      const SizedBox(height: 20),
-                      headerProfile(),
-                      const SizedBox(height: 15),
-                      actions()
-                    ])),
-                forceElevated: innerBoxIsScrolled,
-                expandedHeight: 370.0,
-                bottom: PreferredSize(
-                  preferredSize: _tabBar.preferredSize,
-                  child: Material(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      child: _tabBar),
-                ),
-              )
-            ];
+      appBar: AppBar(
+        title: Text(
+          '${mentor!.name} Mentor',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
           },
-          body: TabBarView(
-              controller: _tabController,
-              children: [overviewProfile(), reviewMentor(), certificates()]),
+          icon: const Icon(Icons.arrow_back),
         ),
       ),
+      body: SingleChildScrollView(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            bool isSmallScreen = constraints.maxWidth < 800;
+
+            return Stack(
+              children: [
+                backgroundtheme(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: isSmallScreen
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(height: 120), // Space for background
+                            profileSection(),
+                            const SizedBox(height: 20),
+                            bookingSection(),
+                          ],
+                        )
+                      : Column(
+                          children: [
+                            const SizedBox(height: 80), // Space for background
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(flex: 2, child: profileSection()),
+                                const SizedBox(width: 20),
+                                Expanded(flex: 1, child: bookingSection()),
+                              ],
+                            ),
+                          ],
+                        ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget backgroundtheme() {
+    return Container(
+      width: double.infinity,
+      height: 200,
+      color: (Theme.of(context).colorScheme.primary)
+    );
+  }
+
+  Widget profileSection() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        bool isSmallScreen = constraints.maxWidth < 600;
+
+        return Padding(
+          padding: EdgeInsets.only(left: isSmallScreen ? 8 : 80),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (isSmallScreen)
+                Center(
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 100,
+                        backgroundColor: Colors
+                            .grey[300], // Optional: Placeholder background
+                        child: ClipOval(
+                          child: Image.asset(
+                            mentor!.avatarUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                mentor!.gender == 'male'
+                                    ? 'assets/images/malepic.jpg' // Male fallback
+                                    : 'assets/images/femalepic.jpg', // Female fallback
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      if (mentor!.verified)
+                       const Positioned(
+                          bottom: 5,
+                          right: 20,
+                          child: Icon(
+                            FontAwesomeIcons.solidCircleCheck,
+                            size: 28,
+                            color: Colors.green,
+                          ),
+                        ),
+                    ],
+                  ),
+                )
+              else
+                Stack(
+                  // Normal layout for larger screens
+                  children: [
+                    CircleAvatar(
+                      radius: 105,
+                        backgroundColor:
+                            Colors.white,
+                      child: CircleAvatar(
+                        radius: 100,
+                        backgroundColor:
+                            Colors.grey[300],
+                        child: ClipOval(
+                          child: Image.asset(
+                            mentor!.avatarUrl,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                mentor!.gender == 'male'
+                                    ? 'assets/images/malepic.jpg' // Male fallback
+                                    : 'assets/images/femalepic.jpg', // Female fallback
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (mentor!.verified)
+                     const Positioned(
+                        bottom: 5,
+                        right: 20,
+                        child: Icon(
+                          FontAwesomeIcons.solidCircleCheck,
+                          size: 28,
+                            color: Colors.green,
+                        ),
+                      ),
+                  ],
+                ),
+              const SizedBox(height: 20),
+              Text(mentor!.name,
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 20),
+              Text(mentor!.role,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w400)),
+              const SizedBox(height: 20),
+              const Text("About",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              Text(mentor?.bio ?? "", style: const TextStyle(fontSize: 16)),
+              const SizedBox(height: 20),
+              skills(),
+              const SizedBox(height: 40),
+              Column(
+                children: [
+                  CustomButton(
+                    minWidth: 300,
+                    borderRadius: 10,
+                    label: 'Add Review',
+                    onPressed: () async {
+                      _showAddReviewsDialog(context);
+                    },
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget bookingSection() {
+    return HoverableContainer(
+      context: context,
+      hover: false,
+      child: Padding(
+        padding: const EdgeInsets.all(40),
+        child: Column(
+          children: [
+            Text(
+              "Booking with ${mentor!.name}",
+              style:
+                  const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              mentor!.role,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 12),
+            Text(
+                mentor!.free == null
+                    ? "No information"
+                    : mentor!.free.price == 0
+                        ? "Free"
+                        : "\$${mentor!.free.price} / ${mentor!.free.unit.name}",
+                style: const TextStyle(
+                    fontWeight: FontWeight.w600, fontSize: 22)),
+            const SizedBox(height: 20),
+            Divider(color: Colors.grey[700]),
+            const SizedBox(height: 40),
+            Row(
+              children: [
+                const Icon(Icons.person, size: 30),
+                const SizedBox(width: 8),
+                Text(
+                  '${mentor!.numberOfMentoree} mentee',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                const Icon(Icons.star, size: 30),
+                const SizedBox(width: 8),
+                Text(
+                  "${mentor!.rate} rating",
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            SizedBox(width: double.infinity, child: experiences()),
+            const SizedBox(height: 40),
+            Divider(color: Colors.grey[700]),
+            const SizedBox(height: 20),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomButton(
+                    minWidth: 300,
+                    borderRadius: 10,
+                    label: 'Book Now',
+                    onPressed: () {
+                      context
+                          .push('${AppRoutes.bookingMentor}/${mentor!.id}');
+                    },
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget itemExperience(Experience exp) {
+    return Column(
+      children: [
+        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Expanded(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.badge, size: 30),
+                  const SizedBox(width: 8),
+                  Text(
+                    exp.companyName,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    const Icon(Icons.timelapse, size: 30),
+                    const SizedBox(width: 8),
+                    Text(
+                      "${exp.startDate != null ? DateFormat('yyyy/MM').format(exp.startDate!) : "N/A"} - ${exp.endDate != null ? DateFormat('yyyy/MM').format(exp.endDate!) : "Present"}",
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 18),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              if (exp.description != null)
+                Html(
+                  data: exp.description,
+                  shrinkWrap: true,
+                  style: {
+                    'body': Style(
+                        margin: Margins.all(0), padding: HtmlPaddings.all(0)),
+                    'p': Style(margin: Margins.only(top: 5)),
+                    'ul': Style(margin: Margins.symmetric(vertical: 10)),
+                  },
+                )
+            ],
+          ))
+        ]),
+        const SizedBox(height: 10)
+      ],
     );
   }
 
@@ -376,6 +546,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
   Widget actions() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         CustomButton(
           label: "Booking",
@@ -394,6 +565,126 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
           },
         )
       ],
+    );
+  }
+
+  void _showAddReviewsDialog(BuildContext context) {
+    TextEditingController messageCtrl = TextEditingController();
+    TextEditingController ratingCtrl = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Container(
+            width: 400,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  spreadRadius: 2,
+                  offset: const Offset(2, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Title Section
+                Container(
+                  width: 360,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Column(
+                    children: [
+                      Text(
+                        "Share Your Feedback",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        "Please rate and share your experience.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Rating Section
+                RatingBar.builder(
+                  initialRating: 3,
+                  minRating: 1,
+                  itemSize: 40,
+                  itemPadding: const EdgeInsets.symmetric(horizontal: 4),
+                  itemBuilder: (context, index) {
+                    return const Icon(
+                      Icons.star,
+                      color: Colors.yellow,
+                    );
+                  },
+                  onRatingUpdate: print,
+                ),
+                const SizedBox(height: 16),
+                // Text Input Section
+                TextField(
+                  controller: messageCtrl,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                    hintText: "Write your review here...",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.teal.shade200),
+                    ),
+                    contentPadding: const EdgeInsets.all(12),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Submit Button
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    saveReviews(
+                        messageCtrl.text, ratingCtrl.text); // Close dialog
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 32, vertical: 12),
+                  ),
+                  child: const Text(
+                    "Submit Review",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -421,74 +712,24 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
           softWrap: true,
         ),
         const SizedBox(height: 10),
-        divider()
       ],
     );
   }
 
   Widget experiences() {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text("Experiences", style: context.titleMedium),
-      const SizedBox(height: 10),
-      for (var exp in mentor!.experiences) itemExperience(exp),
-      const SizedBox(height: 10),
-      divider()
-    ]);
-  }
-
-  Widget itemExperience(Experience exp) {
-    return Column(
-      children: [
-        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          CircleAvatar(
-            radius: 25,
-            backgroundImage: AssetImage(mentor!.avatarUrl),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                exp.role,
-                style: context.titleSmall,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Text(
-                exp.companyName,
-                style: context.bodySmall,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              Text(
-                "${exp.startDate != null ? DateFormat('yyyy/MM').format(exp.startDate!) : "N/A"} - ${exp.endDate != null ? DateFormat('yyyy/MM').format(exp.endDate!) : "Present"}",
-                style: context.bodySmall,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (exp.description != null)
-                Html(
-                  data: exp.description,
-                  shrinkWrap: true,
-                  style: {
-                    'body': Style(
-                        margin: Margins.all(0), padding: HtmlPaddings.all(0)),
-                    'p': Style(margin: Margins.only(top: 5)),
-                    'ul': Style(margin: Margins.symmetric(vertical: 10)),
-                  },
-                )
-            ],
-          ))
-        ]),
-        const SizedBox(height: 10)
-      ],
+    return SingleChildScrollView(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        for (var exp in mentor!.experiences) itemExperience(exp),
+      ]),
     );
   }
 
   Widget skills() {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text("Skills", style: context.titleMedium),
+      const Text(
+        "Skills",
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
       const SizedBox(height: 10),
       Wrap(
         spacing: 5,
@@ -499,16 +740,24 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
   }
 
   Widget itemSkill(Category cate) {
-    return Chip(
-      backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-      label: Text(
-        cate.name,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Chip(
+        backgroundColor: Colors.purple[500],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        label: Text(
+          cate.name,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+          style: context.bodySmall!
+              .copyWith(fontWeight: FontWeight.w600, color: Colors.white),
+        ),
       ),
-      labelStyle: context.bodySmall!.copyWith(fontWeight: FontWeight.w600),
     );
   }
+
 //--------------------END--------------------------------
 
 // ------------------ reviews tab----------------------

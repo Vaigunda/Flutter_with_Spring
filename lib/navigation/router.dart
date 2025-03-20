@@ -57,11 +57,11 @@ class AppRoutes {
   static String bookingMentor = '/booking-mentor';
   static String becomeMentor = '/become-mentor';
   static String settingTeachingSchedule = '/setting-teaching-schedule';
-  static String createMentor = '/create-mentor';  // New route
+  static String createMentor = '/create-mentor'; // New route
   static String adminPage = '/admin'; // Route for Admin Page
   static String editMentor = '/edit-mentor'; // Route for Edit Mentor Page
   static String viewMentor = '/view-mentor'; // Route for View Mentor Page
-  static String editUser = '/edit-user'; 
+  static String editUser = '/edit-user';
   static String payment = '/payment';
   static String categoryPage = '/category-page';
 }
@@ -75,6 +75,14 @@ List<NavigationDestination> adminDestinations = [
       size: 20,
     ),
     route: AppRoutes.home,
+  ),
+  NavigationDestination(
+    label: 'About US',
+    icon: const Icon(
+      Icons.person_2,
+      size: 20,
+    ),
+    route: AppRoutes.aboutus,
   ),
   NavigationDestination(
     label: 'Search',
@@ -101,20 +109,20 @@ List<NavigationDestination> adminDestinations = [
   //   route: AppRoutes.createMentor,  // Use the new route for navigation
   // ),
   NavigationDestination(
-    label: 'Admin',  // Add the 'Admin' option
+    label: 'Admin', // Add the 'Admin' option
     icon: const Icon(
       FontAwesomeIcons.userShield,
       size: 20,
     ),
-    route: AppRoutes.adminPage,  // Use the new route for Admin Page
+    route: AppRoutes.adminPage, // Use the new route for Admin Page
   ),
   NavigationDestination(
-    label: 'Category',  // Add the 'Admin' option
+    label: 'Category', // Add the 'Admin' option
     icon: const Icon(
       FontAwesomeIcons.folderOpen,
       size: 20,
     ),
-    route: AppRoutes.categoryPage,  // Use the new route for Admin Page
+    route: AppRoutes.categoryPage, // Use the new route for Admin Page
   ),
 ];
 
@@ -127,6 +135,14 @@ List<NavigationDestination> userDestinations = [
       size: 20,
     ),
     route: AppRoutes.home,
+  ),
+  NavigationDestination(
+    label: 'About US',
+    icon: const Icon(
+      Icons.person_2,
+      size: 20,
+    ),
+    route: AppRoutes.aboutus,
   ),
   NavigationDestination(
     label: 'Schedule',
@@ -163,6 +179,14 @@ List<NavigationDestination> beforeDestinations = [
       size: 20,
     ),
     route: AppRoutes.home,
+  ),
+  NavigationDestination(
+    label: 'About US',
+    icon: const Icon(
+      Icons.person_2,
+      size: 20,
+    ),
+    route: AppRoutes.aboutus,
   ),
   NavigationDestination(
     label: 'Search',
@@ -254,10 +278,11 @@ final appRouter = GoRouter(
               ),
             )),
     GoRoute(
-      path: '/edit-user/:userId',  // Define the route with a parameter
+      path: '/edit-user/:userId', // Define the route with a parameter
       builder: (BuildContext context, GoRouterState state) {
         final userId = state.pathParameters['userId']!;
-        return EditUserScreen(userId: int.parse(userId));  // Pass the userId to the screen
+        return EditUserScreen(
+            userId: int.parse(userId)); // Pass the userId to the screen
       },
     ),
     GoRoute(
@@ -270,8 +295,7 @@ final appRouter = GoRouter(
         path: AppRoutes.forgetPassword,
         builder: (context, state) => const ForgetPasswordScreen()),
     GoRoute(
-        path: AppRoutes.aboutus,
-        builder: (context, state) => const AboutUs()),    
+        path: AppRoutes.aboutus, builder: (context, state) => const AboutUs()),
     GoRoute(
         path: AppRoutes.newPassword,
         builder: (context, state) => const NewPasswordScreen()),
@@ -286,13 +310,12 @@ final appRouter = GoRouter(
         path: AppRoutes.settings,
         builder: (context, state) => const SettingsScreen()),
     GoRoute(
-        path: '${AppRoutes.profileMentor}/:id',
-        builder: (context, state) {
-          // Convert the path parameter to an int
-          final profileId = int.tryParse(state.pathParameters['id']!) ?? 0; // Use 0 or some other default value if parsing fails
-          return ProfileMentorScreen(profileId: profileId);
-        },
-      ),
+      path: '/profileMentor/:id',
+      builder: (context, state) {
+        final profileId = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+        return ProfileMentorScreen(profileId: profileId);
+      },
+    ),
     GoRoute(
         path: '${AppRoutes.bookingMentor}/:id',
         builder: (context, state) =>
@@ -308,14 +331,16 @@ final appRouter = GoRouter(
         path: AppRoutes.settingTeachingSchedule,
         builder: (context, state) => const SettingTeachingScheduleScreen()),
     GoRoute(
-      path: AppRoutes.createMentor,  // New route for CreateMentorScreen
+      path: AppRoutes.createMentor, // New route for CreateMentorScreen
       builder: (context, state) => CreateMentorScreen(),
     ),
     GoRoute(
       path: AppRoutes.adminPage, // Admin Page Route
       builder: (context, state) => AdminPage(),
     ),
-    GoRoute(path: AppRoutes.categoryPage, builder: (context, state) => CategoryScreen()), 
+    GoRoute(
+        path: AppRoutes.categoryPage,
+        builder: (context, state) => CategoryScreen()),
     GoRoute(
       path: AppRoutes.editMentor,
       builder: (context, state) {
@@ -326,8 +351,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.viewMentor, // View Page Route
       builder: (context, state) {
-        final mentor = state.extra as AllMentors; // Expect ProfileMentor instead of Map
-        return ViewMentorScreen(mentor: mentor); // Pass the ProfileMentor object
+        final mentor =
+            state.extra as AllMentors; // Expect ProfileMentor instead of Map
+        return ViewMentorScreen(
+            mentor: mentor); // Pass the ProfileMentor object
       },
     ),
     GoRoute(
@@ -338,7 +365,8 @@ final appRouter = GoRouter(
         final id = int.tryParse(state.pathParameters['id']!) ?? 0;
         final name = state.pathParameters['name']!;
         final bookingData = state.pathParameters['bookingData']!;
-        return PaymentScreen(amount: amount, id: id, name: name, bookingData: bookingData);
+        return PaymentScreen(
+            amount: amount, id: id, name: name, bookingData: bookingData);
       },
     ),
   ],
