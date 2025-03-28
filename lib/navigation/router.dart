@@ -10,6 +10,7 @@ import 'package:mentor/components/authentication/sign_up/presentation/sign_up.sc
 import 'package:mentor/components/become_mentor/become_mentor.screen.dart';
 import 'package:mentor/components/booking/booking.screen.dart';
 import 'package:mentor/components/inbox/inbox.screen.dart';
+import 'package:mentor/components/landing/mentor_landing.dart';
 import 'package:mentor/components/main_home/main_home.screen.dart';
 import 'package:mentor/components/payment/payment_screen.dart';
 import 'package:mentor/components/profile/edit_user.screen.dart';
@@ -29,8 +30,10 @@ import 'package:mentor/components/custom_category/category.screen.dart';
 import 'package:mentor/components/splash/aboutus.dart';
 
 import 'package:mentor/shared/models/all_mentors.model.dart';
+import 'package:mentor/terms_condition.dart';
 
 import '../components/notification/notification.screen.dart';
+import '../components/splash/contactus.dart';
 import '../shared/views/root_layout.dart';
 
 const _pageKey = ValueKey('_pageKey');
@@ -38,6 +41,7 @@ const _scaffoldKey = ValueKey('_scaffoldKey');
 
 class AppRoutes {
   static String root = "/";
+  static String landing = "/landing";
   static String home = "/home";
   static String signin = "/signin";
   static String signup = "/signup";
@@ -64,6 +68,9 @@ class AppRoutes {
   static String editUser = '/edit-user';
   static String payment = '/payment';
   static String categoryPage = '/category-page';
+  static String termsPage = '/terms-page';
+  static String contactus = "/contact";
+  static String login = "/login";
 }
 
 // navigation list after login for Admin
@@ -76,14 +83,7 @@ List<NavigationDestination> adminDestinations = [
     ),
     route: AppRoutes.home,
   ),
-  NavigationDestination(
-    label: 'About US',
-    icon: const Icon(
-      Icons.person_2,
-      size: 20,
-    ),
-    route: AppRoutes.aboutus,
-  ),
+ 
   NavigationDestination(
     label: 'Search',
     icon: const Icon(
@@ -136,14 +136,7 @@ List<NavigationDestination> userDestinations = [
     ),
     route: AppRoutes.home,
   ),
-  NavigationDestination(
-    label: 'About US',
-    icon: const Icon(
-      Icons.person_2,
-      size: 20,
-    ),
-    route: AppRoutes.aboutus,
-  ),
+
   NavigationDestination(
     label: 'Schedule',
     icon: const Icon(
@@ -180,14 +173,7 @@ List<NavigationDestination> beforeDestinations = [
     ),
     route: AppRoutes.home,
   ),
-  NavigationDestination(
-    label: 'About US',
-    icon: const Icon(
-      Icons.person_2,
-      size: 20,
-    ),
-    route: AppRoutes.aboutus,
-  ),
+ 
   NavigationDestination(
     label: 'Search',
     icon: const Icon(
@@ -217,7 +203,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.root,
       pageBuilder: (context, state) => const MaterialPage<void>(
-        key: _pageKey,
+        key: ValueKey('splash_page'),
         child: SplashScreen(),
       ),
     ),
@@ -229,6 +215,18 @@ final appRouter = GoRouter(
           key: _scaffoldKey,
           currentIndex: 0,
           child: MainHomeScreen(),
+        ),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.landing,
+      pageBuilder: (context, state) => const MaterialPage<void>(
+        key: _pageKey,
+        child: RootLayout(
+          key: _scaffoldKey,
+          currentIndex: 0,
+          showNavigation: false,
+          child: MentorLanding(),
         ),
       ),
     ),
@@ -257,6 +255,9 @@ final appRouter = GoRouter(
     GoRoute(
         path: AppRoutes.filter,
         builder: (context, state) => const FilterScreen()),
+         GoRoute(
+        path: AppRoutes.login,
+        builder: (context, state) => const LoginScreen()),
     GoRoute(
         path: AppRoutes.inbox,
         pageBuilder: (context, state) => const MaterialPage<void>(
@@ -310,7 +311,7 @@ final appRouter = GoRouter(
         path: AppRoutes.settings,
         builder: (context, state) => const SettingsScreen()),
     GoRoute(
-      path: '/profileMentor/:id',
+      path: '${AppRoutes.profileMentor}/:id',
       builder: (context, state) {
         final profileId = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
         return ProfileMentorScreen(profileId: profileId);
@@ -341,6 +342,12 @@ final appRouter = GoRouter(
     GoRoute(
         path: AppRoutes.categoryPage,
         builder: (context, state) => CategoryScreen()),
+         GoRoute(
+        path: AppRoutes.contactus,
+        builder: (context, state) => Contactus()),
+         GoRoute(
+        path: AppRoutes.termsPage,
+        builder: (context, state) => TermsAndConditionsPage()),
     GoRoute(
       path: AppRoutes.editMentor,
       builder: (context, state) {

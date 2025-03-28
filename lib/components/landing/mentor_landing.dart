@@ -3,11 +3,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
+import 'package:mentor/terms_condition.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../constants/ui.dart';
+import '../../navigation/router.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,19 +21,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: GaurangaLandingPage(),
+      home: MentorLanding(),
     );
   }
 }
 
-class GaurangaLandingPage extends StatefulWidget {
-  const GaurangaLandingPage({super.key});
+class MentorLanding extends StatefulWidget {
+  const MentorLanding({super.key});
 
   @override
-  _GaurangaLandingPageState createState() => _GaurangaLandingPageState();
+  _MentorLandingPageState createState() => _MentorLandingPageState();
 }
 
-class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
+class _MentorLandingPageState extends State<MentorLanding> {
   final ScrollController _scrollController = ScrollController();
 
   bool isUserLoggedIn = false;
@@ -78,12 +80,8 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
                         children: [
                           Row(
                             children: [
-                              const CircleAvatar(
-                                radius: 20,
-                                backgroundImage:
-                                    AssetImage("assets/images/sign_in.jpg"),
-                              ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
+                              Image.asset('assets/images/app-icon.png'),
                               Text('MentorBoosters',
                                   style:
                                       Theme.of(context).textTheme.titleLarge),
@@ -91,49 +89,37 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
                           ),
                           Row(
                             children: [
-                              TextButton(
-                                onPressed: () => _scrollToSection(_featuresKey),
-                                child: Text('Features',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium),
+                              MyHoverButton(
+                                onPressed: () {
+                                  context.push(AppRoutes.landing);
+                                },
+                                text: 'Home',
                               ),
                               const SizedBox(width: 20),
-                              TextButton(
-                                onPressed: () => _scrollToSection(_pricingKey),
-                                child: Text('Purpose',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium),
+                              MyHoverButton(
+                                onPressed: () {
+                                  context.push(AppRoutes.aboutus);
+                                },
+                                text: 'About Us',
                               ),
                               const SizedBox(width: 20),
-                              TextButton(
-                                onPressed: () => _scrollToSection(_aboutKey),
-                                child: Text('About Us',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium),
-                              ),
-                              const SizedBox(width: 20),
-                              TextButton(
-                                onPressed: () =>
-                                    _scrollToSection(_dedicationKey),
-                                child: Text('Dedication',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium),
+                              MyHoverButton(
+                                onPressed: () {
+                                  context.push(AppRoutes.contactus);
+                                },
+                                text: 'Contact Us',
                               ),
                               const SizedBox(width: 20),
                               GestureDetector(
                                 onTap: () {
-                                  // if (isUserLoggedIn) {
-                                  //   Get.to(const Home());
-                                  // } else {
-                                  //   //  Get.to(const LoginScreen());
-                                  // }
+                                  context.push(AppRoutes.login);
                                 },
                                 child: Container(
                                   height: 30,
                                   width: 80,
                                   decoration: BoxDecoration(
-                                    color: const Color.fromARGB(
-                                        255, 239, 186, 107),
+                                    color: Colors.blue[800],
+
                                     //color: Colors.black,
                                     borderRadius: BorderRadius.circular(5),
                                   ),
@@ -170,8 +156,8 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
                                 backgroundImage:
                                     AssetImage("assets/images/sign_in.jpg"),
                               ),
-                              SizedBox(width: 10),
-                              Text('Gauranga',
+                              const SizedBox(width: 10),
+                              Text('Mentor Booster',
                                   style:
                                       Theme.of(context).textTheme.titleLarge),
                             ],
@@ -208,11 +194,10 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
               //   crossAxisAlignment: CrossAxisAlignment.center,
               //   children: [
               Container(
-                height: 800,
+                height: 600,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(
-                        'https://storage.googleapis.com/msgsndr/1xymNZ4jUrO97uCm1dn5/media/66f507878fdba16e6ade42ca.jpeg'),
+                    image: NetworkImage('assets/images/terms_header.jpg'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -228,17 +213,24 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
                               return const Column(
                                 children: [
                                   Center(
-                                    child: Padding(
-                                      padding:
-                                          EdgeInsets.fromLTRB(70, 300, 0, 0),
-                                      child: Text(
-                                        'THE GOLDEN AVATAR',
-                                        style: TextStyle(
-                                          fontSize: 80,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                    child: Text(
+                                      'Mentor Boosters E-Learning ',
+                                      style: TextStyle(
+                                        fontSize: 70,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
                                       ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    'Connect with expert mentors, gain real-world insights, and accelerate your learning journey. \n Flexible, personalized, and interactive mentorship to help you achieve your goals—anytime, anywhere! ',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
@@ -250,7 +242,7 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
                                   SizedBox(height: 40),
                                   Center(
                                     child: Text(
-                                      'THE GOLDEN AVATAR',
+                                      'Mentor Boosters E-Learning',
                                       style: TextStyle(
                                         fontSize: 40,
                                         color: Colors.white,
@@ -271,7 +263,11 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
               // Section 2 - Features
               Column(
                 children: [
+                  const SizedBox(
+                    height: 60,
+                  ),
                   const Text(
+                    textAlign: TextAlign.center,
                     "Transform Your Career, Fast-Track Your Success",
                     style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                   ),
@@ -279,33 +275,246 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
                     height: 20,
                   ),
                   const Text(
+                    textAlign: TextAlign.center,
                     "Whether you're just starting or looking to make a big career leap, our platform offers unmatched mentorship to guide you on your path.",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  Image.asset("assets/images/laptop_screen.jpg")
+                  SizedBox(
+                      height: 600,
+                      child: Image.asset("assets/images/mentor_screen.png")),
+                  const SizedBox(
+                    height: 60,
+                  ),
                 ],
               ),
               Container(
-                decoration: BoxDecoration(
-                  gradient: Theme.of(context).brightness == Brightness.light
-                      ? const LinearGradient(
-                          colors: [
-                            Color.fromARGB(255, 249, 220, 202),
-                            Color.fromARGB(255, 246, 210, 236),
-                            Color.fromARGB(255, 233, 212, 247),
-                            Color.fromARGB(255, 203, 215, 250),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        )
-                      : null,
-                ),
+                decoration: BoxDecoration(color: Colors.grey[100]),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
-                    bool isWideScreen = constraints.maxWidth > 600;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 10.0),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 60),
+                          const Text(
+                            "Why Choose Mentor Booster?",
+                            style: TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 40),
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: getCrossAxisCount(context),
+                              crossAxisSpacing: 16.0,
+                              mainAxisSpacing: 16.0,
+                              childAspectRatio:
+                                  getChildAspectRatioFromWidth(screenWidth),
+                            ),
+                            itemCount: 4,
+                            itemBuilder: (context, index) {
+                              final cardData = mentorData[index];
+
+                              return MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: HoverableContainer(
+                                  hover: false,
+                                  context: context,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundColor: Colors.transparent,
+                                          radius: 60,
+                                          child: ClipOval(
+                                            child: Image.asset(
+                                              cardData['image']!,
+                                              fit: BoxFit.cover,
+                                              // width: 40,
+                                              // height: 60,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        Text(
+                                            textAlign: TextAlign.center,
+                                            cardData['title']!,
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold)),
+                                        const SizedBox(height: 20),
+                                        Text(cardData['description']!,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 8,
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 40),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              Padding(
+                padding: MediaQuery.of(context).size.width > 800
+                    ? const EdgeInsets.all(60)
+                    : const EdgeInsets.all(10),
+                child: HoverableContainer(
+                  context: context,
+                  hover: false,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      bool isSmallScreen = constraints.maxWidth < 1000;
+                      return isSmallScreen
+                          ? Column(
+                              children: [
+                                SizedBox(
+                                  height: 400,
+                                  child:
+                                      Image.asset('assets/images/connects.jpg'),
+                                ),
+                                const SizedBox(height: 20),
+                                Column(
+                                  children: [
+                                    const Text(
+                                      textAlign: TextAlign.center,
+                                      'What is Mentor Booster?',
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 40),
+                                    const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        textAlign: TextAlign.center,
+                                        'Mentor Booster is your ultimate online learning platform designed to connect learners \n'
+                                        'with experienced mentors across various fields. Whether you are looking to develop new skills, \n'
+                                        'advance in your career, or gain expert guidance, Mentor Booster \n'
+                                        'provides a structured and interactive learning \n'
+                                        'experience',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 40),
+                                    SizedBox(
+                                      width: 400,
+                                      height: 40,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.blue[800],
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5))),
+                                          onPressed: () {
+                                            context.push(AppRoutes.login);
+                                          },
+                                          child: const Text(
+                                            'Learn More',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                SizedBox(
+                                  height: 400,
+                                  child:
+                                      Image.asset('assets/images/connects.jpg'),
+                                ),
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      const Text(
+                                        'What is Mentor Booster?',
+                                        style: TextStyle(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 40),
+                                      const Text(
+                                        textAlign: TextAlign.center,
+                                        'Mentor Booster is your ultimate online learning platform designed to connect learners \n'
+                                        'with experienced mentors across various fields. Whether you are looking to develop new skills, \n'
+                                        'advance in your career, or gain expert guidance, Mentor Booster \n'
+                                        'provides a structured and interactive learning \n'
+                                        'experience',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                      const SizedBox(height: 40),
+                                      SizedBox(
+                                        width: 400,
+                                        height: 40,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.blue[800],
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5))),
+                                          onPressed: () {
+                                              context.push(AppRoutes.login);
+                                          },
+                                          child: const Text(
+                                            'Learn More',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                    },
+                  ),
+                ),
+              ),
+
+              Container(
+                decoration: BoxDecoration(color: Colors.grey[100]),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    bool isWideScreen = constraints.maxWidth > 700;
                     int cardsPerRow = isWideScreen ? 4 : 1;
 
                     return Padding(
@@ -315,17 +524,19 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
                         children: [
                           const SizedBox(height: 60),
                           const Text(
+                            textAlign: TextAlign.center,
                             " A Global Community of Like-Minded Professionals",
                             style: TextStyle(
-                                fontSize: 36, fontWeight: FontWeight.bold),
+                                fontSize: 30, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(
                             height: 20,
                           ),
                           const Text(
+                            textAlign: TextAlign.center,
                             "Our impact speaks volumes, showcasing the success of our members worldwide.",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w600),
+                                fontSize: 16, fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(
                             height: 20,
@@ -338,7 +549,8 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
                               crossAxisCount: cardsPerRow,
                               crossAxisSpacing: 16.0,
                               mainAxisSpacing: 16.0,
-                              childAspectRatio: isWideScreen ? 2 : 1.1,
+                              childAspectRatio:
+                                  getChildAspectRatioh(screenWidth),
                             ),
                             itemCount: globalData.length,
                             itemBuilder: (context, index) {
@@ -346,27 +558,29 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
 
                               return MouseRegion(
                                 cursor: SystemMouseCursors.click,
-                                child: Padding(
-                                  padding: MediaQuery.of(context).size.width <
-                                          600
-                                      ? const EdgeInsets.fromLTRB(60, 0, 60, 0)
-                                      : const EdgeInsets.all(10.0),
-                                  child: HoverableContainer(
-                                    context: context,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
+                                child: HoverableContainer(
+                                  context: context,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.center,
                                         children: [
                                           Text(
                                             cardData['name']!,
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                                 fontSize: 44,
-                                                fontWeight: FontWeight.bold),
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.green[800]),
                                           ),
                                           const SizedBox(height: 20),
-                                          Text(cardData['location']!,
+                                          Text(
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 3,
+                                              textAlign: TextAlign.center,
+                                              cardData['location']!,
                                               style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold)),
@@ -385,91 +599,96 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
                   },
                 ),
               ),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: Theme.of(context).brightness == Brightness.light
-                      ? const LinearGradient(
-                          colors: [
-                            Colors.white,
-                            Color.fromARGB(255, 246, 245, 222),
-                            Colors.white,
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        )
-                      : null,
+              Column(children: [
+                const SizedBox(
+                  height: 20,
                 ),
-                child: Padding(
-                  padding: MediaQuery.of(context).size.width < 600
-                      ? const EdgeInsets.fromLTRB(20, 20, 20, 20)
-                      : const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                  child: Column(children: [
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount:
-                            MediaQuery.of(context).size.width > 600 ? 3 : 1,
-                        crossAxisSpacing: 20,
-                        mainAxisSpacing: 20,
-                        childAspectRatio: childAspectRatio,
-                      ),
-                      itemCount: 3,
-                      itemBuilder: (context, index) {
-                        switch (index) {
-                          case 0:
-                            return FeatureCard(
-                              imageUrl:
-                                  "https://storage.googleapis.com/msgsndr/1xymNZ4jUrO97uCm1dn5/media/66f6987469753621555c6aca.jpeg",
-                              title: 'ABOUT US',
-                              description:
-                                  'At Gauranga, our mission is to empower individuals and businesses with innovative software solutions that simplify complexity, enhance productivity',
-                            );
-                          case 1:
-                            return FeatureCard(
-                              imageUrl:
-                                  "https://storage.googleapis.com/msgsndr/1xymNZ4jUrO97uCm1dn5/media/66f698ebf6cf753b3d3e96d9.jpeg",
-                              title: 'MISSION',
-                              description:
-                                  'At Gauranga, our mission is to empower individuals and businesses with innovative software solutions that simplify complexity, enhance productivity',
-                            );
-                          case 2:
-                            return FeatureCard(
-                              imageUrl:
-                                  "https://storage.googleapis.com/msgsndr/1xymNZ4jUrO97uCm1dn5/media/66f69872697536edfd5c6ac8.jpeg",
-                              title: 'VISION',
-                              description:
-                                  'At Gauranga, our mission is to empower individuals and businesses with innovative software solutions that simplify complexity, enhance productivity',
-                            );
-                          default:
-                            return Container(); // Return an empty container if index is out of range
-                        }
-                      },
-                    )
-                  ]),
+                const Text(
+                  textAlign: TextAlign.center,
+                  "Meet Our Newest Mentors",
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
-              ),
-              Container(
-                height: 100,
-                width: double.infinity,
-                // color: Theme.of(context).containerColor,
-                child: Center(
-                  child: GradientText(
-                    'DEDICATION',
-                    key: _dedicationKey,
-                    style: const TextStyle(
-                      fontSize: 50,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                    colors: const [
-                      Colors.blue,
-                      Colors.pink,
-                      Colors.teal,
-                    ],
+                const SizedBox(
+                  height: 20,
+                ),
+                const Text(
+                  textAlign: TextAlign.center,
+                  "Get to know some of the mentors who are ready to guide you to success.",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 60,
+                ),
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: getCrossAxisCount(context),
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                    childAspectRatio: childAspectRatio,
                   ),
+                  itemCount: 4,
+                  itemBuilder: (context, index) {
+                    switch (index) {
+                      case 0:
+                        return FeatureCard(
+                          imageUrl: "assets/images/avatar-12.png",
+                          title: 'Zaack Aleem',
+                          description: 'Software Engineer',
+                        );
+                      case 1:
+                        return FeatureCard(
+                          imageUrl: "assets/images/avatar-9.png",
+                          title: 'Grace Dannel',
+                          description: 'UI/UX Designer',
+                        );
+                      case 2:
+                        return FeatureCard(
+                          imageUrl: "assets/images/avatar-3.png",
+                          title: 'Blessy Nograra',
+                          description: 'Mentor',
+                        );
+                      case 3:
+                        return FeatureCard(
+                          imageUrl: "assets/images/avatar-11.png",
+                          title: 'Rohan norato sero',
+                          description: 'Product Manager',
+                        );
+                      default:
+                        return Container(); // Return an empty container if index is out of range
+                    }
+                  },
                 ),
+                const SizedBox(
+                  height: 60,
+                )
+              ]),
+
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  bool isSmallScreen = constraints.maxWidth < 1200;
+
+                  return Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: isSmallScreen
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: contentWidgets(),
+                          )
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: contentWidgets(),
+                          ),
+                  );
+                },
               ),
+
+              const SizedBox(
+                height: 60,
+              ),
+
               SingleChildScrollView(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
@@ -477,48 +696,51 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
 
                     return Container(
                       height:
-                          isMobile ? null : 300, // Adjust height for desktop
+                          isMobile ? null : 640, // Adjust height for desktop
                       width: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient:
-                            Theme.of(context).brightness == Brightness.light
-                                ? const LinearGradient(
-                                    colors: [
-                                      Colors.white,
-                                      Color.fromARGB(255, 246, 245, 222),
-                                      Colors.white,
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  )
-                                : null,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: CarouselSlider.builder(
-                          itemCount: teamData.length,
-                          itemBuilder: (context, index, realIndex) {
-                            return _buildTeamMember(
-                              teamData[index]['imageUrl'] ?? '',
-                              [
-                                teamData[index]['name'] ?? 'Unknown Name',
-                                teamData[index]['location'] ??
-                                    'Unknown Location',
-                              ],
-                            );
-                          },
-                          options: CarouselOptions(
-                            height: isMobile ? 400 : 450,
-                            autoPlay: true,
-                            enlargeCenterPage: true,
-                            viewportFraction: isMobile ? 1.5 : 0.3,
-                            onPageChanged: (index, reason) {
-                              setState(() {
-                                currentIndex = index; // Update current index
-                              });
-                            },
+                      decoration: BoxDecoration(color: Colors.grey[100]),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 20,
                           ),
-                        ),
+                          const Center(
+                              child: Text(
+                            'Testimonials',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 30),
+                          )),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: CarouselSlider.builder(
+                              itemCount: teamData.length,
+                              itemBuilder: (context, index, realIndex) {
+                                return _buildTeamMember(
+                                  teamData[index]['imageUrl'] ?? '',
+                                  [
+                                    teamData[index]['name'] ?? 'Unknown Name',
+                                    teamData[index]['carrer'] ??
+                                        'Unknown Carrer',
+                                    teamData[index]['review'] ??
+                                        'Unknown Review',
+                                  ],
+                                );
+                              },
+                              options: CarouselOptions(
+                                height: isMobile ? 400 : 550,
+                                autoPlay: true,
+                                enlargeCenterPage: true,
+                                viewportFraction: isMobile ? 1.5 : 0.3,
+                                onPageChanged: (index, reason) {
+                                  setState(() {
+                                    currentIndex =
+                                        index; // Update current index
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   },
@@ -550,131 +772,171 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
                 padding:
                     const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
                 color: Colors.black87,
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        TextButton(
+                child: Center(
+                  // Ensures the Column is centered
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 20,
+                        runSpacing: 10,
+                        children: [
+                          TextButton(
+                            onPressed: () {},
+                            child: const Text(
+                              'Privacy Policy',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                          ),
+                          TextButton(
                             onPressed: () {
-                              //Get.to(const PrivacyPolicyScreen());
+                              context.push(AppRoutes.termsPage);
                             },
-                            child: const Text('Privacy Policy',
-                                style: TextStyle(color: Colors.white))),
-                        TextButton(
-                            onPressed: () {
-                              //  Get.to(const TermsAndConditionsPage());
-                            },
-                            child: const Text('Terms of Service',
-                                style: TextStyle(color: Colors.white))),
-                        TextButton(
-                            onPressed: () {
-                              //   Get.to(const ContactUsScreen());
-                            },
-                            child: const Text('Contact Us',
-                                style: TextStyle(color: Colors.white))),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          icon: const Icon(
-                            Ionicons.logo_facebook,
-                            size: 20,
+                            child: const Text(
+                              'Terms & Conditions',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                            ),
                           ),
-                          color: Colors.white, // Set the color of the icon
-                          onPressed: () => launchUrlStart(
-                              url: "https://www.facebook.com/gaurangaaaa/"),
-                        ),
-                        const SizedBox(width: 10),
-                        IconButton(
-                          icon: const Icon(
-                            Ionicons.logo_instagram,
-                            size: 20,
+                          Column(
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            TermsAndConditionsPage()),
+                                  );
+                                },
+                                child: const Text(
+                                  'Contact Us',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              // const Text(
+                              //   "Hello@mentorboosters.com",
+                              //   style: TextStyle(color: Colors.white),
+                              // ),
+                            ],
                           ),
-                          color: Colors.white,
-                          onPressed: () => launchUrlStart(
-                              url: "https://www.instagram.com/gaurangaaaaaa/"),
-                        ),
-                        const SizedBox(width: 10),
-                        IconButton(
-                          icon: const Icon(
-                            Ionicons.logo_youtube,
-                            size: 20,
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Ionicons.logo_facebook, size: 20),
+                            color: Colors.white,
+                            onPressed: () => launchUrlStart(url: ""),
                           ),
-                          color: Colors.white,
-                          onPressed: () => launchUrlStart(
-                              url: "https://www.youtube.com/@gaurangaaa"),
-                        ),
-                        const SizedBox(width: 10),
-                        IconButton(
-                          icon: const Icon(
-                            Ionicons.logo_google_playstore,
-                            size: 20,
+                          IconButton(
+                            icon: const Icon(Ionicons.logo_instagram, size: 20),
+                            color: Colors.white,
+                            onPressed: () => launchUrlStart(url: ""),
                           ),
-                          color: Colors.white,
-                          onPressed: () => launchUrlStart(
-                              url:
-                                  "https://play.google.com/store/apps/details?id=com.adhirat.app&pcampaignid=web_share"),
-                        ),
-                        const SizedBox(width: 10),
-                        IconButton(
-                          icon: const Icon(
-                            Ionicons.logo_apple_appstore,
-                            size: 20,
+                          IconButton(
+                            icon: const Icon(Ionicons.logo_youtube, size: 20),
+                            color: Colors.white,
+                            onPressed: () => launchUrlStart(url: ""),
                           ),
-                          color: Colors.white,
-                          onPressed: () => launchUrlStart(
-                              url:
-                                  "https://apps.apple.com/au/app/gauranga/id6466571735"),
-                        ),
-                        const SizedBox(width: 10),
-                        IconButton(
-                          icon: Image.network(
-                            'https://storage.googleapis.com/msgsndr/1xymNZ4jUrO97uCm1dn5/media/66f6962f4988915f6aecff5e.png',
-                            height: 20,
-                            width: 20,
+                          IconButton(
+                            icon: const Icon(Ionicons.logo_google_playstore,
+                                size: 20),
+                            color: Colors.white,
+                            onPressed: () => launchUrlStart(url: ""),
                           ),
-                          color: Colors.white,
-                          onPressed: () => launchUrlStart(
-                              url: "https://gaura.codemagic.app/"),
-                        ),
-                        const SizedBox(width: 10),
-                        IconButton(
-                          icon: Image.network(
-                            'https://storage.googleapis.com/msgsndr/1xymNZ4jUrO97uCm1dn5/media/66eaa609c19a100eaba0c153.png',
-                            height: 25,
-                            width: 25,
+                          IconButton(
+                            icon: const Icon(Ionicons.logo_apple_appstore,
+                                size: 20),
+                            color: Colors.white,
+                            onPressed: () => launchUrlStart(url: ""),
                           ),
-                          onPressed: () =>
-                              launchUrlStart(url: "https://adhirat.com/"),
-                        ),
-                        const SizedBox(width: 10),
-                        IconButton(
-                          icon: Image.network(
-                            'https://storage.googleapis.com/msgsndr/1xymNZ4jUrO97uCm1dn5/media/66eaaa7f0fbb91af273af478.png',
-                            height: 25,
-                            width: 25,
-                          ),
-                          onPressed: () =>
-                              launchUrlStart(url: "https://www.eqbis.com/"),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
-                    const Text(
-                      '© 2024 GAURANGA App. All rights reserved.',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      const Text(
+                        '© 2025 MentorBoosters. All rights reserved.',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ))
           //),
         ]));
+  }
+
+  List<Widget> contentWidgets() {
+    return [
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 400,
+              width: 480,
+              child: Image.asset('assets/images/videocall.jpg'),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(width: 20, height: 20), // Spacing
+      Column(
+        children: [
+          const Text(
+            'How It Works?',
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 40),
+          Text(
+            textAlign: TextAlign.center,
+            'Mentors in your desired field. Once you choose a mentor, schedule a session at your \n '
+            'convenience—whether it’s a one-on-one consultation or a group discussion. Engage in live, s \n'
+            'interactive session where you can ask questions, receive personalized guidance, and gain  \n'
+            'industry-specific insights. Our mentors provide tailored learning experiences, helping you \n'
+            'develop new skills, navigate career challenges, and achieve your goals. \n'
+            'With flexible scheduling, affordable pricing, and a thriving community of learners, \n'
+            'Mentor Booster empowers you to learn anytime, anywhere,\n'
+            'and grow at your own pace.',
+            style: TextStyle(
+                fontSize: MediaQuery.of(context).size.width > 1200 ? 16 : 18,
+                fontWeight: FontWeight.w400),
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            width: 400,
+            height: 40,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue[800],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5)),
+              ),
+              onPressed: () {
+                  context.push(AppRoutes.login);
+              },
+              child: const Text(
+                'Get Started',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    ];
   }
 
   Future<void> launchUrlStart({required String url}) async {
@@ -689,30 +951,104 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
     {'name': '160+', 'location': 'Countries Represented by Our Community'},
     {'name': '2,500', 'location': 'Monthly Connections'},
   ];
+
+  final List<Map<String, String>> mentorData = [
+    {
+      'image': 'assets/images/business.jpg',
+      'title': 'Expert-Led Mentorship',
+      'description':
+          'Learn from experienced mentors across various industries. Gain valuable insights, personalized advice, and real-world knowledge to help you grow professionally and personally'
+    },
+    {
+      'image': 'assets/images/target.jpg',
+      'title': 'Career Growth & Development',
+      'description':
+          'Enhance your career prospects by learning in-demand skills. Get expert advice on career transitions, entrepreneurship, and professional growth from those who have been there.'
+    },
+    {
+      'image': 'assets/images/doller.jpg',
+      'title': 'Affordable & Accessible',
+      'description':
+          'High-quality mentorship at an affordable cost. Our platform ensures that everyone, regardless of background, has access to expert guidance and learning opportunities.'
+    },
+    {
+      'image': 'assets/images/design.jpg',
+      'title': 'Flexible Learning Anytime',
+      'description':
+          'Schedule mentorship sessions at your convenience. Learn at your own pace, whether through one-on-one guidance, group discussions, or interactive workshops.'
+    },
+    {
+      'image': 'assets/images/techu.png',
+      'title': 'Engaging Community',
+      'description':
+          'Join a supportive community of learners and mentors. Share experiences, collaborate, and expand your network with professionals who share your interests and ambitions.'
+    },
+    {
+      'image': 'assets/images/idea.jpg',
+      'title': 'Personalized Guidance',
+      'description':
+          'Get tailored learning experiences based on your goals. Our mentors provide customized strategies, skill development tips, and industry-specific knowledge to accelerate your progress.'
+    },
+    {
+      'image': 'assets/images/industry.png',
+      'title': 'Live & Interactive Sessions',
+      'description':
+          'Engage in real-time learning with interactive sessions. Ask questions, discuss challenges, and receive instant feedback from mentors to enhance your understanding.'
+    },
+    {
+      'image': 'assets/images/others.png',
+      'title': 'Multi-Industry Expertise',
+      'description':
+          'Explore mentorship in various fields like business, technology, finance, arts, and more. Learn directly from professionals who bring real-world experience and insights'
+    },
+  ];
+
+  final List<Map<String, String>> mentorstart = [
+    {
+      'name': '1. Find Your Mentor',
+      'location':
+          'Use our search to find mentors who match your goals, industry, or skill set.'
+    },
+    {
+      'name': '2. Schedule a Session',
+      'location':
+          'Pick a time that suits you, and book a 1:1 session with your mentor.'
+    },
+    {
+      'name': '3. Grow Together',
+      'location':
+          'Engage in meaningful conversations, gain insights, and take actionable steps.'
+    },
+  ];
+
   List<Map<String, String>> teamData = [
     {
-      'imageUrl':
-          'https://storage.googleapis.com/msgsndr/1xymNZ4jUrO97uCm1dn5/media/66f0274f3b00e2d103ee46b4.webp',
-      'name': 'Jayapataka Swami',
-      'location': 'USA',
+      'imageUrl': 'assets/images/avatar-4.png',
+      'name': 'Jamesh sarur',
+      'carrer': 'BusinessOwner/Entrepreneur',
+      'review':
+          "Great sessions and mentoring. Very open, helpfull and practical feedback on how to take my studies and career to the next level and reach my goals. Very thankfull! All recommandations!"
     },
     {
-      'imageUrl':
-          'https://storage.googleapis.com/msgsndr/1xymNZ4jUrO97uCm1dn5/media/66f0276efd064b3cd7b00985.jpeg',
-      'name': 'Srila Prabhupada',
-      'location': 'Calcutta',
+      'imageUrl': 'assets/images/avatar-6.png',
+      'name': 'Aleens cateriga',
+      'carrer': 'UiUx/Designer',
+      'review':
+          "Aleens cateriga, thank you for the great conversation, analysis and helping me to properly approach the challenges I face!"
     },
     {
-      'imageUrl':
-          'https://storage.googleapis.com/msgsndr/1xymNZ4jUrO97uCm1dn5/media/66f027824b96a97df6c4b7fd.jpeg',
-      'name': 'Gauranga',
-      'location': 'Australia',
+      'imageUrl': 'assets/images/avatar-8.png',
+      'name': 'Williams Bond caro',
+      'carrer': 'Development',
+      'review':
+          "Williams Bond caro was very helpful with my specific question. She brought a very structured framework for me to navigate. Furthermore, she shared her experience which was very inspiring and encouraging! ",
     },
     {
-      'imageUrl':
-          'https://storage.googleapis.com/msgsndr/1xymNZ4jUrO97uCm1dn5/media/66f0287ab32e470eb93c973a.jpeg',
-      'name': 'ISKCON Sydney',
-      'location': 'Australia',
+      'imageUrl': 'assets/images/avatar-10.png',
+      'name': 'Farina hijab',
+      'carrer': 'Business/Finance',
+      'review':
+          "Farina hijab was super friendly and helpful, asking the right questions to understand my current challenges quickly and guiding me in the right direction. I got some great feedback regarding our startup's technology setup and recommendations for my career growth. "
     },
   ];
 
@@ -723,37 +1059,27 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
         constraints: const BoxConstraints(
           maxWidth: 350,
         ),
-        child: Container(
-          height: 150,
-          width: 300,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(15), // Rounded corners
-            boxShadow: [
-              BoxShadow(
-                color:
-                    Colors.grey.withAlpha((0.5 * 255).round()), // Shadow color
-                blurRadius: 10, // Softness of the shadow
-                spreadRadius: 2, // How much the shadow spreads
-                offset: const Offset(0, 5), // Shadow position
-              ),
-            ],
-          ),
+        child: HoverableContainer(
+          context: context,
           child: Column(
             mainAxisSize:
                 MainAxisSize.min, // Allow the column to shrink if needed
             children: [
               const SizedBox(height: 20),
+
               Flexible(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(
-                      imageUrl,
-                      height: 300,
-                      width: 300,
-                      fit: BoxFit.fill,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.transparent,
+                    radius: 60,
+                    child: ClipOval(
+                      child: Image.asset(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        // width: 40,
+                        // height: 60,
+                      ),
                     ),
                   ),
                 ),
@@ -770,6 +1096,14 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
               Text(
                 details[1], // Location
                 style: const TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  details[2], // Location
+                  style: const TextStyle(fontSize: 16, color: Colors.grey),
+                ),
               ),
               const SizedBox(
                   height: 20), // Add padding at the bottom to avoid overflow
@@ -799,7 +1133,7 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
       items: [
         PopupMenuItem(
           child: ListTile(
-            title: const Text('Features'),
+            title: const Text('Home'),
             onTap: () {
               _scrollToSection(_featuresKey);
             },
@@ -807,28 +1141,17 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
         ),
         PopupMenuItem(
           child: ListTile(
-            title: const Text('Purpose'),
-            onTap: () {
-              _scrollToSection(_pricingKey);
-
-              // Navigator.pushNamed(context, '/pricing');
-              // Navigator.of(context).pop();
-            },
-          ),
-        ),
-        PopupMenuItem(
-          child: ListTile(
             title: const Text('About Us'),
             onTap: () {
-              _scrollToSection(_aboutKey);
+              context.push(AppRoutes.aboutus);
             },
           ),
         ),
         PopupMenuItem(
           child: ListTile(
-            title: const Text('Dedication'),
+            title: const Text('Contact Us'),
             onTap: () {
-              _scrollToSection(_dedicationKey);
+              context.push(AppRoutes.contactus);
             },
           ),
         ),
@@ -836,9 +1159,7 @@ class _GaurangaLandingPageState extends State<GaurangaLandingPage> {
           child: ListTile(
             title: const Text('Login'),
             onTap: () {
-              //  Get.to(const LoginScreen());
-              //Navigator.pushNamed(context, '/about');
-              // Navigator.of(context).pop();
+              context.push(AppRoutes.login);
             },
           ),
         ),
@@ -908,9 +1229,7 @@ class _FeatureCardState extends State<FeatureCard>
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Padding(
-          padding: MediaQuery.of(context).size.width < 600
-              ? const EdgeInsets.fromLTRB(80, 5, 80, 5) // Mobile padding
-              : const EdgeInsets.all(0),
+          padding: const EdgeInsets.all(20),
           child: AnimatedContainer(
             height: 400,
             width: 400,
@@ -937,7 +1256,7 @@ class _FeatureCardState extends State<FeatureCard>
                     padding: const EdgeInsets.all(10.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
-                      child: Image.network(
+                      child: Image.asset(
                         widget.imageUrl,
                         height: 200,
                         width: 300,
@@ -951,7 +1270,7 @@ class _FeatureCardState extends State<FeatureCard>
                   widget.title,
                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        fontSize: 28.0,
+                        fontSize: 20.0,
                       ),
                 ),
                 const SizedBox(height: 10),
@@ -960,6 +1279,20 @@ class _FeatureCardState extends State<FeatureCard>
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[800],
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5))),
+                    onPressed: () {
+                        context.push(AppRoutes.login);
+                    },
+                    child: const Text(
+                      'View Mentors',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.white),
+                    ))
               ],
             ),
           ),
@@ -1071,3 +1404,97 @@ final pricingData = [
     ]
   }
 ];
+
+class MyHoverButton extends StatefulWidget {
+  final VoidCallback onPressed;
+  final String text;
+
+  const MyHoverButton({required this.onPressed, required this.text, Key? key})
+      : super(key: key);
+
+  @override
+  _MyHoverButtonState createState() => _MyHoverButtonState();
+}
+
+class _MyHoverButtonState extends State<MyHoverButton> {
+  bool _isHovered = false; // Initialize the variable properly
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: widget.onPressed,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: AnimatedDefaultTextStyle(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                fontSize: _isHovered ? 22 : 16, // Zoom effect
+                fontWeight: _isHovered ? FontWeight.bold : FontWeight.bold,
+                color: _isHovered ? Colors.blue[800] : Colors.black,
+              ),
+          child: Text(widget.text),
+        ),
+      ),
+    );
+  }
+}
+
+double getChildAspectRatioFromWidth(double width) {
+  if (width > 1300) {
+    return 0.9;
+  } else if (width > 1200) {
+    return 0.7;
+  } else if (width > 1000) {
+    return 1.4;
+  } else if (width > 900) {
+    return 1.2;
+  } else if (width > 800) {
+    return 1;
+  } else if (width > 750) {
+    return 1.1;
+  } else if (width > 700) {
+    return 0.9;
+  } else if (width > 650) {
+    return 0.8;
+  } else if (width > 600) {
+    return 0.7;
+  } else if (width > 500) {
+    return 1.2;
+  } else if (width > 300) {
+    return 0.8;
+  } else {
+    return 0.6;
+  }
+}
+
+int getCrossAxisCount(BuildContext context) {
+  double width = MediaQuery.of(context).size.width;
+
+  if (width > 1200) {
+    return 4;
+  } else if (width > 600) {
+    return 2;
+  } else {
+    return 1;
+  }
+}
+
+double getChildAspectRatioh(double width) {
+  if (width > 1300) {
+    return 2;
+  } else if (width > 1200) {
+    return 2;
+  } else if (width > 700) {
+    return 0.9;
+  } else if (width > 600) {
+    return 2.5;
+  } else if (width > 400) {
+    return 2;
+  } else if (width > 300) {
+    return 1.4;
+  } else {
+    return 0.8;
+  }
+}

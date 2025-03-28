@@ -6,7 +6,6 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:mentor/navigation/router.dart';
-import 'package:mentor/shared/utils/extensions.dart';
 import 'package:mentor/shared/utils/validator.dart';
 import 'package:mentor/shared/views/input_field.dart';
 import 'package:mentor/provider/user_data_provider.dart';
@@ -14,14 +13,14 @@ import 'package:provider/provider.dart';
 
 import '../../../../constants/ui.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class Contactus extends StatefulWidget {
+  const Contactus({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<Contactus> createState() => _ContactusState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _ContactusState extends State<Contactus> {
   final _formKey = GlobalKey<FormState>();
   final validator = Validator();
   TextEditingController emailCtrl = TextEditingController();
@@ -84,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
             name: name,
             usertype: usertype,
           );
-          context.go(AppRoutes.home);
+          context.go(AppRoutes.landing);
         } else if (response.statusCode == 401) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -141,7 +140,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       .onSecondaryContainer,
                                 ),
                               ),
-                              Text("Back", style: context.headlineSmall),
                             ],
                           ),
                           isTwoColumn
@@ -165,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             child: Column(
                                               children: [
                                                 Image.asset(
-                                                  'assets/images/login.png',
+                                                  'assets/images/contact_us.png',
                                                   fit: BoxFit.cover,
                                                 ),
                                               ],
@@ -207,7 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Column(
                         children: [
                           Text(
-                            'Welcome',
+                            'Contact Us',
                             style: TextStyle(
                               fontSize: 40,
                               fontFamily: "Lobster",
@@ -215,17 +213,47 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 62 / 48,
                             ),
                           ),
-                          Text(
-                            'Sign in to Continue!',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 20),
+                            child: Text(
+                              'For any Queries you can contact us!',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ],
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  InputField(
+                    controller: emailCtrl,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an email address';
+                      }
+                    },
+                    keyboardType: TextInputType.emailAddress,
+                    labelText: "Name",
+                    prefixIcon: const Icon(HugeIcons.strokeRoundedUser),
+                  ),
+                  const SizedBox(
+                    height: 22,
+                  ),
+                  InputField(
+                      controller: passwordCtrl,
+                      validator: (value) {
+                        return validator.required(
+                            value, 'This field is required');
+                      },
+                      labelText: 'Age'),
                   const SizedBox(
                     height: 20,
                   ),
@@ -248,52 +276,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     prefixIcon: const Icon(HugeIcons.strokeRoundedUser),
                   ),
                   const SizedBox(
-                    height: 22,
+                    height: 20,
                   ),
                   InputField(
+                    maxLines: 2,
                       controller: passwordCtrl,
                       validator: (value) {
                         return validator.required(
                             value, 'This field is required');
                       },
-                      obscureText: _passwordVisible,
-                      prefixIcon: const Icon(Icons.lock_outline_rounded),
-                      suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              _passwordVisible = !_passwordVisible;
-                            });
-                          },
-                          icon: Icon(
-                            _passwordVisible
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
-                            size: 24,
-                          )),
-                      labelText: 'Password'),
+                      labelText: 'Message'),
                   const SizedBox(
                     height: 20,
                   ),
-                  /*Row(
-                children: [
-                  Checkbox(
-                    checkColor: Colors.white,
-                    value: isChecked,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        isChecked = value!;
-                      });
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Text("Remember me", style: context.titleSmall)
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),*/
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -318,121 +313,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           )
                         : const Text(
-                            'Sign in',
+                            'Send',
                             style: TextStyle(fontSize: 16),
                           ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        /*Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Forget password", style: context.bodySmall),
-                        TextButton(
-                            onPressed: () =>
-                                context.go(AppRoutes.forgetPassword),
-                            child: Text('Recover now!',
-                                style: TextStyle(color: context.colors.primary))),
-                      ],
-                    ),*/
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text('Not a member!',
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            TextButton(
-                                onPressed: () => context.push(AppRoutes.signup),
-                                child: Text('Register Now!',
-                                    style: TextStyle(
-                                        color: context.colors.primary,
-                                        fontWeight: FontWeight.bold))),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            
-                            TextButton(
-                                onPressed: () => context.push(AppRoutes.signup),
-                                child: Text('Forgot Password!',
-                                    style: TextStyle(
-                                        color: context.colors.primary,
-                                        fontWeight: FontWeight.bold))),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
                   const SizedBox(height: 20),
-                  /*SizedBox(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            'assets/google.png',
-                            height: 24,
-                            width: 24,
-                          ),
-                          const SizedBox(width: 8),
-                          const Text('Sign with Google'),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            'assets/images/facebook.png',
-                            height: 24,
-                            width: 24,
-                          ),
-                          const SizedBox(width: 8),
-                          const Text('Sign with Facebook'),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 40,
-              )*/
                 ],
               ),
             )));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart' as go;
+import 'package:mentor/components/landing/mentor_landing.dart';
 import 'package:universal_platform/universal_platform.dart';
 import '../../navigation/router.dart' as router;
 import 'adaptive_navigation.dart';
@@ -11,20 +12,21 @@ class RootLayout extends StatelessWidget {
     super.key,
     required this.child,
     required this.currentIndex,
+    this.showNavigation = true,
   });
 
   final Widget child;
   final int currentIndex;
   static const _switcherKey = ValueKey('switcherKey');
   static const _navigationRailKey = ValueKey('navigationRailKey');
+  final bool showNavigation;
 
   @override
   Widget build(BuildContext context) {
-
     var provider = context.read<UserDataProvider>();
     String userId = provider.userid;
     String userType = provider.usertype;
-    
+
     return LayoutBuilder(builder: (context, dimens) {
       void onSelected(int index) {
         if (userId.isEmpty) {
@@ -45,76 +47,84 @@ class RootLayout extends StatelessWidget {
         }
       }
 
-      if (userId.isEmpty) {
+      if (userId.isEmpty && showNavigation == true) {
         return AdaptiveNavigation(
-        key: _navigationRailKey,
-        destinations: router.beforeDestinations
-            .map((e) => NavigationDestination(
-                  icon: e.icon,
-                  label: e.label,
-                ))
-            .toList(),
-        selectedIndex: (currentIndex >= 0 && currentIndex < router.beforeDestinations.length)
-                        ? currentIndex
-                        : 0,
-        onDestinationSelected: onSelected,
-        child: Column(
-          children: [
-            Expanded(
-              child: _Switcher(
-                key: _switcherKey,
-                child: child,
+          key: _navigationRailKey,
+          destinations: router.beforeDestinations
+              .map((e) => NavigationDestination(
+                    icon: e.icon,
+                    label: e.label,
+                  ))
+              .toList(),
+          selectedIndex: (currentIndex >= 0 &&
+                  currentIndex < router.beforeDestinations.length)
+              ? currentIndex
+              : 0,
+          onDestinationSelected: onSelected,
+          child: Column(
+            children: [
+              Expanded(
+                child: _Switcher(
+                  key: _switcherKey,
+                  child: child,
+                ),
               ),
-            )],
+            ],
           ),
         );
-      } else if (userType == "Admin") {
+      } else if (userType == "Admin" && showNavigation == true) {
         return AdaptiveNavigation(
-        key: _navigationRailKey,
-        destinations: router.adminDestinations
-            .map((e) => NavigationDestination(
-                  icon: e.icon,
-                  label: e.label,
-                ))
-            .toList(),
-        selectedIndex: (currentIndex >= 0 && currentIndex < router.beforeDestinations.length)
-                        ? currentIndex
-                        : 0,
-        onDestinationSelected: onSelected,
-        child: Column(
-          children: [
-            Expanded(
-              child: _Switcher(
-                key: _switcherKey,
-                child: child,
-              ),
-            )],
-         ),
+          key: _navigationRailKey,
+          destinations: router.adminDestinations
+              .map((e) => NavigationDestination(
+                    icon: e.icon,
+                    label: e.label,
+                  ))
+              .toList(),
+          selectedIndex: (currentIndex >= 0 &&
+                  currentIndex < router.beforeDestinations.length)
+              ? currentIndex
+              : 0,
+          onDestinationSelected: onSelected,
+          child: Column(
+            children: [
+              Expanded(
+                child: _Switcher(
+                  key: _switcherKey,
+                  child: child,
+                ),
+              )
+            ],
+          ),
         );
-      } else {
-      return AdaptiveNavigation(
-        key: _navigationRailKey,
-        destinations: router.userDestinations
-            .map((e) => NavigationDestination(
-                  icon: e.icon,
-                  label: e.label,
-                ))
-            .toList(),
-        selectedIndex: (currentIndex >= 0 && currentIndex < router.beforeDestinations.length)
-                        ? currentIndex
-                        : 0,
-        onDestinationSelected: onSelected,
-        child: Column(
-          children: [
-            Expanded(
-              child: _Switcher(
-                key: _switcherKey,
-                child: child,
-              ),
-            )],
-			    ),
-		    );
-		  }
+      } else if( showNavigation == true) {
+        return AdaptiveNavigation(
+          key: _navigationRailKey,
+          destinations: router.userDestinations
+              .map((e) => NavigationDestination(
+                    icon: e.icon,
+                    label: e.label,
+                  ))
+              .toList(),
+          selectedIndex: (currentIndex >= 0 &&
+                  currentIndex < router.beforeDestinations.length)
+              ? currentIndex
+              : 0,
+          onDestinationSelected: onSelected,
+          child: Column(
+            children: [
+              Expanded(
+                child: _Switcher(
+                  key: _switcherKey,
+                  child: child,
+                ),
+              )
+            ],
+          ),
+        );
+      }else{
+        return MentorLanding();
+      }
     });
   }
 }
