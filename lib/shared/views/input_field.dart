@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 enum ETypeInput { intType, decimalType, textType }
 
+// ignore: must_be_immutable
 class InputField extends StatelessWidget {
   InputField(
       {super.key,

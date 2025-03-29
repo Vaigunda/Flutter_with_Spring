@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, avoid_unnecessary_containers
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +37,7 @@ class _MentorLandingPageState extends State<MentorLanding> {
   final ScrollController _scrollController = ScrollController();
 
   bool isUserLoggedIn = false;
-  final GlobalKey _aboutKey = GlobalKey();
-  final GlobalKey _pricingKey = GlobalKey();
   final GlobalKey _featuresKey = GlobalKey();
-  final GlobalKey _dedicationKey = GlobalKey();
   int currentIndex = 0;
 
   // Scroll to specific section

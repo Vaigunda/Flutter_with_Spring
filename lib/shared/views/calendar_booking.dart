@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+// ignore: must_be_immutable
 class CalendarBooking extends StatefulWidget {
   CalendarBooking(
       {super.key,

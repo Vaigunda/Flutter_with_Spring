@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -27,7 +29,6 @@ class _ContactusState extends State<Contactus> {
   TextEditingController passwordCtrl = TextEditingController();
   final FocusNode _passwordFocusNode = FocusNode();
 
-  bool _passwordVisible = true;
   bool isChecked = false;
   bool isTwoColumn = false;
 
@@ -239,6 +240,7 @@ class _ContactusState extends State<Contactus> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter an email address';
                       }
+                      return null;
                     },
                     keyboardType: TextInputType.emailAddress,
                     labelText: "Name",

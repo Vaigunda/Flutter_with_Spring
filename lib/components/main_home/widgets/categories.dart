@@ -1,5 +1,7 @@
 
 
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 // categories.dart
 import 'package:flutter/material.dart';
 import 'package:mentor/shared/models/category.model.dart';

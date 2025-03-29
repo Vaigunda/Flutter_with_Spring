@@ -278,6 +278,7 @@ class _ConversationMessagesScreenState
   }
 
   //Not support yet
+  // ignore: unused_element
   Widget _myPhotoMessage(MessageModel msg) {
     return ListTile(
       leading: _time("10:20 AM"),
@@ -288,6 +289,7 @@ class _ConversationMessagesScreenState
     );
   }
 
+  // ignore: unused_element
   Widget _friendPhotoMessage(MessageModel msg) {
     return ListTile(
       leading: Transform.translate(

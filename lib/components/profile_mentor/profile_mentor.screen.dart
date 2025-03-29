@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'dart:convert';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,7 +9,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:mentor/components/booking/booking.screen.dart';
 import 'package:mentor/constants/ui.dart';
 import 'package:mentor/navigation/router.dart';
 import 'package:mentor/shared/models/profile_mentor.model.dart';
@@ -35,6 +36,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
 
   late String usertoken;
   late String userid;
+  // ignore: prefer_typing_uninitialized_variables
   var provider;
 
   TabBar get _tabBar => TabBar(
@@ -356,6 +358,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
             ),
             const SizedBox(height: 12),
             Text(
+                // ignore: unnecessary_null_comparison
                 mentor!.free == null
                     ? "No information"
                     : mentor!.free.price == 0
@@ -511,6 +514,7 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
             const Icon(Icons.credit_card),
             const SizedBox(height: 5),
             Text(
+                // ignore: unnecessary_null_comparison
                 mentor!.free == null
                     ? "No information"
                     : mentor!.free.price == 0

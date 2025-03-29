@@ -682,17 +682,17 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                Text('Gender: '),
+                const Text('Gender: '),
                 Checkbox(
                   value: isMale,
                   onChanged: updateGender,
                 ),
-                Text('Male'),
+                const Text('Male'),
                 Checkbox(
                   value: !isMale,
                   onChanged: (value) => updateGender(!value!),
                 ),
-                Text('Female'),
+                const Text('Female'),
               ],
             ),
           ),
@@ -1170,10 +1170,10 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
                                 'certificates',
                                 {
                                   'name': value,
-                                  'provideBy': certificate.provideBy ?? '',
+                                  'provideBy': certificate.provideBy,
                                   'createDate':
                                       certificate.createDate?.toIso8601String(),
-                                  'imageUrl': certificate.imageUrl ?? '',
+                                  'imageUrl': certificate.imageUrl,
                                 },
                                 index: index),
                           ),

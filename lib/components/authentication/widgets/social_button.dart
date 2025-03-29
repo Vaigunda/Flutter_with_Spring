@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mentor/shared/utils/extensions.dart';
 
+// ignore: must_be_immutable
 class SocialButton extends StatelessWidget {
   SocialButton(
       {super.key, required this.text, required this.onPressed, this.imgPath});

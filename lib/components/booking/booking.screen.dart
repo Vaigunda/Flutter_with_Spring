@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -31,7 +33,7 @@ class _BookingScreenState extends State<BookingScreen> {
   ProfileMentor? mentor;
   int _index = 0;
   String _errorMessage = "";
-  DateTime _focusedDay = DateTime.now(); // Add this
+// Add this
   bool isLoading = false; // Add this
   DateTime _selectedDay = DateTime.now();
   late List<ConnectMethodModel> connectMethods = [];
@@ -510,7 +512,7 @@ class _BookingScreenState extends State<BookingScreen> {
           onDaySelected: (selectedDay, focusedDay) {
             setState(() {
               _selectedDay = selectedDay; // Update selected day
-              _focusedDay = focusedDay; // Update focused day
+// Update focused day
               isLoading = true; // Set loading state to true
             });
 

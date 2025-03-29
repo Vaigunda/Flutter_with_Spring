@@ -344,7 +344,7 @@ final appRouter = GoRouter(
         builder: (context, state) => CategoryScreen()),
          GoRoute(
         path: AppRoutes.contactus,
-        builder: (context, state) => Contactus()),
+        builder: (context, state) => const Contactus()),
          GoRoute(
         path: AppRoutes.termsPage,
         builder: (context, state) => TermsAndConditionsPage()),

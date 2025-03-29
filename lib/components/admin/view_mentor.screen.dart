@@ -21,7 +21,7 @@ class ViewMentorScreen extends StatelessWidget {
   }
 
   Widget _buildExperienceCard(BuildContext context, Experience experience) {
-    final theme = Theme.of(context);
+    Theme.of(context);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -109,6 +109,7 @@ class ViewMentorScreen extends StatelessWidget {
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
               subtitle: Text('Provided By: ${certificate.provideBy}'),
+              // ignore: unnecessary_null_comparison
               leading: certificate.imageUrl != null
                   ? Image.asset(
                       certificate.imageUrl,

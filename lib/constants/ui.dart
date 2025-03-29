@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -224,44 +226,42 @@ class CustomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.network(
-                imageUrl,
-                height: 300,
-                width: 250,
-                fit: BoxFit.fill,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Image.network(
+              imageUrl,
+              height: 300,
+              width: 250,
+              fit: BoxFit.fill,
             ),
           ),
-          const SizedBox(height: 10),
-          Center(
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 32.0,
-                  ),
-            ),
+        ),
+        const SizedBox(height: 10),
+        Center(
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 32.0,
+                ),
           ),
-          const SizedBox(height: 8),
-          Center(
-            child: Text(
-              description,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontSize: 22.0,
-                    color: Colors.grey[600],
-                  ),
-            ),
+        ),
+        const SizedBox(height: 8),
+        Center(
+          child: Text(
+            description,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontSize: 22.0,
+                  color: Colors.grey[600],
+                ),
           ),
-          const SizedBox(height: 16),
-        ],
-      ),
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }

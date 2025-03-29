@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class DividerWithText extends StatelessWidget {
   DividerWithText(
       {super.key, required this.label, this.colorDivider, this.styleLabel});

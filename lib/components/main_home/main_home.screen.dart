@@ -16,7 +16,6 @@ import '../../shared/services/top_rated_mentor.service.dart';
 import '../../shared/services/top_mentor.service.dart';
 import '../../shared/models/top_rated_mentor.model.dart';
 import '../../shared/models/top_mentor.model.dart';
-import '../splash/aboutus.dart';
 import 'widgets/categories.dart';
 import 'widgets/explore.dart';
 import 'widgets/top_mentors.dart';
@@ -157,7 +156,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isMobile = MediaQuery.of(context).size.width < 600;
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
@@ -174,7 +172,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     fontSize: MediaQuery.of(context).size.width > 600 ? 48 : 26,
                     fontFamily: "Lobster", // Font Family: Lobster
                     fontWeight: FontWeight.w400, // Weight: 400
-                    color: Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
+                    color: const Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
                     height: 62 / 48, // Line Height: 62px / 48px = ~1.29
                   ),
                 ),
@@ -186,7 +184,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                         : 18, // Size: 32px
                     fontWeight: FontWeight.w900, // Weight: 800
                     fontFamily: "Epilogue", // Font Family: Epilogue, sans-serif
-                    color: Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
+                    color: const Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
                     height: 42 / 32, // Line Height: 42px / 32px = ~1.31
                   ),
                 ),
@@ -197,7 +195,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                     fontWeight:
                         FontWeight.w800, // Match the same weight as text
                     fontFamily: "Epilogue", // Font Family
-                    color: Color(0xFF4ABFE2), // Match the color
+                    color: const Color(0xFF4ABFE2), // Match the color
                     height: 1, // Default height
                   ),
                 ),
@@ -216,7 +214,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
                               fontSize: 16, fontWeight: FontWeight.w600),
                         ),
                       )
-                    : SizedBox()
+                    : const SizedBox()
               ],
             ),
             if (userid.isNotEmpty)

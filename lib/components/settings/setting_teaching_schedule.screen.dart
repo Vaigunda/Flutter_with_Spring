@@ -21,11 +21,9 @@ class _SettingTeachingScheduleScreenState
     extends State<SettingTeachingScheduleScreen> {
   final TimeOfDay _time = const TimeOfDay(hour: 20, minute: 0);
   DateTime _selectedDay = DateTime.now();
-  String _errorMessage = "";
   List<TeachingScheduleModel> schedules = [];
 
   void addSchedule() async {
-    _errorMessage = "";
     final TimeOfDay? newTime = await showTimePicker(
       context: context,
       initialTime: _time,

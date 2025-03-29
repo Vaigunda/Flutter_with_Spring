@@ -9,6 +9,7 @@ import 'package:mentor/shared/views/button.dart';
 import 'package:mentor/shared/views/pin_code.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
+// ignore: must_be_immutable
 class VerifyCodeScreen extends StatefulWidget {
   VerifyCodeScreen({super.key, required this.email});
   String email;
