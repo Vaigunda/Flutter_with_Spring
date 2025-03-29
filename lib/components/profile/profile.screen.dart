@@ -83,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       int userid = int.parse(userId);
       final response = await http.get(
-        Uri.parse('http://localhost:8080/api/mentors/$userid'),
+        Uri.parse('https://www.mentorboosters.com//api/mentors/$userid'),
         headers: {
           "content-type": "application/json",
           'Authorization': 'Bearer $usertoken',

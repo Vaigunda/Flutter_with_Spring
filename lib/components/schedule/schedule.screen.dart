@@ -85,7 +85,7 @@ Future<List<ChatMessage>> fetchHistoryMessages(int userId, int mentorId) async {
 
   Future<List<ChatMessage>> fetchChatHistory(int senderId, int recipientId) async {
     final response = await http.get(
-      Uri.parse('http://localhost:8080/api/chat/history/$senderId/$recipientId'),
+      Uri.parse('https://www.mentorboosters.com/api/chat/history/$senderId/$recipientId'),
       headers: {
         'Authorization': 'Bearer $usertoken',
       },
@@ -111,7 +111,7 @@ Future<List<ChatMessage>> fetchHistoryMessages(int userId, int mentorId) async {
 
 Future<List<ChatMessage>> getUnreadMessages(int senderId, int recipientId) async {
   final response = await http.get(
-    Uri.parse('http://localhost:8080/api/chat/unread/$senderId/$recipientId'),
+    Uri.parse('https://www.mentorboosters.com/api/chat/unread/$senderId/$recipientId'),
     headers: {
       'Authorization': 'Bearer $usertoken',
     },
@@ -137,11 +137,11 @@ Future<void> getBookingList(DateTime date) async {
   // Define the URL based on the userType
   if (userType == "Mentor") {
     url = Uri.parse(
-      'http://localhost:8080/api/bookings/mentor/$userIdInt/$formattedDate',
+      'https://www.mentorboosters.com/api/bookings/mentor/$userIdInt/$formattedDate',
     );
   } else if (userType == "User") {
     url = Uri.parse(
-      'http://localhost:8080/api/bookings/user/$userIdInt/$formattedDate',
+      'https://www.mentorboosters.com/api/bookings/user/$userIdInt/$formattedDate',
     );
   } else {
     return;

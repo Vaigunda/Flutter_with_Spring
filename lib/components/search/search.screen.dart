@@ -53,7 +53,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   getCategories() async {
-    var response = await http.get(Uri.parse('http://localhost:8080/api/mentors/categories'));
+    var response = await http.get(Uri.parse('https://www.mentorboosters.com/api/mentors/categories'));
         if (response.statusCode == 200) {
            List<dynamic> data = json.decode(response.body);
            categories = data.map((item) => CategoryModel.fromJson(item)).toList();

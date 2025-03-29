@@ -34,7 +34,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
   Future<void> fetchUserProfile() async {
     try {
       final response = await http.get(
-        Uri.parse('http://localhost:8080/api/user/profile/${widget.userId}'),
+        Uri.parse('https://www.mentorboosters.com/api/user/profile/${widget.userId}'),
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer $usertoken',
@@ -64,7 +64,7 @@ class _EditUserScreenState extends State<EditUserScreen> {
     if (_formKey.currentState!.validate()) {
       try {
         final response = await http.put(
-          Uri.parse('http://localhost:8080/api/user/update-user/${widget.userId}'),
+          Uri.parse('https://www.mentorboosters.com/api/user/update-user/${widget.userId}'),
           headers: {
             "Content-Type": "application/json",
             'Authorization': 'Bearer $usertoken',

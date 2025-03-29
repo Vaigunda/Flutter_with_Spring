@@ -215,7 +215,7 @@ class ChatBox {
 
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:8080/api/chat/send'),
+        Uri.parse('https://www.mentorboosters.com/api/chat/send'),
         headers: {
           "content-type": "application/json",
           'Authorization': 'Bearer $usertoken',
@@ -256,7 +256,7 @@ class ChatBox {
   // Mark Messages as Read
   Future<void> markMessagesAsRead(int senderId, int recipientId) async {
     final response = await http.get(
-      Uri.parse('http://localhost:8080/api/chat/markAsRead/$senderId/$recipientId'),
+      Uri.parse('https://www.mentorboosters.com/api/chat/markAsRead/$senderId/$recipientId'),
       headers: {
         'Authorization': 'Bearer $usertoken',
       },

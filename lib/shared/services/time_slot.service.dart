@@ -8,7 +8,7 @@ class TimeSlotService {
       String mentorId, DateTime date, String usertoken) async {
     final String formattedDate = DateFormat('yyyy-MM-dd').format(date);
 
-    final url = Uri.parse('http://localhost:8080/api/mentors/time-slots/$mentorId?date=$formattedDate');
+    final url = Uri.parse('https://www.mentorboosters.com/api/mentors/time-slots/$mentorId?date=$formattedDate');
 
       final response = await http.get(
       url,

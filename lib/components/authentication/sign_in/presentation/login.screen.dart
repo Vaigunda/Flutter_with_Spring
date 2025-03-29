@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (!isNullOrEmpty(email) && !isNullOrEmpty(password)) {
         final response =
-            await http.post(Uri.parse('http://localhost:8080/api/auth/login'),
+            await http.post(Uri.parse('https://www.mentorboosters.com/api/auth/login'),
                 headers: {"content-type": "application/json"},
                 body: jsonEncode(<String, String>{
                   'emailId': email,

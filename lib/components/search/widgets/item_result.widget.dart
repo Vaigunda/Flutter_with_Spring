@@ -20,7 +20,7 @@ class ItemResult extends StatelessWidget {
       return false; // Return false immediately if user is not logged in
     }
     final response = await http.get(
-      Uri.parse('http://localhost:8080/api/bookings/check?userId=$userId&mentorId=$mentorId'),
+      Uri.parse('https://www.mentorboosters.com/api/bookings/check?userId=$userId&mentorId=$mentorId'),
       headers: {
         'Authorization': 'Bearer $userToken', // Add Authorization header
       },

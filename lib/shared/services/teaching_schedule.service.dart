@@ -4,7 +4,7 @@ import 'package:mentor/shared/models/teaching_schedule.model.dart';  // Import y
 
 class TeachingScheduleService {
   // The API endpoint for teaching schedules
-  final String apiUrl = 'http://localhost:8080/api/mentors/teaching-schedules';
+  final String apiUrl = 'https://www.mentorboosters.com/api/mentors/teaching-schedules';
 
   // Method to fetch teaching schedules from the API
   Future<List<TeachingScheduleModel>> fetchTeachingSchedules() async {
