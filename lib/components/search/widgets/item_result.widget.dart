@@ -136,7 +136,6 @@ class ItemResult extends StatelessWidget {
                         const SizedBox(width: 5),
                         TextButton(
                           onPressed: () {
-                            //TODO: Go to inbox ${item.mentorId}
                           },
                           child: Text("Send Message", style: context.bodySmall),
                         ),

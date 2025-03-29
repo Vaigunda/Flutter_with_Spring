@@ -1,5 +1,7 @@
 // lib/components/main_home/widgets/home_top_rated.dart
 
+// ignore_for_file: prefer_typing_uninitialized_variables
+
 import 'package:flutter/material.dart';
 import 'package:mentor/constants/ui.dart';
 import 'package:mentor/shared/models/top_rated_mentor.model.dart';

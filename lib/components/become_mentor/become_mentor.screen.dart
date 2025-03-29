@@ -161,7 +161,6 @@ class _BecomeMentorScreenState extends State<BecomeMentorScreen> {
                   CustomButton(
                       label: "Submit",
                       onPressed: () => {
-                            //TODO: submit booking here
                             context.pop()
                           }),
               ],

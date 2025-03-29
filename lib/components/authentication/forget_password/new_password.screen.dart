@@ -146,7 +146,6 @@ class _NewPasswordScreenState extends State<NewPasswordScreen> {
                 minWidth: MediaQuery.of(context).size.width,
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    //TODO: Logic here
                     context.push(AppRoutes.successResetPassword);
                   }
                 },

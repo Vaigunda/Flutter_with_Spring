@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: flutter-app
+    runtime: static
+    buildCommand: ./render-build.sh
+    publishPath: public

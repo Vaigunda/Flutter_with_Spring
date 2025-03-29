@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, avoid_unnecessary_containers
+// ignore_for_file: library_private_types_in_public_api, avoid_unnecessary_containers, use_super_parameters, duplicate_ignore
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -1406,6 +1406,7 @@ class MyHoverButton extends StatefulWidget {
   final VoidCallback onPressed;
   final String text;
 
+  // ignore: use_super_parameters
   const MyHoverButton({required this.onPressed, required this.text, Key? key})
       : super(key: key);
 

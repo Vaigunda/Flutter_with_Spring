@@ -1,5 +1,6 @@
 class VerifiedMentor { 
   final String avatarUrl;
+  // ignore: prefer_typing_uninitialized_variables
   final gender;
   final int numberOfMentoree;
   final String name;

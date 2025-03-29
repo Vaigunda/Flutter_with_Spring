@@ -1,4 +1,4 @@
-// ignore_for_file: unused_element
+// ignore_for_file: unused_element, use_build_context_synchronously
 
 import 'dart:convert';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -80,7 +80,6 @@ class _ProfileMentorScreenState extends State<ProfileMentorScreen>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _tabController.dispose();
     _scrollCtrl.dispose();

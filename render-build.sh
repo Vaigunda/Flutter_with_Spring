@@ -1,21 +1,16 @@
 #!/usr/bin/env bash
 
-# Install Flutter if not already installed
-if [ ! -d "flutter" ]; then
-  git clone https://github.com/flutter/flutter.git -b stable --depth 1
-fi
-
-# Add Flutter to PATH
-export PATH="$PATH:`pwd`/flutter/bin"
+# Ensure Flutter is installed
+flutter --version
 
 # Enable web support
 flutter config --enable-web
 
-# Verify Flutter installation
-flutter doctor
-
 # Install dependencies
 flutter pub get
 
-# Build Flutter web
-flutter build web
+# Build Flutter Web
+flutter build web --release
+
+# Move build output to Render's public directory
+cp -r build/web/* ./public/
