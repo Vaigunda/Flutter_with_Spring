@@ -8,7 +8,7 @@ class ConnectMethodService {
   Future<List<ConnectMethodModel>> fetchConnectMethods(String usertoken) async {
     try {
       // Send the GET request to the API
-      final url = Uri.parse('https://www.mentorboosters.com/api/mentors/connect-methods');
+      final url = Uri.parse('http://localhost:8080/api/mentors/connect-methods');
 
       final response = await http.get(
         url,

@@ -56,7 +56,7 @@ class NotificationsProvider {
 
   Future<List<NotificationModel>> getNotificationsByMentor(int userId, String usertoken) async {
 
-    final url = Uri.parse('https://www.mentorboosters.com/api/notify/getAllNotificationByMentorId?mentorId=$userId');
+    final url = Uri.parse('http://localhost:8080/api/notify/getAllNotificationByMentorId?mentorId=$userId');
 
       final response = await http.get(
         url,
@@ -93,7 +93,7 @@ class NotificationsProvider {
 
   Future<List<NotificationModel>> getNotificationsByAdmin(String usertoken) async {
 
-    final url = Uri.parse('https://www.mentorboosters.com/api/notify/getAll');
+    final url = Uri.parse('http://localhost:8080/api/notify/getAll');
 
       final response = await http.get(
         url,
@@ -130,7 +130,7 @@ class NotificationsProvider {
 
   Future<List<NotificationModel>> getNotificationsByUser(int userId, String usertoken) async {
 
-    final url = Uri.parse('https://www.mentorboosters.com/api/notify/getAllNotificationByUserId?recipientId=$userId');
+    final url = Uri.parse('http://localhost:8080/api/notify/getAllNotificationByUserId?recipientId=$userId');
 
       final response = await http.get(
         url,

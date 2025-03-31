@@ -473,7 +473,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
 
     if (isOtpVerified) {
-      final url = Uri.parse('https://www.mentorboosters.com/api/auth/sign-up');
+      final url = Uri.parse('http://localhost:8080/api/auth/sign-up');
       final response = await http.post(
         url,
         headers: {
@@ -551,7 +551,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     try {
       final response = await http
-          .get(Uri.parse('https://www.mentorboosters.com/api/auth/mail/verify/$email'));
+          .get(Uri.parse('http://localhost:8080/api/auth/mail/verify/$email'));
 
       if (response.statusCode == 200) {
         var parsed = response.body;

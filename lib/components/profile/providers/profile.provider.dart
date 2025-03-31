@@ -9,7 +9,7 @@ class ProfileProvider {
 
     int userid = int.parse(userId);
     final response =
-        await http.get(Uri.parse('https://www.mentorboosters.com/api/mentors/$userid'),
+        await http.get(Uri.parse('http://localhost:8080/api/mentors/$userid'),
             headers: {
               "content-type": "application/json",
               'Authorization': 'Bearer $usertoken'},
@@ -68,7 +68,7 @@ class ProfileProvider {
   Future<UserProfileModel> getUserProfile(String userId, String usertoken) async {
     int userid = int.parse(userId);
     final response =
-        await http.get(Uri.parse('https://www.mentorboosters.com/api/user/profile/$userid'),
+        await http.get(Uri.parse('http://localhost:8080/api/user/profile/$userid'),
             headers: {"content-type": "application/json",
             'Authorization': 'Bearer $usertoken'},
             );

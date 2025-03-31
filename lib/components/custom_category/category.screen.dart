@@ -37,7 +37,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         final tokenService = TokenService();
         tokenService.checkToken(usertoken, context);
       } else {
-        final url = Uri.parse('https://www.mentorboosters.com/api/mentors/categories');
+        final url = Uri.parse('http://localhost:8080/api/mentors/categories');
         final response = await http.get(
           url,
           headers: {
@@ -70,7 +70,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         final tokenService = TokenService();
         tokenService.checkToken(usertoken, context);
       } else {
-        final url = Uri.parse('https://www.mentorboosters.com/api/categories/add');
+        final url = Uri.parse('http://localhost:8080/api/categories/add');
         final response = await http.post(
           url,
           headers: {
@@ -129,7 +129,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         tokenService.checkToken(usertoken, context);
       } else {
         final url =
-            Uri.parse('https://www.mentorboosters.com/api/categories/delete/$id');
+            Uri.parse('http://localhost:8080/api/categories/delete/$id');
         final response = await http.delete(
           url,
           headers: {
@@ -182,7 +182,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         final tokenService = TokenService();
         tokenService.checkToken(usertoken, context);
       } else {
-        final url = Uri.parse('https://www.mentorboosters.com/api/categories/edit/$id');
+        final url = Uri.parse('http://localhost:8080/api/categories/edit/$id');
         final response = await http.put(
           url,
           headers: {

@@ -462,7 +462,7 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
       tokenService.checkToken(usertoken, context);
     } else {
       final response = await http.put(
-        Uri.parse('https://www.mentorboosters.com/api/mentors/${mentorData.id}'),
+        Uri.parse('http://localhost:8080/api/mentors/${mentorData.id}'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $usertoken',

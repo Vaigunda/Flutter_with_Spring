@@ -7,7 +7,7 @@ class TopMentorService {
   // Method to fetch top mentors
   Future<List<TopMentorModel>> fetchTopMentors(String usertoken) async {
 
-    final url = Uri.parse('https://www.mentorboosters.com/api/mentors/top-mentor');
+    final url = Uri.parse('http://localhost:8080/api/mentors/top-mentor');
 
     final response = await http.get(
       url

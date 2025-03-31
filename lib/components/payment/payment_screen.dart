@@ -48,7 +48,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Future<void> getUserDetails() async {
     int userId = int.parse(userid);
     final response = await http.get(
-      Uri.parse('https://www.mentorboosters.com/api/user/profile/$userId'),
+      Uri.parse('http://localhost:8080/api/user/profile/$userId'),
       headers: {
         "content-type": "application/json",
         'Authorization': 'Bearer $usertoken'
@@ -68,7 +68,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       // Create a PaymentIntent on your backend and get the clientSecret
       final response = await http.post(
         Uri.parse(
-            'https://www.mentorboosters.com/api/payment/createPaymentIntent'), // Replace with your backend endpoint
+            'http://localhost:8080/api/payment/createPaymentIntent'), // Replace with your backend endpoint
         headers: {
           'Authorization': 'Bearer $usertoken',
           'Content-Type': 'application/json', // Ensure the API expects JSON
@@ -423,7 +423,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       // Send the POST request to your backend API
       var response = await http.post(
         Uri.parse(
-            'https://www.mentorboosters.com/api/bookings'), // Replace with your actual API endpoint
+            'http://localhost:8080/api/bookings'), // Replace with your actual API endpoint
         headers: {
           'Authorization': 'Bearer $usertoken',
           'Content-Type': 'application/json', // Ensure the API expects JSON
@@ -441,7 +441,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
         var notifyRes = await http.post(
           Uri.parse(
-              'https://www.mentorboosters.com/api/notify/createNotification'), // Replace with your actual API endpoint
+              'http://localhost:8080/api/notify/createNotification'), // Replace with your actual API endpoint
           headers: {
             'Authorization': 'Bearer $usertoken',
             'Content-Type': 'application/json', // Ensure the API expects JSON

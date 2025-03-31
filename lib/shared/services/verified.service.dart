@@ -6,7 +6,7 @@ class VerifiedService {
   // Method to fetch verified mentors
   Future<List<VerifiedMentor>> fetchVerifiedMentors(String usertoken) async {
 
-    final url = Uri.parse('https://www.mentorboosters.com/api/mentors/verified');
+    final url = Uri.parse('http://localhost:8080/api/mentors/verified');
 
     final response = await http.get(
       url

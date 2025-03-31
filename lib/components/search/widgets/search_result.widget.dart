@@ -34,7 +34,7 @@ class _SearchResultState extends State<SearchResult> {
 
   Future<void> fetchResults() async {
     try {
-      final url = Uri.parse('https://www.mentorboosters.com/api/mentors/search?keyword=${widget.keyword}');
+      final url = Uri.parse('http://localhost:8080/api/mentors/search?keyword=${widget.keyword}');
 
       final response = await http.get(
         url,

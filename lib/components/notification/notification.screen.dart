@@ -73,7 +73,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
     for (var notify in notifications) {
       int id = int.parse(notify.id);
-      final url = Uri.parse('https://www.mentorboosters.com/api/notify/updateAsRead?notificationId=$id');
+      final url = Uri.parse('http://localhost:8080/api/notify/updateAsRead?notificationId=$id');
 
       await http.put(
         url,

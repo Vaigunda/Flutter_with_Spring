@@ -5,7 +5,7 @@ import 'package:mentor/shared/models/profile_mentor.model.dart';
 class ProfileMentorService {
   static Future<ProfileMentor?> fetchMentorById(int profileId, String usertoken) async {
   
-    final url = Uri.parse('https://www.mentorboosters.com/api/mentors');
+    final url = Uri.parse('http://localhost:8080/api/mentors');
 
     final response = await http.get(
       url,
