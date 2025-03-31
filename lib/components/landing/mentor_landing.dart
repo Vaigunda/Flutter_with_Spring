@@ -60,7 +60,6 @@ class _MentorLandingPageState extends State<MentorLanding> {
         body: CustomScrollView(controller: _scrollController, slivers: [
           SliverAppBar(
             pinned: true,
-            //expandedHeight: 60.0,
             forceElevated: false,
             collapsedHeight: 80.0,
             flexibleSpace: LayoutBuilder(
@@ -88,7 +87,6 @@ class _MentorLandingPageState extends State<MentorLanding> {
                             children: [
                               MyHoverButton(
                                 onPressed: () {
-                                  context.push(AppRoutes.landing);
                                 },
                                 text: 'Home',
                               ),
@@ -194,66 +192,70 @@ class _MentorLandingPageState extends State<MentorLanding> {
                 height: 600,
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage('assets/images/terms_header.jpg'),
+                    image: AssetImage('assets/images/terms_header.jpg'),
                     fit: BoxFit.cover,
                   ),
                 ),
                 child: Center(
-                  child: Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        //const SizedBox(height: 10),
-                        LayoutBuilder(
-                          builder: (context, constraints) {
-                            if (constraints.maxWidth > 800) {
-                              return const Column(
-                                children: [
-                                  Center(
-                                    child: Text(
-                                      'Mentor Boosters E-Learning ',
-                                      style: TextStyle(
-                                        fontSize: 70,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            //const SizedBox(height: 10),
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                if (constraints.maxWidth > 800) {
+                                  return const Column(
+                                    children: [
+                                      Center(
+                                        child: Text(
+                                          'Mentor Boosters E-Learning ',
+                                          style: TextStyle(
+                                            fontSize: 70,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    'Connect with expert mentors, gain real-world insights, and accelerate your learning journey. \n Flexible, personalized, and interactive mentorship to help you achieve your goals—anytime, anywhere! ',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return const Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(height: 40),
-                                  Center(
-                                    child: Text(
-                                      'Mentor Boosters E-Learning',
-                                      style: TextStyle(
-                                        fontSize: 40,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
+                                      SizedBox(
+                                        height: 20,
                                       ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }
-                          },
+                                      Text(
+                                        'Connect with expert mentors, gain real-world insights, and accelerate your learning journey. \n Flexible, personalized, and interactive mentorship to help you achieve your goals—anytime, anywhere! ',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(height: 40),
+                                      Center(
+                                        child: Text(
+                                          'Mentor Boosters E-Learning',
+                                          style: TextStyle(
+                                            fontSize: 40,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                              },
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -727,7 +729,7 @@ class _MentorLandingPageState extends State<MentorLanding> {
                                 height: isMobile ? 400 : 550,
                                 autoPlay: true,
                                 enlargeCenterPage: true,
-                                viewportFraction: isMobile ? 1.5 : 0.3,
+                                viewportFraction: isMobile ? 1.5 : 0.4,
                                 onPageChanged: (index, reason) {
                                   setState(() {
                                     currentIndex =
@@ -1024,7 +1026,7 @@ class _MentorLandingPageState extends State<MentorLanding> {
       'name': 'Jamesh sarur',
       'carrer': 'BusinessOwner/Entrepreneur',
       'review':
-          "Great sessions and mentoring. Very open, helpfull and practical feedback on how to take my studies and career to the next level and reach my goals. Very thankfull! All recommandations!"
+          "Great sessions and mentoring. Very open, helpfull and practical feedback on how to take my studies and career to the next level "
     },
     {
       'imageUrl': 'assets/images/avatar-6.png',
@@ -1038,34 +1040,31 @@ class _MentorLandingPageState extends State<MentorLanding> {
       'name': 'Williams Bond caro',
       'carrer': 'Development',
       'review':
-          "Williams Bond caro was very helpful with my specific question. She brought a very structured framework for me to navigate. Furthermore, she shared her experience which was very inspiring and encouraging! ",
+          "Williams Bond caro was very helpful with my specific question. She brought a very structured framework for me to navigate. ",
     },
     {
       'imageUrl': 'assets/images/avatar-10.png',
       'name': 'Farina hijab',
       'carrer': 'Business/Finance',
       'review':
-          "Farina hijab was super friendly and helpful, asking the right questions to understand my current challenges quickly and guiding me in the right direction. I got some great feedback regarding our startup's technology setup and recommendations for my career growth. "
+          "Farina hijab was super friendly and helpful, asking the right questions to understand my current challenges quickly. "
     },
   ];
 
-  Widget _buildTeamMember(String imageUrl, List<String> details) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxWidth: 350,
-        ),
-        child: HoverableContainer(
-          context: context,
-          child: Column(
-            mainAxisSize:
-                MainAxisSize.min, // Allow the column to shrink if needed
-            children: [
-              const SizedBox(height: 20),
-
-              Flexible(
-                child: Padding(
+ Widget _buildTeamMember(String imageUrl, List<String> details) {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 350),
+      child: Stack(
+        children: [
+          HoverableContainer(
+            context: context,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 20),
+                Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: CircleAvatar(
                     backgroundColor: Colors.transparent,
@@ -1074,42 +1073,41 @@ class _MentorLandingPageState extends State<MentorLanding> {
                       child: Image.asset(
                         imageUrl,
                         fit: BoxFit.cover,
-                        // width: 40,
-                        // height: 60,
                       ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                details[0], // Name
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                const SizedBox(height: 20),
+                Text(
+                  details[0], // Name
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                details[1], // Location
-                style: const TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  details[2], // Location
+                const SizedBox(height: 5),
+                Text(
+                  details[1], // Location
                   style: const TextStyle(fontSize: 16, color: Colors.grey),
                 ),
-              ),
-              const SizedBox(
-                  height: 20), // Add padding at the bottom to avoid overflow
-            ],
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    details[2], // Description
+                    style: const TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   final ScrollController controller = ScrollController();
 
@@ -1227,10 +1225,9 @@ class _FeatureCardState extends State<FeatureCard>
         scale: _scaleAnimation,
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: AnimatedContainer(
+          child: Container(
             height: 400,
             width: 400,
-            duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surface,
@@ -1248,15 +1245,15 @@ class _FeatureCardState extends State<FeatureCard>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Flexible(
+                SizedBox(
+                  height: 200,
+                  width: 300,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.asset(
                         widget.imageUrl,
-                        height: 200,
-                        width: 300,
                         fit: BoxFit.fill,
                       ),
                     ),
@@ -1283,7 +1280,7 @@ class _FeatureCardState extends State<FeatureCard>
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5))),
                     onPressed: () {
-                        context.push(AppRoutes.login);
+                      context.go(AppRoutes.login);
                     },
                     child: const Text(
                       'View Mentors',
@@ -1298,6 +1295,7 @@ class _FeatureCardState extends State<FeatureCard>
     );
   }
 }
+
 
 class CustomCard extends StatelessWidget {
   final String imageUrl;
