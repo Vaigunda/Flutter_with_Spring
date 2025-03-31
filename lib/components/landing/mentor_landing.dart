@@ -158,8 +158,10 @@ class _MentorLandingPageState extends State<MentorLanding> {
                       Builder(
                         builder: (context) => IconButton(
                           icon: Icon(Icons.menu,
-                              color:
-                                  Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white),
+                              color: Theme.of(context).brightness ==
+                                      Brightness.light
+                                  ? Colors.black
+                                  : Colors.white),
                           onPressed: () {
                             final RenderBox button =
                                 context.findRenderObject() as RenderBox;
@@ -180,81 +182,84 @@ class _MentorLandingPageState extends State<MentorLanding> {
       SliverList(
           delegate: SliverChildListDelegate(
         [
-          //controller: _scrollController,
-          // child: Column(
-          //   crossAxisAlignment: CrossAxisAlignment.center,
-          //   children: [
           Container(
-            height: 600,
-            decoration: const BoxDecoration(
+            height: MediaQuery.of(context).size.width > 800 ? 600 : 400,
+            decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/terms_header.jpg'),
+                image: MediaQuery.of(context).size.width > 800
+                    ? const AssetImage('assets/images/terms_header.jpg')
+                    : const AssetImage('assets/images/terms_header.jpg'),
                 fit: BoxFit.cover,
               ),
             ),
             child: Center(
-              child: Column(
-                children: [
-                  Expanded(
-                    child: Column(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  if (constraints.maxWidth > 800) {
+                    // Web View
+                    return const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        //const SizedBox(height: 10),
-                        LayoutBuilder(
-                          builder: (context, constraints) {
-                            if (constraints.maxWidth > 800) {
-                              return const Column(
-                                children: [
-                                  Center(
-                                    child: Text(
-                                      'Mentor Boosters E-Learning ',
-                                      style: TextStyle(
-                                        fontSize: 70,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    'Connect with expert mentors, gain real-world insights, and accelerate your learning journey. \n Flexible, personalized, and interactive mentorship to help you achieve your goals—anytime, anywhere! ',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            } else {
-                              return const Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(height: 40),
-                                  Center(
-                                    child: Text(
-                                      'Mentor Boosters E-Learning',
-                                      style: TextStyle(
-                                        fontSize: 40,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }
-                          },
+                        Text(
+                          'Mentor Boosters E-Learning',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 70,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 50),
+                          child: Text(
+                            'Connect with expert mentors, gain real-world insights, and accelerate your learning journey.\n'
+                            'Flexible, personalized, and interactive mentorship to help you achieve your goals—anytime, anywhere!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       ],
-                    ),
-                  ),
-                ],
+                    );
+                  } else {
+                    // Mobile View
+                    return const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Mentor Boosters E-Learning',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 40,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            'Learn from expert mentors, anytime, anywhere!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                },
               ),
             ),
           ),
+
           // Section 2 - Features
           Column(
             children: [
