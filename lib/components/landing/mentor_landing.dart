@@ -56,824 +56,816 @@ class _MentorLandingPageState extends State<MentorLanding> {
 
     double childAspectRatio = screenWidth > 600 ? 0.9 : 1;
     return Scaffold(
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
         body: CustomScrollView(controller: _scrollController, slivers: [
-          SliverAppBar(
-            pinned: true,
-            forceElevated: false,
-            collapsedHeight: 80.0,
-            flexibleSpace: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                if (screenWidth > 800) {
-                  return FlexibleSpaceBar(
-                    //collapseMode: CollapseMode.pin,
-                    background: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 50),
-                      color: Colors.transparent,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      SliverAppBar(
+        pinned: true,
+        forceElevated: false,
+        collapsedHeight: 80.0,
+        flexibleSpace: LayoutBuilder(
+          builder: (BuildContext context, BoxConstraints constraints) {
+            if (screenWidth > 800) {
+              return FlexibleSpaceBar(
+                //collapseMode: CollapseMode.pin,
+                background: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+                  color: Colors.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              const SizedBox(width: 10),
-                              Image.asset('assets/images/app-icon.png'),
-                              Text('MentorBoosters',
-                                  style:
-                                      Theme.of(context).textTheme.titleLarge),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              MyHoverButton(
-                                onPressed: () {
-                                },
-                                text: 'Home',
-                              ),
-                              const SizedBox(width: 20),
-                              MyHoverButton(
-                                onPressed: () {
-                                  context.push(AppRoutes.aboutus);
-                                },
-                                text: 'About Us',
-                              ),
-                              const SizedBox(width: 20),
-                              MyHoverButton(
-                                onPressed: () {
-                                  context.push(AppRoutes.contactus);
-                                },
-                                text: 'Contact Us',
-                              ),
-                              const SizedBox(width: 20),
-                              GestureDetector(
-                                onTap: () {
-                                  context.push(AppRoutes.login);
-                                },
-                                child: Container(
-                                  height: 30,
-                                  width: 80,
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue[800],
-
-                                    //color: Colors.black,
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: const Center(
-                                      child: Text(
-                                    "Login",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  )),
-                                ),
-                              ),
-                              const SizedBox(width: 20),
-                            ],
-                          ),
+                          const SizedBox(width: 10),
+                          Image.asset('assets/images/app-icon.png'),
+                          Text('MentorBoosters',
+                              style: Theme.of(context).textTheme.titleLarge),
                         ],
                       ),
-                    ),
-                  );
-                } else {
-                  // Mobile View (Width <= 800)
-                  return FlexibleSpaceBar(
-                    background: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 20),
-                      color: Colors.transparent,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Row(
                         children: [
-                          Row(
-                            children: [
-                              const CircleAvatar(
-                                radius: 20,
-                                backgroundImage:
-                                    AssetImage("assets/images/sign_in.jpg"),
-                              ),
-                              const SizedBox(width: 10),
-                              Text('Mentor Booster',
-                                  style:
-                                      Theme.of(context).textTheme.titleLarge),
-                            ],
+                          MyHoverButton(
+                            onPressed: () {},
+                            text: 'Home',
                           ),
-                          // Menu Icon for Mobile
-                          Builder(
-                            builder: (context) => IconButton(
-                              icon: Icon(Icons.menu,
-                                  color: Get.isDarkMode
-                                      ? Colors.white
-                                      : Colors.black),
-                              onPressed: () {
-                                final RenderBox button =
-                                    context.findRenderObject() as RenderBox;
-                                _showPopupMenu(context, button);
-                              },
+                          const SizedBox(width: 20),
+                          MyHoverButton(
+                            onPressed: () {
+                              context.push(AppRoutes.aboutus);
+                            },
+                            text: 'About Us',
+                          ),
+                          const SizedBox(width: 20),
+                          MyHoverButton(
+                            onPressed: () {
+                              context.push(AppRoutes.contactus);
+                            },
+                            text: 'Contact Us',
+                          ),
+                          const SizedBox(width: 20),
+                          GestureDetector(
+                            onTap: () {
+                              context.push(AppRoutes.login);
+                            },
+                            child: Container(
+                              height: 30,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                color: Colors.blue[800],
+
+                                //color: Colors.black,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: const Center(
+                                  child: Text(
+                                "Login",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              )),
                             ),
                           ),
+                          const SizedBox(width: 20),
                         ],
                       ),
-                    ),
-                  );
-                }
-              },
-            ),
-          ),
-
-          // Body (Scrollable)
-          SliverList(
-              delegate: SliverChildListDelegate(
-            [
-              //controller: _scrollController,
-              // child: Column(
-              //   crossAxisAlignment: CrossAxisAlignment.center,
-              //   children: [
-              Container(
-                height: 600,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/terms_header.jpg'),
-                    fit: BoxFit.cover,
+                    ],
                   ),
                 ),
-                child: Center(
-                  child: Column(
+              );
+            } else {
+              // Mobile View (Width <= 800)
+              return FlexibleSpaceBar(
+                background: Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  color: Colors.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            //const SizedBox(height: 10),
-                            LayoutBuilder(
-                              builder: (context, constraints) {
-                                if (constraints.maxWidth > 800) {
-                                  return const Column(
-                                    children: [
-                                      Center(
-                                        child: Text(
-                                          'Mentor Boosters E-Learning ',
-                                          style: TextStyle(
-                                            fontSize: 70,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Text(
-                                        'Connect with expert mentors, gain real-world insights, and accelerate your learning journey. \n Flexible, personalized, and interactive mentorship to help you achieve your goals—anytime, anywhere! ',
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                } else {
-                                  return const Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SizedBox(height: 40),
-                                      Center(
-                                        child: Text(
-                                          'Mentor Boosters E-Learning',
-                                          style: TextStyle(
-                                            fontSize: 40,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }
-                              },
-                            ),
-                          ],
+                      Row(
+                        children: [
+                          const CircleAvatar(
+                            radius: 20,
+                            backgroundImage:
+                                AssetImage("assets/images/app-icon.png"),
+                          ),
+                          const SizedBox(width: 10),
+                          Text('MentorBoosters',
+                              style: Theme.of(context).textTheme.titleLarge),
+                        ],
+                      ),
+                      // Menu Icon for Mobile
+                      Builder(
+                        builder: (context) => IconButton(
+                          icon: Icon(Icons.menu,
+                              color:
+                                  Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white),
+                          onPressed: () {
+                            final RenderBox button =
+                                context.findRenderObject() as RenderBox;
+                            _showPopupMenu(context, button);
+                          },
                         ),
                       ),
                     ],
                   ),
                 ),
+              );
+            }
+          },
+        ),
+      ),
+
+      // Body (Scrollable)
+      SliverList(
+          delegate: SliverChildListDelegate(
+        [
+          //controller: _scrollController,
+          // child: Column(
+          //   crossAxisAlignment: CrossAxisAlignment.center,
+          //   children: [
+          Container(
+            height: 600,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/terms_header.jpg'),
+                fit: BoxFit.cover,
               ),
-              // Section 2 - Features
-              Column(
+            ),
+            child: Center(
+              child: Column(
                 children: [
-                  const SizedBox(
-                    height: 60,
-                  ),
-                  const Text(
-                    textAlign: TextAlign.center,
-                    "Transform Your Career, Fast-Track Your Success",
-                    style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text(
-                    textAlign: TextAlign.center,
-                    "Whether you're just starting or looking to make a big career leap, our platform offers unmatched mentorship to guide you on your path.",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                      height: 600,
-                      child: Image.asset("assets/images/mentor_screen.png")),
-                  const SizedBox(
-                    height: 60,
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        //const SizedBox(height: 10),
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            if (constraints.maxWidth > 800) {
+                              return const Column(
+                                children: [
+                                  Center(
+                                    child: Text(
+                                      'Mentor Boosters E-Learning ',
+                                      style: TextStyle(
+                                        fontSize: 70,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    'Connect with expert mentors, gain real-world insights, and accelerate your learning journey. \n Flexible, personalized, and interactive mentorship to help you achieve your goals—anytime, anywhere! ',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return const Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(height: 40),
+                                  Center(
+                                    child: Text(
+                                      'Mentor Boosters E-Learning',
+                                      style: TextStyle(
+                                        fontSize: 40,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
-              Container(
-                decoration: BoxDecoration(color: Colors.grey[100]),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 10.0),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 60),
-                          const Text(
-                            "Why Choose Mentor Booster?",
-                            style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 40),
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: getCrossAxisCount(context),
-                              crossAxisSpacing: 16.0,
-                              mainAxisSpacing: 16.0,
-                              childAspectRatio:
-                                  getChildAspectRatioFromWidth(screenWidth),
-                            ),
-                            itemCount: 4,
-                            itemBuilder: (context, index) {
-                              final cardData = mentorData[index];
-
-                              return MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: HoverableContainer(
-                                  hover: false,
-                                  context: context,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        CircleAvatar(
-                                          backgroundColor: Colors.transparent,
-                                          radius: 60,
-                                          child: ClipOval(
-                                            child: Image.asset(
-                                              cardData['image']!,
-                                              fit: BoxFit.cover,
-                                              // width: 40,
-                                              // height: 60,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 20),
-                                        Text(
-                                            textAlign: TextAlign.center,
-                                            cardData['title']!,
-                                            style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold)),
-                                        const SizedBox(height: 20),
-                                        Text(cardData['description']!,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 8,
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400)),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 40),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-              Padding(
-                padding: MediaQuery.of(context).size.width > 800
-                    ? const EdgeInsets.all(60)
-                    : const EdgeInsets.all(10),
-                child: HoverableContainer(
-                  context: context,
-                  hover: false,
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      bool isSmallScreen = constraints.maxWidth < 1000;
-                      return isSmallScreen
-                          ? Column(
-                              children: [
-                                SizedBox(
-                                  height: 400,
-                                  child:
-                                      Image.asset('assets/images/connects.jpg'),
-                                ),
-                                const SizedBox(height: 20),
-                                Column(
-                                  children: [
-                                    const Text(
-                                      textAlign: TextAlign.center,
-                                      'What is Mentor Booster?',
-                                      style: TextStyle(
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const SizedBox(height: 40),
-                                    const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Text(
-                                        textAlign: TextAlign.center,
-                                        'Mentor Booster is your ultimate online learning platform designed to connect learners \n'
-                                        'with experienced mentors across various fields. Whether you are looking to develop new skills, \n'
-                                        'advance in your career, or gain expert guidance, Mentor Booster \n'
-                                        'provides a structured and interactive learning \n'
-                                        'experience',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 40),
-                                    SizedBox(
-                                      width: 400,
-                                      height: 40,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.blue[800],
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5))),
-                                          onPressed: () {
-                                            context.push(AppRoutes.login);
-                                          },
-                                          child: const Text(
-                                            'Learn More',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    )
-                                  ],
-                                ),
-                              ],
-                            )
-                          : Row(
-                              children: [
-                                SizedBox(
-                                  height: 400,
-                                  child:
-                                      Image.asset('assets/images/connects.jpg'),
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      const Text(
-                                        'What is Mentor Booster?',
-                                        style: TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const SizedBox(height: 40),
-                                      const Text(
-                                        textAlign: TextAlign.center,
-                                        'Mentor Booster is your ultimate online learning platform designed to connect learners \n'
-                                        'with experienced mentors across various fields. Whether you are looking to develop new skills, \n'
-                                        'advance in your career, or gain expert guidance, Mentor Booster \n'
-                                        'provides a structured and interactive learning \n'
-                                        'experience',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400),
-                                      ),
-                                      const SizedBox(height: 40),
-                                      SizedBox(
-                                        width: 400,
-                                        height: 40,
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.blue[800],
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5))),
-                                          onPressed: () {
-                                              context.push(AppRoutes.login);
-                                          },
-                                          child: const Text(
-                                            'Learn More',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            );
-                    },
-                  ),
-                ),
-              ),
-
-              Container(
-                decoration: BoxDecoration(color: Colors.grey[100]),
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    bool isWideScreen = constraints.maxWidth > 700;
-                    int cardsPerRow = isWideScreen ? 4 : 1;
-
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 10.0),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 60),
-                          const Text(
-                            textAlign: TextAlign.center,
-                            " A Global Community of Like-Minded Professionals",
-                            style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          const Text(
-                            textAlign: TextAlign.center,
-                            "Our impact speaks volumes, showcasing the success of our members worldwide.",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          GridView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: cardsPerRow,
-                              crossAxisSpacing: 16.0,
-                              mainAxisSpacing: 16.0,
-                              childAspectRatio:
-                                  getChildAspectRatioh(screenWidth),
-                            ),
-                            itemCount: globalData.length,
-                            itemBuilder: (context, index) {
-                              final cardData = globalData[index];
-
-                              return MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: HoverableContainer(
-                                  context: context,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            cardData['name']!,
-                                            style: TextStyle(
-                                                fontSize: 44,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.green[800]),
-                                          ),
-                                          const SizedBox(height: 20),
-                                          Text(
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 3,
-                                              textAlign: TextAlign.center,
-                                              cardData['location']!,
-                                              style: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 60),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Column(children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                const Text(
-                  textAlign: TextAlign.center,
-                  "Meet Our Newest Mentors",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Text(
-                  textAlign: TextAlign.center,
-                  "Get to know some of the mentors who are ready to guide you to success.",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 60,
-                ),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: getCrossAxisCount(context),
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
-                    childAspectRatio: childAspectRatio,
-                  ),
-                  itemCount: 4,
-                  itemBuilder: (context, index) {
-                    switch (index) {
-                      case 0:
-                        return FeatureCard(
-                          imageUrl: "assets/images/avatar-12.png",
-                          title: 'Zaack Aleem',
-                          description: 'Software Engineer',
-                        );
-                      case 1:
-                        return FeatureCard(
-                          imageUrl: "assets/images/avatar-9.png",
-                          title: 'Grace Dannel',
-                          description: 'UI/UX Designer',
-                        );
-                      case 2:
-                        return FeatureCard(
-                          imageUrl: "assets/images/avatar-3.png",
-                          title: 'Blessy Nograra',
-                          description: 'Mentor',
-                        );
-                      case 3:
-                        return FeatureCard(
-                          imageUrl: "assets/images/avatar-11.png",
-                          title: 'Rohan norato sero',
-                          description: 'Product Manager',
-                        );
-                      default:
-                        return Container(); // Return an empty container if index is out of range
-                    }
-                  },
-                ),
-                const SizedBox(
-                  height: 60,
-                )
-              ]),
-
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  bool isSmallScreen = constraints.maxWidth < 1200;
-
-                  return Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: isSmallScreen
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: contentWidgets(),
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: contentWidgets(),
-                          ),
-                  );
-                },
-              ),
-
+            ),
+          ),
+          // Section 2 - Features
+          Column(
+            children: [
               const SizedBox(
                 height: 60,
               ),
-
-              SingleChildScrollView(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    bool isMobile = constraints.maxWidth < 800;
-
-                    return Container(
-                      height:
-                          isMobile ? null : 640, // Adjust height for desktop
-                      width: double.infinity,
-                      decoration: BoxDecoration(color: Colors.grey[100]),
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          const Center(
-                              child: Text(
-                            'Testimonials',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 30),
-                          )),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: CarouselSlider.builder(
-                              itemCount: teamData.length,
-                              itemBuilder: (context, index, realIndex) {
-                                return _buildTeamMember(
-                                  teamData[index]['imageUrl'] ?? '',
-                                  [
-                                    teamData[index]['name'] ?? 'Unknown Name',
-                                    teamData[index]['carrer'] ??
-                                        'Unknown Carrer',
-                                    teamData[index]['review'] ??
-                                        'Unknown Review',
-                                  ],
-                                );
-                              },
-                              options: CarouselOptions(
-                                height: isMobile ? 400 : 550,
-                                autoPlay: true,
-                                enlargeCenterPage: true,
-                                viewportFraction: isMobile ? 1.5 : 0.4,
-                                onPageChanged: (index, reason) {
-                                  setState(() {
-                                    currentIndex =
-                                        index; // Update current index
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+              const Text(
+                textAlign: TextAlign.center,
+                "Transform Your Career, Fast-Track Your Success",
+                style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
               ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: teamData.map((teamMember) {
-                  int index = teamData.indexOf(teamMember);
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    width: currentIndex == index
-                        ? 16.0
-                        : 8.0, // Indicator size animation
-                    height: 8.0,
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 10.0, horizontal: 2.0),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color:
-                          currentIndex == index ? Colors.orange : Colors.grey,
-                    ),
-                  );
-                }).toList(),
+              const SizedBox(
+                height: 20,
               ),
-
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
-                color: Colors.black87,
-                child: Center(
-                  // Ensures the Column is centered
+              const Text(
+                textAlign: TextAlign.center,
+                "Whether you're just starting or looking to make a big career leap, our platform offers unmatched mentorship to guide you on your path.",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                  height: 600,
+                  child: Image.asset("assets/images/mentor_screen.png")),
+              const SizedBox(
+                height: 60,
+              ),
+            ],
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[800]
+                  : Colors.grey[100],
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 10.0),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: 20,
-                        runSpacing: 10,
-                        children: [
-                          TextButton(
-                            onPressed: () {},
-                            child: const Text(
-                              'Privacy Policy',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              context.push(AppRoutes.termsPage);
-                            },
-                            child: const Text(
-                              'Terms & Conditions',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            TermsAndConditionsPage()),
-                                  );
-                                },
-                                child: const Text(
-                                  'Contact Us',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
+                      const SizedBox(height: 60),
+                      const Text(
+                        "Why Choose Mentor Booster?",
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 40),
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: getCrossAxisCount(context),
+                          crossAxisSpacing: 16.0,
+                          mainAxisSpacing: 16.0,
+                          childAspectRatio:
+                              getChildAspectRatioFromWidth(screenWidth),
+                        ),
+                        itemCount: 4,
+                        itemBuilder: (context, index) {
+                          final cardData = mentorData[index];
+
+                          return MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: HoverableContainer(
+                              hover: false,
+                              context: context,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                      backgroundColor: Colors.transparent,
+                                      radius: 60,
+                                      child: ClipOval(
+                                        child: Image.asset(
+                                          cardData['image']!,
+                                          fit: BoxFit.cover,
+                                          // width: 40,
+                                          // height: 60,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Text(
+                                        textAlign: TextAlign.center,
+                                        cardData['title']!,
+                                        style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold)),
+                                    const SizedBox(height: 20),
+                                    Text(cardData['description']!,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 8,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w400)),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: 5),
-                              // const Text(
-                              //   "Hello@mentorboosters.com",
-                              //   style: TextStyle(color: Colors.white),
-                              // ),
-                            ],
-                          ),
-                        ],
+                            ),
+                          );
+                        },
                       ),
-                      const SizedBox(height: 20),
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: 10,
-                        runSpacing: 10,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Ionicons.logo_facebook, size: 20),
-                            color: Colors.white,
-                            onPressed: () => launchUrlStart(url: ""),
-                          ),
-                          IconButton(
-                            icon: const Icon(Ionicons.logo_instagram, size: 20),
-                            color: Colors.white,
-                            onPressed: () => launchUrlStart(url: ""),
-                          ),
-                          IconButton(
-                            icon: const Icon(Ionicons.logo_youtube, size: 20),
-                            color: Colors.white,
-                            onPressed: () => launchUrlStart(url: ""),
-                          ),
-                          IconButton(
-                            icon: const Icon(Ionicons.logo_google_playstore,
-                                size: 20),
-                            color: Colors.white,
-                            onPressed: () => launchUrlStart(url: ""),
-                          ),
-                          IconButton(
-                            icon: const Icon(Ionicons.logo_apple_appstore,
-                                size: 20),
-                            color: Colors.white,
-                            onPressed: () => launchUrlStart(url: ""),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 40),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+
+          Padding(
+            padding: MediaQuery.of(context).size.width > 800
+                ? const EdgeInsets.all(60)
+                : const EdgeInsets.all(10),
+            child: HoverableContainer(
+              context: context,
+              hover: false,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  bool isSmallScreen = constraints.maxWidth < 1000;
+                  return isSmallScreen
+                      ? Column(
+                          children: [
+                            SizedBox(
+                              height: 400,
+                              child: Image.asset('assets/images/connects.jpg'),
+                            ),
+                            const SizedBox(height: 20),
+                            Column(
+                              children: [
+                                const Text(
+                                  textAlign: TextAlign.center,
+                                  'What is Mentor Booster?',
+                                  style: TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 40),
+                                const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    textAlign: TextAlign.center,
+                                    'Mentor Booster is your ultimate online learning platform designed to connect learners \n'
+                                    'with experienced mentors across various fields. Whether you are looking to develop new skills, \n'
+                                    'advance in your career, or gain expert guidance, Mentor Booster \n'
+                                    'provides a structured and interactive learning \n'
+                                    'experience',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                ),
+                                const SizedBox(height: 40),
+                                SizedBox(
+                                  width: 400,
+                                  height: 40,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.blue[800],
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5))),
+                                      onPressed: () {
+                                        context.push(AppRoutes.login);
+                                      },
+                                      child: const Text(
+                                        'Learn More',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                )
+                              ],
+                            ),
+                          ],
+                        )
+                      : Row(
+                          children: [
+                            SizedBox(
+                              height: 400,
+                              child: Image.asset('assets/images/connects.jpg'),
+                            ),
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  const Text(
+                                    'What is Mentor Booster?',
+                                    style: TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 40),
+                                  const Text(
+                                    textAlign: TextAlign.center,
+                                    'Mentor Booster is your ultimate online learning platform designed to connect learners \n'
+                                    'with experienced mentors across various fields. Whether you are looking to develop new skills, \n'
+                                    'advance in your career, or gain expert guidance, Mentor Booster \n'
+                                    'provides a structured and interactive learning \n'
+                                    'experience',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  const SizedBox(height: 40),
+                                  SizedBox(
+                                    width: 400,
+                                    height: 40,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.blue[800],
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5))),
+                                      onPressed: () {
+                                        context.push(AppRoutes.login);
+                                      },
+                                      child: const Text(
+                                        'Learn More',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                },
+              ),
+            ),
+          ),
+
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[800]
+                  : Colors.grey[100],
+            ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                bool isWideScreen = constraints.maxWidth > 700;
+                int cardsPerRow = isWideScreen ? 4 : 1;
+
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 10.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 60),
                       const Text(
-                        '© 2025 MentorBoosters. All rights reserved.',
-                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                        " A Global Community of Like-Minded Professionals",
+                        style: TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Text(
+                        textAlign: TextAlign.center,
+                        "Our impact speaks volumes, showcasing the success of our members worldwide.",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: cardsPerRow,
+                          crossAxisSpacing: 16.0,
+                          mainAxisSpacing: 16.0,
+                          childAspectRatio: getChildAspectRatioh(screenWidth),
+                        ),
+                        itemCount: globalData.length,
+                        itemBuilder: (context, index) {
+                          final cardData = globalData[index];
+
+                          return MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: HoverableContainer(
+                              context: context,
+                              child: Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        cardData['name']!,
+                                        style: TextStyle(
+                                            fontSize: 44,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.green[800]),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 3,
+                                          textAlign: TextAlign.center,
+                                          cardData['location']!,
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 60),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          Column(children: [
+            const SizedBox(
+              height: 20,
+            ),
+            const Text(
+              textAlign: TextAlign.center,
+              "Meet Our Newest Mentors",
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            const Text(
+              textAlign: TextAlign.center,
+              "Get to know some of the mentors who are ready to guide you to success.",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 60,
+            ),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: getCrossAxisCount(context),
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
+                childAspectRatio: childAspectRatio,
+              ),
+              itemCount: 4,
+              itemBuilder: (context, index) {
+                switch (index) {
+                  case 0:
+                    return FeatureCard(
+                      imageUrl: "assets/images/avatar-12.png",
+                      title: 'Zaack Aleem',
+                      description: 'Software Engineer',
+                    );
+                  case 1:
+                    return FeatureCard(
+                      imageUrl: "assets/images/avatar-9.png",
+                      title: 'Grace Dannel',
+                      description: 'UI/UX Designer',
+                    );
+                  case 2:
+                    return FeatureCard(
+                      imageUrl: "assets/images/avatar-3.png",
+                      title: 'Blessy Nograra',
+                      description: 'Mentor',
+                    );
+                  case 3:
+                    return FeatureCard(
+                      imageUrl: "assets/images/avatar-11.png",
+                      title: 'Rohan norato sero',
+                      description: 'Product Manager',
+                    );
+                  default:
+                    return Container(); // Return an empty container if index is out of range
+                }
+              },
+            ),
+            const SizedBox(
+              height: 60,
+            )
+          ]),
+
+          LayoutBuilder(
+            builder: (context, constraints) {
+              bool isSmallScreen = constraints.maxWidth < 1200;
+
+              return Padding(
+                padding: const EdgeInsets.all(20),
+                child: isSmallScreen
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: contentWidgets(),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: contentWidgets(),
+                      ),
+              );
+            },
+          ),
+
+          const SizedBox(
+            height: 60,
+          ),
+
+          SingleChildScrollView(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                bool isMobile = constraints.maxWidth < 800;
+
+                return Container(
+                  height: isMobile ? null : 640, // Adjust height for desktop
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.grey[800]
+                        : Colors.grey[100],
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Center(
+                          child: Text(
+                        'Testimonials',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 30),
+                      )),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: CarouselSlider.builder(
+                          itemCount: teamData.length,
+                          itemBuilder: (context, index, realIndex) {
+                            return _buildTeamMember(
+                              teamData[index]['imageUrl'] ?? '',
+                              [
+                                teamData[index]['name'] ?? 'Unknown Name',
+                                teamData[index]['carrer'] ?? 'Unknown Carrer',
+                                teamData[index]['review'] ?? 'Unknown Review',
+                              ],
+                            );
+                          },
+                          options: CarouselOptions(
+                            height: isMobile ? 400 : 550,
+                            autoPlay: true,
+                            enlargeCenterPage: true,
+                            viewportFraction: isMobile ? 1.5 : 0.4,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                currentIndex = index; // Update current index
+                              });
+                            },
+                          ),
+                        ),
                       ),
                     ],
                   ),
+                );
+              },
+            ),
+          ),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: teamData.map((teamMember) {
+              int index = teamData.indexOf(teamMember);
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                width: currentIndex == index
+                    ? 16.0
+                    : 8.0, // Indicator size animation
+                height: 8.0,
+                margin:
+                    const EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: currentIndex == index ? Colors.orange : Colors.grey,
                 ),
+              );
+            }).toList(),
+          ),
+
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+            color: Colors.black87,
+            child: Center(
+              // Ensures the Column is centered
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 20,
+                    runSpacing: 10,
+                    children: [
+                      TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          'Privacy Policy',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          context.push(AppRoutes.termsPage);
+                        },
+                        child: const Text(
+                          'Terms & Conditions',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        TermsAndConditionsPage()),
+                              );
+                            },
+                            child: const Text(
+                              'Contact Us',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          // const Text(
+                          //   "Hello@mentorboosters.com",
+                          //   style: TextStyle(color: Colors.white),
+                          // ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Ionicons.logo_facebook, size: 20),
+                        color: Colors.white,
+                        onPressed: () => launchUrlStart(url: ""),
+                      ),
+                      IconButton(
+                        icon: const Icon(Ionicons.logo_instagram, size: 20),
+                        color: Colors.white,
+                        onPressed: () => launchUrlStart(url: ""),
+                      ),
+                      IconButton(
+                        icon: const Icon(Ionicons.logo_youtube, size: 20),
+                        color: Colors.white,
+                        onPressed: () => launchUrlStart(url: ""),
+                      ),
+                      IconButton(
+                        icon: const Icon(Ionicons.logo_google_playstore,
+                            size: 20),
+                        color: Colors.white,
+                        onPressed: () => launchUrlStart(url: ""),
+                      ),
+                      IconButton(
+                        icon:
+                            const Icon(Ionicons.logo_apple_appstore, size: 20),
+                        color: Colors.white,
+                        onPressed: () => launchUrlStart(url: ""),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  const Text(
+                    '© 2025 MentorBoosters. All rights reserved.',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
               ),
-            ],
-          ))
-          //),
-        ]));
+            ),
+          ),
+        ],
+      ))
+      //),
+    ]));
   }
 
   List<Widget> contentWidgets() {
@@ -923,7 +915,7 @@ class _MentorLandingPageState extends State<MentorLanding> {
                     borderRadius: BorderRadius.circular(5)),
               ),
               onPressed: () {
-                  context.push(AppRoutes.login);
+                context.push(AppRoutes.login);
               },
               child: const Text(
                 'Get Started',
@@ -1051,63 +1043,62 @@ class _MentorLandingPageState extends State<MentorLanding> {
     },
   ];
 
- Widget _buildTeamMember(String imageUrl, List<String> details) {
-  return Padding(
-    padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-    child: ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 350),
-      child: Stack(
-        children: [
-          HoverableContainer(
-            context: context,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    radius: 60,
-                    child: ClipOval(
-                      child: Image.asset(
-                        imageUrl,
-                        fit: BoxFit.cover,
+  Widget _buildTeamMember(String imageUrl, List<String> details) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 350),
+        child: Stack(
+          children: [
+            HoverableContainer(
+              context: context,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      radius: 60,
+                      child: ClipOval(
+                        child: Image.asset(
+                          imageUrl,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  details[0], // Name
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                  const SizedBox(height: 20),
+                  Text(
+                    details[0], // Name
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  details[1], // Location
-                  style: const TextStyle(fontSize: 16, color: Colors.grey),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    details[2], // Description
+                  const SizedBox(height: 5),
+                  Text(
+                    details[1], // Location
                     style: const TextStyle(fontSize: 16, color: Colors.grey),
                   ),
-                ),
-                const SizedBox(height: 20),
-              ],
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      details[2], // Description
+                      style: const TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   final ScrollController controller = ScrollController();
 
@@ -1234,7 +1225,7 @@ class _FeatureCardState extends State<FeatureCard>
               boxShadow: [
                 BoxShadow(
                   color: _isHovered
-                      ? Colors.orangeAccent
+                      ? Colors.blue
                       : Colors.grey.withAlpha((0.2 * 255).round()),
                   spreadRadius: _isHovered ? 2 : 3,
                   blurRadius: _isHovered ? 2 : 3,
@@ -1242,52 +1233,53 @@ class _FeatureCardState extends State<FeatureCard>
               ],
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 200,
-                  width: 300,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: Image.asset(
-                        widget.imageUrl,
-                        fit: BoxFit.fill,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 200,
+                    width: 300,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: Image.asset(
+                          widget.imageUrl,
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
-                      ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  widget.description,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue[800],
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5))),
-                    onPressed: () {
-                      context.go(AppRoutes.login);
-                    },
-                    child: const Text(
-                      'View Mentors',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white),
-                    ))
-              ],
+                  Text(
+                    widget.title,
+                    style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    widget.description,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue[800],
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5))),
+                      onPressed: () {
+                        context.go(AppRoutes.login);
+                      },
+                      child: const Text(
+                        'View Mentors',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white),
+                      ))
+                ],
+              ),
             ),
           ),
         ),
@@ -1295,7 +1287,6 @@ class _FeatureCardState extends State<FeatureCard>
     );
   }
 }
-
 
 class CustomCard extends StatelessWidget {
   final String imageUrl;
@@ -1428,7 +1419,11 @@ class _MyHoverButtonState extends State<MyHoverButton> {
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 fontSize: _isHovered ? 22 : 16, // Zoom effect
                 fontWeight: _isHovered ? FontWeight.bold : FontWeight.bold,
-                color: _isHovered ? Colors.blue[800] : Colors.black,
+                color: _isHovered
+                    ? Colors.blue[800]
+                    : (Theme.of(context).brightness == Brightness.light
+                        ? Colors.black
+                        : Colors.white),
               ),
           child: Text(widget.text),
         ),
