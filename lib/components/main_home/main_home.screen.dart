@@ -16,7 +16,6 @@ import '../../shared/services/top_rated_mentor.service.dart';
 import '../../shared/services/top_mentor.service.dart';
 import '../../shared/models/top_rated_mentor.model.dart';
 import '../../shared/models/top_mentor.model.dart';
-import '../splash/aboutus.dart';
 import 'widgets/categories.dart';
 import 'widgets/explore.dart';
 import 'widgets/top_mentors.dart';
@@ -168,43 +167,63 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                Text(
-                  "m",
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width > 600 ? 48 : 26,
-                    fontFamily: "Lobster", // Font Family: Lobster
-                    fontWeight: FontWeight.w400, // Weight: 400
-                    color: Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
-                    height: 62 / 48, // Line Height: 62px / 48px = ~1.29
+                // Check if the screen width is greater than 600px
+                if (MediaQuery.of(context).size.width > 600) ...[
+                  // Show the full text for larger screens
+                  const Text(
+                    "m",
+                    style: TextStyle(
+                      fontSize: 48,
+                      fontFamily: "Lobster",
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF4ABFE2),
+                      height: 62 / 48,
+                    ),
                   ),
-                ),
-                Text(
-                  "entorboosters",
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width > 600
-                        ? 32
-                        : 18, // Size: 32px
-                    fontWeight: FontWeight.w900, // Weight: 800
-                    fontFamily: "Epilogue", // Font Family: Epilogue, sans-serif
-                    color: Color(0xFF4ABFE2), // Color: rgb(74, 191, 226)
-                    height: 42 / 32, // Line Height: 42px / 32px = ~1.31
+                  const Text(
+                    "entorboosters",
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w900,
+                      fontFamily: "Epilogue",
+                      color: Color(0xFF4ABFE2),
+                      height: 42 / 32,
+                    ),
                   ),
-                ),
-                Text(
-                  ".",
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width > 600 ? 72 : 40,
-                    fontWeight:
-                        FontWeight.w800, // Match the same weight as text
-                    fontFamily: "Epilogue", // Font Family
-                    color: Color(0xFF4ABFE2), // Match the color
-                    height: 1, // Default height
+                  const Text(
+                    ".",
+                    style: TextStyle(
+                      fontSize: 72,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: "Epilogue",
+                      color: Color(0xFF4ABFE2),
+                      height: 1,
+                    ),
                   ),
-                ),
+                ] else ...[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Image.asset(
+                      'assets/images/app-icon.png',
+                      height: 22,
+                    ),
+                  )
+                ],
               ],
             ),
           ),
           actions: [
+            Row(
+              children: [
+                TextButton(
+                  onPressed: () => context.go(AppRoutes.aboutus),
+                  child: const Text(
+                    'About Us',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
             Row(
               children: [
                 userid.isEmpty
@@ -220,21 +239,23 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
               ],
             ),
             if (userid.isNotEmpty)
-            MediaQuery.of(context).size.width > 600 ?
-              TextButton(
-                  onPressed: () async {
-                    signOut();
-                  },
-                  child: const Text(
-                    'Sign Out',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  )):IconButton(
-              onPressed: () async {
-                signOut();
-              },
-              icon: const Icon(Icons.logout),
-              tooltip: 'Sign Out', // ✅ Added tooltip for better accessibility
-            ),
+              MediaQuery.of(context).size.width > 600
+                  ? TextButton(
+                      onPressed: () async {
+                        signOut();
+                      },
+                      child: const Text(
+                        'Sign Out',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ))
+                  : IconButton(
+                      onPressed: () async {
+                        signOut();
+                      },
+                      icon: const Icon(Icons.logout),
+                      tooltip: 'Sign Out',
+                    ),
             SizedBox(width: MediaQuery.of(context).size.width > 600 ? 10 : 5),
             const BrightnessToggle(),
             SizedBox(width: MediaQuery.of(context).size.width > 600 ? 10 : 5),
