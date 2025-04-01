@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart' as go;
-import 'package:mentor/components/landing/mentor_landing.dart';
 import 'package:universal_platform/universal_platform.dart';
 import '../../navigation/router.dart' as router;
 import 'adaptive_navigation.dart';
@@ -97,7 +96,7 @@ class RootLayout extends StatelessWidget {
             ],
           ),
         );
-      } else if( showNavigation == true) {
+      } else {
         return AdaptiveNavigation(
           key: _navigationRailKey,
           destinations: router.userDestinations
@@ -122,8 +121,6 @@ class RootLayout extends StatelessWidget {
             ],
           ),
         );
-      }else{
-        return MentorLanding();
       }
     });
   }

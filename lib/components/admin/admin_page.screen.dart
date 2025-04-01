@@ -45,7 +45,7 @@ class _AdminPageState extends State<AdminPage> {
       final tokenService = TokenService();
       tokenService.checkToken(usertoken, context);
     } else {
-      final url = Uri.parse('https://www.mentorboosters.com/api/mentors/all');
+      final url = Uri.parse('http://localhost:8080/api/mentors/all');
       final response = await http.get(
         url,
         headers: {
@@ -76,7 +76,7 @@ class _AdminPageState extends State<AdminPage> {
       final tokenService = TokenService();
       tokenService.checkToken(usertoken, context);
     } else {
-      final url = Uri.parse('https://www.mentorboosters.com/api/mentors/$id');
+      final url = Uri.parse('http://localhost:8080/api/mentors/$id');
       final response = await http.delete(
         url,
         headers: {

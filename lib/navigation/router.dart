@@ -10,7 +10,6 @@ import 'package:mentor/components/authentication/sign_up/presentation/sign_up.sc
 import 'package:mentor/components/become_mentor/become_mentor.screen.dart';
 import 'package:mentor/components/booking/booking.screen.dart';
 import 'package:mentor/components/inbox/inbox.screen.dart';
-import 'package:mentor/components/landing/mentor_landing.dart';
 import 'package:mentor/components/main_home/main_home.screen.dart';
 import 'package:mentor/components/payment/payment_screen.dart';
 import 'package:mentor/components/profile/edit_user.screen.dart';
@@ -83,7 +82,7 @@ List<NavigationDestination> adminDestinations = [
     ),
     route: AppRoutes.home,
   ),
- 
+
   NavigationDestination(
     label: 'Search',
     icon: const Icon(
@@ -136,7 +135,6 @@ List<NavigationDestination> userDestinations = [
     ),
     route: AppRoutes.home,
   ),
-
   NavigationDestination(
     label: 'Schedule',
     icon: const Icon(
@@ -173,7 +171,6 @@ List<NavigationDestination> beforeDestinations = [
     ),
     route: AppRoutes.home,
   ),
- 
   NavigationDestination(
     label: 'Search',
     icon: const Icon(
@@ -219,18 +216,6 @@ final appRouter = GoRouter(
       ),
     ),
     GoRoute(
-      path: AppRoutes.landing,
-      pageBuilder: (context, state) => const MaterialPage<void>(
-        key: _pageKey,
-        child: RootLayout(
-          key: _scaffoldKey,
-          currentIndex: 0,
-          showNavigation: false,
-          child: MentorLanding(),
-        ),
-      ),
-    ),
-    GoRoute(
       path: AppRoutes.mySchedule,
       pageBuilder: (context, state) => const MaterialPage<void>(
         key: _pageKey,
@@ -255,7 +240,7 @@ final appRouter = GoRouter(
     GoRoute(
         path: AppRoutes.filter,
         builder: (context, state) => const FilterScreen()),
-         GoRoute(
+    GoRoute(
         path: AppRoutes.login,
         builder: (context, state) => const LoginScreen()),
     GoRoute(
@@ -342,10 +327,9 @@ final appRouter = GoRouter(
     GoRoute(
         path: AppRoutes.categoryPage,
         builder: (context, state) => CategoryScreen()),
-         GoRoute(
-        path: AppRoutes.contactus,
-        builder: (context, state) => Contactus()),
-         GoRoute(
+    GoRoute(
+        path: AppRoutes.contactus, builder: (context, state) => Contactus()),
+    GoRoute(
         path: AppRoutes.termsPage,
         builder: (context, state) => TermsAndConditionsPage()),
     GoRoute(

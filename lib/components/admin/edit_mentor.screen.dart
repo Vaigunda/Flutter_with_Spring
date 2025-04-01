@@ -9,7 +9,6 @@ import 'package:mentor/shared/services/categories.service.dart';
 import 'package:provider/provider.dart';
 import 'package:mentor/provider/user_data_provider.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-
 import '../../shared/services/token.service.dart';
 
 class EditMentorScreen extends StatefulWidget {
@@ -39,10 +38,8 @@ class _EditMentorScreenState extends State<EditMentorScreen> {
   List<TextEditingController> certificateProvidedByControllers = [];
   List<TextEditingController> certificateImageUrlControllers = [];
   List<TextEditingController> certificateDateControllers = [];
-
   List<TextEditingController> timeSlotsTimeStartControllers = [];
   List<TextEditingController> timeSlotsTimeEndControllers = [];
-
   List<TextEditingController> experienceRoleControllers = [];
   List<TextEditingController> experienceCompanyControllers = [];
   List<TextEditingController> experienceStartDateControllers = [];

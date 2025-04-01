@@ -83,7 +83,7 @@ class _ContactusState extends State<Contactus> {
             name: name,
             usertype: usertype,
           );
-          context.go(AppRoutes.landing);
+          context.go(AppRoutes.home);
         } else if (response.statusCode == 401) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -132,7 +132,7 @@ class _ContactusState extends State<Contactus> {
                           Row(
                             children: [
                               IconButton(
-                                onPressed: () => context.go(AppRoutes.landing),
+                                onPressed: () => context.go(AppRoutes.home),
                                 icon: Icon(
                                   Icons.arrow_back,
                                   color: Theme.of(context)

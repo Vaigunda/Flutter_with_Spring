@@ -19,7 +19,7 @@ class _AboutUsState extends State<AboutUs> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            context.go(AppRoutes.landing);
+            context.go(AppRoutes.home);
           },
         ),
       ),
