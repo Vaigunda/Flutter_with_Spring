@@ -1,108 +1,277 @@
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mentor/shared/utils/extensions.dart';
+// lib/components/main_home/widgets/home_top_rated.dart
 
-import '../../../shared/models/mentor.model.dart';
+import 'package:flutter/material.dart';
+import 'package:mentor/constants/ui.dart';
+import 'package:mentor/shared/models/top_rated_mentor.model.dart';
+import 'package:mentor/shared/services/top_rated_mentor.service.dart';
+import 'package:provider/provider.dart';
+import 'package:mentor/provider/user_data_provider.dart';
 
 class HomeTopRated extends StatefulWidget {
-  const HomeTopRated({super.key, required this.mentors});
-  final Iterable<MentorModel> mentors;
+  final Future<List<TopRatedMentorModel>>? topRatedMentors;
+
+  const HomeTopRated({super.key, this.topRatedMentors});
+
   @override
   State<HomeTopRated> createState() => _HomeTopRatedState();
 }
 
 class _HomeTopRatedState extends State<HomeTopRated> {
+  late Future<List<TopRatedMentorModel>> topRatedMentors;
+
+  late String usertoken;
+  var provider;
+
+  @override
+  void initState() {
+    super.initState();
+
+    provider = context.read<UserDataProvider>();
+    usertoken = provider.usertoken;
+
+    // If the widget has provided mentors, use that; otherwise, fetch from the service
+    topRatedMentors = widget.topRatedMentors ??
+        MentorService().fetchTopRatedMentors(usertoken);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(children: [
-          Text(
-            "Top Rated",
-            style: context.headlineSmall,
-          )
-        ]),
-        const SizedBox(
-          height: 10,
+        const Padding(
+          padding: EdgeInsets.only(top: 40),
+          child: Row(
+            children: [
+              Text("Top Rated",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                  )),
+            ],
+          ),
         ),
-        Wrap(
-          spacing: 16,
-          direction: Axis.vertical,
-          children: [for (final mentor in widget.mentors) _info(mentor)],
-        )
+        const SizedBox(height: 10),
+        FutureBuilder<List<TopRatedMentorModel>>(
+          future: topRatedMentors,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              // Log the error to the console for debugging
+              debugPrint('Error fetching top-rated mentors: ${snapshot.error}');
+              // Show "No mentors found" in UI
+              return const Text('No top-rated mentors found');
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Text('No top-rated mentors found');
+            } else {
+              final mentors = snapshot.data!;
+              return Wrap(
+                spacing: 16,
+                direction: Axis.vertical,
+                children: [for (final mentor in mentors) _info(mentor)],
+              );
+            }
+          },
+        ),
       ],
     );
   }
 
-  Widget _info(MentorModel mentor) {
+  Widget _info(TopRatedMentorModel mentor) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 400),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: const BorderRadius.all(Radius.circular(16))),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                mentor.avatarUrl,
-                fit: BoxFit.cover,
-                height: 88,
-                width: 88,
+      constraints: const BoxConstraints(maxWidth: 360),
+      child: HoverableContainer(
+        context: context,
+        hover: false,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  mentor.avatarUrl,
+                  fit: BoxFit.cover,
+                  height: 88,
+                  width: 88,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      mentor.gender == 'male'
+                          ? 'assets/images/malepic.jpg' // Use male image if gender is male
+                          : 'assets/images/femalepic.jpg', // Use female image if gender is female
+                      fit: BoxFit.cover,
+                      height: 88,
+                      width: 88,
+                    );
+                  },
+                ),
               ),
-            ),
-            Expanded(
+              Expanded(
                 child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    mentor.name,
-                    style: context.titleMedium,
-                  ),
-                  const SizedBox(
-                    height: 6,
-                  ),
-                  Text(
-                    mentor.categories.map((e) => e.name).join(", "),
-                    style: context.bodySmall,
-                  ),
-                  const SizedBox(
-                    height: 6,
-                  ),
-                  Text(
-                    "${mentor.numberOfMentoree} mentee",
-                    style: context.bodySmall,
-                  ),
-                  Row(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(
-                        FontAwesomeIcons.star,
-                        size: 12,
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(
+                          mentor.name,
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
                       ),
-                      const SizedBox(
-                        width: 6,
+                      const SizedBox(height: 4),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Text(
+                          mentor.categories.join(", "),
+                          style: const TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w400),
+                        ),
                       ),
+                      const SizedBox(height: 4),
                       Text(
-                        "${mentor.rate}",
-                        style: context.bodySmall,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        textAlign: TextAlign.start,
-                      )
+                        "${mentor.numberOfMentoree} mentees",
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w400),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                         Icon(Icons.star, size: 18,color:Colors.amber[600],),
+                          const SizedBox(width: 6),
+                          Text(
+                            "${mentor.rate}",
+                            style: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
                     ],
-                  )
-                ],
+                  ),
+                ),
               ),
-            ))
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
+
+
+
+
+
+
+// import 'package:flutter/material.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:mentor/shared/utils/extensions.dart';
+
+// import '../../../shared/models/mentor.model.dart';
+
+// class HomeTopRated extends StatefulWidget {
+//   const HomeTopRated({super.key, required this.mentors});
+//   final Iterable<MentorModel> mentors;
+//   @override
+//   State<HomeTopRated> createState() => _HomeTopRatedState();
+// }
+
+// class _HomeTopRatedState extends State<HomeTopRated> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         Row(children: [
+//           Text(
+//             "Top Rated",
+//             style: context.headlineSmall,
+//           )
+//         ]),
+//         const SizedBox(
+//           height: 10,
+//         ),
+//         Wrap(
+//           spacing: 16,
+//           direction: Axis.vertical,
+//           children: [for (final mentor in widget.mentors) _info(mentor)],
+//         )
+//       ],
+//     );
+//   }
+
+//   Widget _info(MentorModel mentor) {
+//     return ConstrainedBox(
+//       constraints: const BoxConstraints(maxWidth: 400),
+//       child: Container(
+//         padding: const EdgeInsets.all(10),
+//         decoration: BoxDecoration(
+//             color: Theme.of(context).cardColor,
+//             borderRadius: const BorderRadius.all(Radius.circular(16))),
+//         child: Row(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             ClipRRect(
+//               borderRadius: BorderRadius.circular(12),
+//               child: Image.asset(
+//                 mentor.avatarUrl,
+//                 fit: BoxFit.cover,
+//                 height: 88,
+//                 width: 88,
+//               ),
+//             ),
+//             Expanded(
+//                 child: Padding(
+//               padding: const EdgeInsets.all(8.0),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Text(
+//                     mentor.name,
+//                     style: context.titleMedium,
+//                   ),
+//                   const SizedBox(
+//                     height: 6,
+//                   ),
+//                   Text(
+//                     mentor.categories.map((e) => e.name).join(", "),
+//                     style: context.bodySmall,
+//                   ),
+//                   const SizedBox(
+//                     height: 6,
+//                   ),
+//                   Text(
+//                     "${mentor.numberOfMentoree} mentee",
+//                     style: context.bodySmall,
+//                   ),
+//                   Row(
+//                     children: [
+//                       const Icon(
+//                         FontAwesomeIcons.star,
+//                         size: 12,
+//                       ),
+//                       const SizedBox(
+//                         width: 6,
+//                       ),
+//                       Text(
+//                         "${mentor.rate}",
+//                         style: context.bodySmall,
+//                         overflow: TextOverflow.ellipsis,
+//                         maxLines: 1,
+//                         textAlign: TextAlign.start,
+//                       )
+//                     ],
+//                   )
+//                 ],
+//               ),
+//             ))
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

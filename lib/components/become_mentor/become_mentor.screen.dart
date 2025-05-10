@@ -123,7 +123,7 @@ class _BecomeMentorScreenState extends State<BecomeMentorScreen> {
           dateStart: _selectedDay,
           timeStart: startTime,
           timeEnd: startTime.add(const Duration(hours: 1)),
-          booked: false));
+          booked: false,));
       setState(() {});
     }
   }

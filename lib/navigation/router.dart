@@ -11,6 +11,8 @@ import 'package:mentor/components/become_mentor/become_mentor.screen.dart';
 import 'package:mentor/components/booking/booking.screen.dart';
 import 'package:mentor/components/inbox/inbox.screen.dart';
 import 'package:mentor/components/main_home/main_home.screen.dart';
+import 'package:mentor/components/payment/payment_screen.dart';
+import 'package:mentor/components/profile/edit_user.screen.dart';
 import 'package:mentor/components/profile/profile.screen.dart';
 import 'package:mentor/components/profile_mentor/profile_mentor.screen.dart';
 import 'package:mentor/components/schedule/schedule.screen.dart';
@@ -19,8 +21,18 @@ import 'package:mentor/components/search/search.screen.dart';
 import 'package:mentor/components/settings/setting_teaching_schedule.screen.dart';
 import 'package:mentor/components/settings/settings.screen.dart';
 import 'package:mentor/components/splash/spash.screen.dart';
+import 'package:mentor/components/admin/create_mentor.screen.dart';
+import 'package:mentor/components/admin/admin_page.screen.dart';
+import 'package:mentor/components/admin/edit_mentor.screen.dart';
+import 'package:mentor/components/admin/view_mentor.screen.dart';
+import 'package:mentor/components/custom_category/category.screen.dart';
+import 'package:mentor/components/splash/aboutus.dart';
+
+import 'package:mentor/shared/models/all_mentors.model.dart';
+import 'package:mentor/terms_condition.dart';
 
 import '../components/notification/notification.screen.dart';
+import '../components/splash/contactus.dart';
 import '../shared/views/root_layout.dart';
 
 const _pageKey = ValueKey('_pageKey');
@@ -28,10 +40,12 @@ const _scaffoldKey = ValueKey('_scaffoldKey');
 
 class AppRoutes {
   static String root = "/";
+  static String landing = "/landing";
   static String home = "/home";
   static String signin = "/signin";
   static String signup = "/signup";
   static String mySchedule = "/my-schedule";
+  static String aboutus = "/about-us";
   static String search = "/search";
   static String filter = "/filter";
   static String notifications = "/notifications";
@@ -46,10 +60,73 @@ class AppRoutes {
   static String bookingMentor = '/booking-mentor';
   static String becomeMentor = '/become-mentor';
   static String settingTeachingSchedule = '/setting-teaching-schedule';
+  static String createMentor = '/create-mentor'; // New route
+  static String adminPage = '/admin'; // Route for Admin Page
+  static String editMentor = '/edit-mentor'; // Route for Edit Mentor Page
+  static String viewMentor = '/view-mentor'; // Route for View Mentor Page
+  static String editUser = '/edit-user';
+  static String payment = '/payment';
+  static String categoryPage = '/category-page';
+  static String termsPage = '/terms-page';
+  static String contactus = "/contact";
+  static String login = "/login";
 }
 
-// navigation list
-List<NavigationDestination> destinations = [
+// navigation list after login for Admin
+List<NavigationDestination> adminDestinations = [
+  NavigationDestination(
+    label: 'Home',
+    icon: const Icon(
+      FontAwesomeIcons.house,
+      size: 20,
+    ),
+    route: AppRoutes.home,
+  ),
+
+  NavigationDestination(
+    label: 'Search',
+    icon: const Icon(
+      FontAwesomeIcons.magnifyingGlass,
+      size: 20,
+    ),
+    route: AppRoutes.search,
+  ),
+  NavigationDestination(
+    label: 'Inbox',
+    icon: const Icon(
+      FontAwesomeIcons.comment,
+      size: 20,
+    ),
+    route: AppRoutes.inbox,
+  ),
+  // NavigationDestination(
+  //   label: 'Create Mentor',  // Add the 'Create Mentor' option here
+  //   icon: const Icon(
+  //     FontAwesomeIcons.plus,
+  //     size: 20,
+  //   ),
+  //   route: AppRoutes.createMentor,  // Use the new route for navigation
+  // ),
+  NavigationDestination(
+    label: 'Admin', // Add the 'Admin' option
+    icon: const Icon(
+      FontAwesomeIcons.userShield,
+      size: 20,
+    ),
+    route: AppRoutes.adminPage, // Use the new route for Admin Page
+  ),
+  NavigationDestination(
+    label: 'Category', // Add the 'Admin' option
+    icon: const Icon(
+      FontAwesomeIcons.folderOpen,
+      size: 20,
+    ),
+    route: AppRoutes.categoryPage, // Use the new route for Admin Page
+  ),
+];
+
+// navigation list after login for User
+List<NavigationDestination> userDestinations = [
   NavigationDestination(
     label: 'Home',
     icon: const Icon(
@@ -75,20 +152,32 @@ List<NavigationDestination> destinations = [
     route: AppRoutes.search,
   ),
   NavigationDestination(
-    label: 'Inbox',
-    icon: const Icon(
-      FontAwesomeIcons.comment,
-      size: 20,
-    ),
-    route: AppRoutes.inbox,
-  ),
-  NavigationDestination(
     label: 'Profile',
     icon: const Icon(
       FontAwesomeIcons.user,
       size: 20,
     ),
     route: AppRoutes.profile,
+  ),
+];
+
+// navigation list before login
+List<NavigationDestination> beforeDestinations = [
+  NavigationDestination(
+    label: 'Home',
+    icon: const Icon(
+      FontAwesomeIcons.house,
+      size: 20,
+    ),
+    route: AppRoutes.home,
+  ),
+  NavigationDestination(
+    label: 'Search',
+    icon: const Icon(
+      FontAwesomeIcons.magnifyingGlass,
+      size: 20,
+    ),
+    route: AppRoutes.search,
   ),
 ];
 
@@ -111,7 +200,7 @@ final appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.root,
       pageBuilder: (context, state) => const MaterialPage<void>(
-        key: _pageKey,
+        key: ValueKey('splash_page'),
         child: SplashScreen(),
       ),
     ),
@@ -152,6 +241,9 @@ final appRouter = GoRouter(
         path: AppRoutes.filter,
         builder: (context, state) => const FilterScreen()),
     GoRoute(
+        path: AppRoutes.login,
+        builder: (context, state) => const LoginScreen()),
+    GoRoute(
         path: AppRoutes.inbox,
         pageBuilder: (context, state) => const MaterialPage<void>(
               key: _pageKey,
@@ -172,6 +264,14 @@ final appRouter = GoRouter(
               ),
             )),
     GoRoute(
+      path: '/edit-user/:userId', // Define the route with a parameter
+      builder: (BuildContext context, GoRouterState state) {
+        final userId = state.pathParameters['userId']!;
+        return EditUserScreen(
+            userId: int.parse(userId)); // Pass the userId to the screen
+      },
+    ),
+    GoRoute(
         path: AppRoutes.signin,
         builder: (context, state) => const LoginScreen()),
     GoRoute(
@@ -180,6 +280,8 @@ final appRouter = GoRouter(
     GoRoute(
         path: AppRoutes.forgetPassword,
         builder: (context, state) => const ForgetPasswordScreen()),
+    GoRoute(
+        path: AppRoutes.aboutus, builder: (context, state) => const AboutUs()),
     GoRoute(
         path: AppRoutes.newPassword,
         builder: (context, state) => const NewPasswordScreen()),
@@ -194,9 +296,12 @@ final appRouter = GoRouter(
         path: AppRoutes.settings,
         builder: (context, state) => const SettingsScreen()),
     GoRoute(
-        path: '${AppRoutes.profileMentor}/:id',
-        builder: (context, state) =>
-            ProfileMentorScreen(profileId: state.pathParameters['id']!)),
+      path: '${AppRoutes.profileMentor}/:id',
+      builder: (context, state) {
+        final profileId = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+        return ProfileMentorScreen(profileId: profileId);
+      },
+    ),
     GoRoute(
         path: '${AppRoutes.bookingMentor}/:id',
         builder: (context, state) =>
@@ -211,5 +316,49 @@ final appRouter = GoRouter(
     GoRoute(
         path: AppRoutes.settingTeachingSchedule,
         builder: (context, state) => const SettingTeachingScheduleScreen()),
+    GoRoute(
+      path: AppRoutes.createMentor, // New route for CreateMentorScreen
+      builder: (context, state) => CreateMentorScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.adminPage, // Admin Page Route
+      builder: (context, state) => AdminPage(),
+    ),
+    GoRoute(
+        path: AppRoutes.categoryPage,
+        builder: (context, state) => CategoryScreen()),
+    GoRoute(
+        path: AppRoutes.contactus, builder: (context, state) => Contactus()),
+    GoRoute(
+        path: AppRoutes.termsPage,
+        builder: (context, state) => TermsAndConditionsPage()),
+    GoRoute(
+      path: AppRoutes.editMentor,
+      builder: (context, state) {
+        final mentor = state.extra as AllMentors; // Pass ProfileMentor object
+        return EditMentorScreen(mentor: mentor);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.viewMentor, // View Page Route
+      builder: (context, state) {
+        final mentor =
+            state.extra as AllMentors; // Expect ProfileMentor instead of Map
+        return ViewMentorScreen(
+            mentor: mentor); // Pass the ProfileMentor object
+      },
+    ),
+    GoRoute(
+      path: '${AppRoutes.payment}/:amount/:id/:name/:bookingData',
+      builder: (context, state) {
+        // Convert the path parameter to an int
+        final amount = int.tryParse(state.pathParameters['amount']!) ?? 0;
+        final id = int.tryParse(state.pathParameters['id']!) ?? 0;
+        final name = state.pathParameters['name']!;
+        final bookingData = state.pathParameters['bookingData']!;
+        return PaymentScreen(
+            amount: amount, id: id, name: name, bookingData: bookingData);
+      },
+    ),
   ],
 );

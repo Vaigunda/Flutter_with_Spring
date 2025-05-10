@@ -1,0 +1,403 @@
+import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:mentor/constants/ui.dart';
+import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:mentor/shared/models/category.model.dart';
+import 'package:mentor/provider/user_data_provider.dart';
+import 'package:mentor/shared/services/token.service.dart';
+
+class CategoryScreen extends StatefulWidget {
+  @override
+  _CategoryScreenState createState() => _CategoryScreenState();
+}
+
+class _CategoryScreenState extends State<CategoryScreen> {
+  late String usertoken;
+  late var provider;
+
+  List<CategoryModel> categories = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    provider = context.read<UserDataProvider>();
+    usertoken = provider.usertoken;
+
+    _fetchCategories(); // Fetch categories on init
+  }
+
+  Future<void> _fetchCategories() async {
+    try {
+      // Check if token has expired
+      bool isExpired = JwtDecoder.isExpired(usertoken);
+      if (isExpired) {
+        final tokenService = TokenService();
+        tokenService.checkToken(usertoken, context);
+      } else {
+        final url = Uri.parse('http://localhost:8080/api/mentors/categories');
+        final response = await http.get(
+          url,
+          headers: {
+            'Authorization': 'Bearer $usertoken',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          List<dynamic> data = json.decode(response.body);
+          setState(() {
+            categories =
+                data.map((item) => CategoryModel.fromJson(item)).toList();
+          });
+        } else {
+          throw Exception('Failed to fetch categories');
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching categories: ${e.toString()}')),
+      );
+    }
+  }
+
+  Future<void> _addCategory(String name) async {
+    try {
+      // Check if token has expired
+      bool isExpired = JwtDecoder.isExpired(usertoken);
+      if (isExpired) {
+        final tokenService = TokenService();
+        tokenService.checkToken(usertoken, context);
+      } else {
+        final url = Uri.parse('http://localhost:8080/api/categories/add');
+        final response = await http.post(
+          url,
+          headers: {
+            'Authorization': 'Bearer $usertoken',
+            "Content-Type": "application/json",
+          },
+          body: jsonEncode({
+            "name": name,
+            "icon":
+                "FontAwesomeIcons.code", // Add a default icon if none is provided
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          // Category successfully added
+          _fetchCategories(); // Refresh the category list
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Category added successfully'),
+              duration: Duration(milliseconds: 1500),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else if (response.statusCode == 400) {
+          // Category already exists
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Category already exists'),
+              duration: Duration(milliseconds: 1500),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else {
+          // Other errors
+          throw Exception('Failed to add category');
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error adding category'),
+          duration: Duration(milliseconds: 1500),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _deleteCategory(String id) async {
+    try {
+      // Check if token has expired
+      bool isExpired = JwtDecoder.isExpired(usertoken);
+      if (isExpired) {
+        final tokenService = TokenService();
+        tokenService.checkToken(usertoken, context);
+      } else {
+        final url =
+            Uri.parse('http://localhost:8080/api/categories/delete/$id');
+        final response = await http.delete(
+          url,
+          headers: {
+            'Authorization': 'Bearer $usertoken',
+          },
+        );
+
+        if (response.statusCode == 200 &&
+            response.body.contains("Category deleted successfully.")) {
+          _fetchCategories(); // Refresh the category list
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Category deleted successfully'),
+              duration: Duration(milliseconds: 1500),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else {
+          if (response.statusCode == 200 &&
+              response.body.contains("Already Assigned")) {
+            // Show different message if category is assigned
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Assigned Category cannot be deleted'),
+                duration: Duration(milliseconds: 1500),
+                backgroundColor: Colors.red,
+              ),
+            );
+          } else {
+            throw Exception('Failed to delete category');
+          }
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error deleting category'),
+          duration: Duration(milliseconds: 1500),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _editCategory(String id, String newName) async {
+    try {
+      // Check if token has expired
+      bool isExpired = JwtDecoder.isExpired(usertoken);
+      if (isExpired) {
+        final tokenService = TokenService();
+        tokenService.checkToken(usertoken, context);
+      } else {
+        final url = Uri.parse('http://localhost:8080/api/categories/edit/$id');
+        final response = await http.put(
+          url,
+          headers: {
+            'Authorization': 'Bearer $usertoken',
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'name': newName,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          _fetchCategories(); // Refresh the category list
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Category edited successfully'),
+              duration: Duration(milliseconds: 1500),
+              backgroundColor: Colors.green,
+            ),
+          );
+        } else if (response.statusCode == 400) {
+          // Category already exists
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Category already exists'),
+              duration: Duration(milliseconds: 1500),
+              backgroundColor: Colors.red,
+            ),
+          );
+        } else {
+          throw Exception('Failed to edit category');
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error editing category'),
+          duration: Duration(milliseconds: 1500),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _showAddCategoryDialog() {
+    TextEditingController nameController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add New Category'),
+          content: TextField(
+            controller: nameController,
+            decoration: const InputDecoration(labelText: 'Category Name'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _addCategory(nameController.text);
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showEditCategoryDialog(String id, String currentName) {
+    TextEditingController nameController = TextEditingController();
+    nameController.text = currentName;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Category'),
+          content: TextField(
+            controller: nameController,
+            decoration: const InputDecoration(labelText: 'Category Name'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _editCategory(id, nameController.text);
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Categories',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5))),
+                onPressed: _showAddCategoryDialog,
+                child: const Text(
+                  'Add',
+                  style: TextStyle(color: Colors.white),
+                )),
+          ),
+        ],
+      ),
+      body: categories.isEmpty
+          ? const Center(child: Text('No categories found'))
+          : ListView.builder(
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                final category = categories[index];
+                IconData categoryIcon = category.getIcon();
+                return HoverableContainer(
+                    hover: false,
+                    context: context,
+                    child: ListTile(
+                      leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Icon(
+                            categoryIcon,
+                            size: 20,
+                          )),
+                      title: Text(
+                        category.name,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      trailing: LayoutBuilder(
+                        builder: (context, constraints) {
+                          bool isDesktop = constraints.maxWidth > 600;
+
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: isDesktop
+                                ? [
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                      ),
+                                      onPressed: () => _showEditCategoryDialog(
+                                        category.id,
+                                        category.name,
+                                      ),
+                                      child: const Text(
+                                        'Edit',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.red,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                      ),
+                                      onPressed: () =>
+                                          _deleteCategory(category.id),
+                                      child: const Text(
+                                        'Delete',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ]
+                                : [
+                                    IconButton(
+                                      icon: const Icon(Icons.edit,
+                                          color:
+                                              Color.fromARGB(255, 15, 121, 19)),
+                                      onPressed: () => _showEditCategoryDialog(
+                                          category.id, category.name),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete,
+                                          color:
+                                              Color.fromARGB(255, 170, 26, 15)),
+                                      onPressed: () =>
+                                          _deleteCategory(category.id),
+                                    ),
+                                  ],
+                          );
+                        },
+                      ),
+                    ));
+              },
+            ),
+    );
+  }
+}

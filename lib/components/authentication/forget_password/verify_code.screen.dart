@@ -40,55 +40,60 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
         MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: SafeArea(
-            child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 25, 20, 25),
-                child: KeyboardDismissOnTap(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                      Row(
-                        children: [
-                          IconButton(
-                              onPressed: () => context.pop(),
-                              icon: Icon(Icons.arrow_back,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onSecondaryContainer)),
-                        ],
+      resizeToAvoidBottomInset: true, // Allow layout to resize when the keyboard is visible
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 25, 20, 25),
+          child: KeyboardDismissOnTap(
+            child: SingleChildScrollView( // Wrap content with a scrollable widget
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Back Button
+                  Row(
+                    children: [
+                      IconButton(
+                        onPressed: () => context.pop(),
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Theme.of(context).colorScheme.onSecondaryContainer,
+                        ),
                       ),
-                      Expanded(
-                          child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          if (!isKeyboardVisibility) ...[
-                            Center(
-                              child: Image.asset(
-                                "assets/images/enter_otp.png",
-                                fit: BoxFit.contain,
-                                width: MediaQuery.of(context).size.width * 0.7,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 40,
-                            ),
-                          ],
-                          Text('Enter the verified code',
-                              style: context.titleLarge),
-                          Text(
-                              'We just sent you a verified code via an email ${widget.email}',
-                              style: context.bodySmall),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          formVerifyCode(context),
-                        ],
-                      )),
-                    ])))));
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Main Content
+                  if (!isKeyboardVisibility) ...[
+                    Center(
+                      child: Image.asset(
+                        "assets/images/enter_otp.png",
+                        fit: BoxFit.contain,
+                        width: MediaQuery.of(context).size.width * 0.7,
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
+                  Text(
+                    'Enter the verified code',
+                    style: context.titleLarge,
+                  ),
+                  Text(
+                    'We just sent you a verified code via an email ${widget.email}',
+                    style: context.bodySmall,
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Form Section
+                  formVerifyCode(context),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
   }
 
   Widget formVerifyCode(BuildContext context) {
